@@ -1,0 +1,41 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Director {
+  id          String      @id @map("_id") @default(auto()) @db.ObjectId
+  name        String
+  email       String      @unique
+  age         Int      
+  createdAt   DateTime    @default(now())
+  isActive    Boolean     @default(true)
+  agencies    Agence[]    @relation("DirectorAgencies")
+}
+
+model Agence {
+  id          String     @id @map("_id") @default(auto()) @db.ObjectId
+  street      String
+  city        String
+  state       String
+  zip         String
+  country     String
+  createdAt   DateTime    @default(now())
+  directorId  String      @db.ObjectId
+  director    Director    @relation("DirectorAgencies", fields: [directorId], references: [id], onDelete: Cascade)
+  products    Product[]   @relation("AgenceProducts")
+}
+
+model Product {
+  id         String     @id @map("_id") @default(auto()) @db.ObjectId
+  name       String
+  stock      Int
+  price      Float
+  createdAt  DateTime   @default(now())
+  agenceId   String     @db.ObjectId
+  agence     Agence     @relation("AgenceProducts", fields: [agenceId], references: [id], onDelete: Cascade)
+}
