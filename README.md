@@ -51,6 +51,7 @@ Loader
 Carousel
 FullScreen
 Darkmode
+Lucia - Auth
 
 
 Ne peut être :

@@ -14,14 +14,14 @@
 	let previousRouteId: string | null = $state(null);
 
 	$effect(() => {
-	  const currentData = {
-		routeId: $page.route.id,
-	  };
-  
-	  navigationStore.set({
-		from: null,
-		to: currentData
-	  });
+		const currentData = {
+			routeId: $page.route.id
+		};
+
+		navigationStore.set({
+			from: null,
+			to: currentData
+		});
 	});
 
 	$effect(() => {
@@ -36,29 +36,33 @@
 		}, 100);
 	});
 
-	onNavigate((navigation) => {  
-    const fromData = navigation.from ? {
-      routeId: navigation.from.route.id,
-    } : null;
+	onNavigate((navigation) => {
+		const fromData = navigation.from
+			? {
+					routeId: navigation.from.route.id
+				}
+			: null;
 
-    const toData = navigation.to ? {
-      routeId: navigation.to.route.id,
-    } : null;
+		const toData = navigation.to
+			? {
+					routeId: navigation.to.route.id
+				}
+			: null;
 
-    console.log('Navigation event:', { fromData, toData });
+		console.log('Navigation event:', { fromData, toData });
 
-    // Vérifier les conditions avant de mettre à jour le store
-    if (fromData && toData && fromData.routeId !== toData.routeId) {
-      console.log('Updating navigationStore:', { from: fromData, to: toData });
-      navigationStore.set({
-        from: fromData,
-        to: toData
-      });
-      previousRouteId = toData.routeId;
-    } else {
-      console.log('Navigation ignored due to conditions.');
-    }
-  });
+		// Vérifier les conditions avant de mettre à jour le store
+		if (fromData && toData && fromData.routeId !== toData.routeId) {
+			console.log('Updating navigationStore:', { from: fromData, to: toData });
+			navigationStore.set({
+				from: fromData,
+				to: toData
+			});
+			previousRouteId = toData.routeId;
+		} else {
+			console.log('Navigation ignored due to conditions.');
+		}
+	});
 </script>
 
 {#if loading}
@@ -69,7 +73,9 @@
 	<ModeWatcher />
 
 	<div class="navigation mt-5 flex justify-center">
-		<nav class="rcb flex w-[80vw] items-center justify-center space-x-4 rounded border p-3 lg:space-x-6">
+		<nav
+			class="rcb flex w-[80vw] items-center justify-center space-x-4 rounded border p-3 lg:space-x-6"
+		>
 			<a
 				href="/"
 				class={`text-sm font-medium ${$page.url.pathname === '/' ? 'text-primary' : 'text-muted-foreground'} transition-colors hover:text-primary`}
@@ -77,8 +83,8 @@
 				Accueil
 			</a>
 			<a
-			href="/transitionDemo"
-			class={`text-sm font-medium ${$page.url.pathname === '/transitionDemo' ? 'text-primary' : 'text-muted-foreground'} transition-colors hover:text-primary`}
+				href="/transitionDemo"
+				class={`text-sm font-medium ${$page.url.pathname === '/transitionDemo' ? 'text-primary' : 'text-muted-foreground'} transition-colors hover:text-primary`}
 			>
 				transitionDemo
 			</a>
@@ -138,7 +144,7 @@
 	}
 
 	main {
-		position: absolute;		
+		position: absolute;
 		padding-top: 20vh;
 		top: 0;
 		left: 0;
