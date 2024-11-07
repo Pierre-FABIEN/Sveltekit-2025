@@ -1,4 +1,3 @@
-// Importation des librairies nécessaires
 import gsap from 'gsap';
 import type Scrollbar from 'smooth-scrollbar';
 import { get } from 'svelte/store';
@@ -31,18 +30,19 @@ export const enter = (node: HTMLElement, { fromPath }: { fromPath: string | null
 		// Animation spécifique si on vient de '/transitionDemo'
 		timeline.from(node, {
 			x: '100%',
-			ease: 'power2.out'
+			ease: 'linear',
+			duration: 0.5
 		});
 	} else {
 		// Animation par défaut
 		timeline.from(node, {
 			y: '100%',
-			ease: 'power2.out'
+			ease: 'linear',
+			duration: 0.5
 		});
 	}
-
 	return {
-		duration: timeline.duration() * 1000
+		duration: timeline.duration() * 4000
 	};
 };
 
@@ -57,17 +57,18 @@ export const exit = (node: HTMLElement, { toPath }: { toPath: string | null | un
 		// Animation spécifique si on va vers '/transitionDemo'
 		timeline.to(node, {
 			x: '100%',
-			ease: 'power2.in'
+			ease: 'linear',
+			duration: 0.5
 		});
 	} else {
 		// Animation par défaut
 		timeline.to(node, {
 			y: '-100%',
-			ease: 'power2.in'
+			ease: 'linear',
+			duration: 0.5
 		});
 	}
-
 	return {
-		duration: timeline.duration() * 1000
+		duration: timeline.duration() * 4000
 	};
 };

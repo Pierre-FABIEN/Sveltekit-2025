@@ -20,8 +20,9 @@ const resetScroll = () => {
 };
 
 export const enter = (node: HTMLElement, { fromPath }: { fromPath: string | null | undefined }) => {
-	// Vérifier la valeur de fromPath
-	//console.log('enter transition - fromPath:', fromPath);
+	// Initialisation et remise à zéro du scroll pour la transition de sortie
+	initSmoothScroll();
+	resetScroll();
 
 	const timeline = gsap.timeline();
 
@@ -29,21 +30,21 @@ export const enter = (node: HTMLElement, { fromPath }: { fromPath: string | null
 		// Animation spécifique si on vient de '/transitionDemo/transition'
 		timeline.from(node, {
 			x: '-100%',
-			ease: 'power2.out'
+			ease: 'linear',
+			duration: 0.5
 		});
 	} else {
 		// Animation par défaut
 		timeline.from(node, {
 			y: '100%',
-			ease: 'power2.out'
+			ease: 'linear',
+			duration: 0.5
 		});
 	}
-
 	return {
-		duration: timeline.duration() * 1000
+		duration: timeline.duration() * 4000
 	};
 };
-
 export const exit = (node: HTMLElement, { toPath }: { toPath: string | null | undefined }) => {
 	// Vérifier la valeur de toPath
 	initSmoothScroll();
@@ -52,20 +53,23 @@ export const exit = (node: HTMLElement, { toPath }: { toPath: string | null | un
 	const timeline = gsap.timeline();
 
 	if (toPath === '/transitionDemo/transition') {
+		console.log('ca passe', node);
+
 		// Animation spécifique si on va vers '/transitionDemo/transition'
 		timeline.to(node, {
 			x: '-100%',
-			ease: 'power2.in'
+			ease: 'linear',
+			duration: 0.5
 		});
 	} else {
 		// Animation par défaut
 		timeline.to(node, {
 			y: '-100%',
-			ease: 'power2.in'
+			ease: 'linear',
+			duration: 0.5
 		});
 	}
-
 	return {
-		duration: timeline.duration() * 1000
+		duration: timeline.duration() * 4000
 	};
 };
