@@ -1,8 +1,8 @@
 <script lang="ts">
-	import * as Form from '$lib/components/ui/form';
-	import { Input } from '$lib/components/ui/input';
-	import { Button } from '$lib/components/ui/button';
-	import * as Popover from '$lib/components/ui/popover';
+	import * as Form from '$shadcn/form';
+	import { Input } from '$shadcn/input';
+	import { Button } from '$shadcn/button';
+	import * as Popover from '$shadcn/popover';
 	import { toast } from 'svelte-sonner';
 
 	import { superForm } from 'sveltekit-superforms';

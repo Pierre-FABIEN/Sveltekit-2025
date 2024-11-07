@@ -2,10 +2,10 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { updateDirectorSchema } from '$lib/schema/directorsSchema';
-	import * as Form from '$lib/components/ui/form';
-	import { Input } from '$lib/components/ui/input';
-	import { Button } from '$lib/components/ui/button';
-	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte';
+	import * as Form from '$shadcn/form';
+	import { Input } from '$shadcn/input';
+	import { Button } from '$shadcn/button';
+	import Checkbox from '$shadcn/checkbox/checkbox.svelte';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
 

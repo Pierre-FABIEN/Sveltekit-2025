@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { ModeWatcher } from 'mode-watcher';
-	import { Toaster } from '$lib/components/ui/sonner';
-	import { Progress } from '$lib/components/ui/progress/index.js';
+	import { Toaster } from '$shadcn/sonner';
+	import { Progress } from '$shadcn/progress/index.js';
 	import '../app.css';
-	import { navigationStore } from '$lib/Store/navigationStore';
+	import { navigationStore } from '$store/navigationStore';
 	import { onNavigate } from '$app/navigation';
 
 	let { children } = $props();
@@ -49,18 +49,14 @@
 				}
 			: null;
 
-		console.log('Navigation event:', { fromData, toData });
-
 		// Vérifier les conditions avant de mettre à jour le store
 		if (fromData && toData && fromData.routeId !== toData.routeId) {
-			console.log('Updating navigationStore:', { from: fromData, to: toData });
 			navigationStore.set({
 				from: fromData,
 				to: toData
 			});
 			previousRouteId = toData.routeId;
 		} else {
-			console.log('Navigation ignored due to conditions.');
 		}
 	});
 </script>

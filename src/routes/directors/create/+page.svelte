@@ -1,8 +1,8 @@
 <script lang="ts">
-	import * as Form from '$lib/components/ui/form';
-	import { Input } from '$lib/components/ui/input';
-	import { Button } from '$lib/components/ui/button';
-	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte';
+	import * as Form from '$shadcn/form';
+	import { Input } from '$shadcn/input';
+	import { Button } from '$shadcn/button';
+	import Checkbox from '$shadcn/checkbox/checkbox.svelte';
 
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
@@ -37,9 +37,9 @@
 	<form method="POST" action="?/create" use:createDirectorEnhance>
 		<div class="mb-4">
 			<Form.Field name="name" form={createDirectorForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Name</Form.Label>
-					<Input {...attrs} type="text" bind:value={$createDirectorData.name} required />
+					<Input type="text" bind:value={$createDirectorData.name} required />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -47,9 +47,9 @@
 
 		<div class="mb-4">
 			<Form.Field name="email" form={createDirectorForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Email</Form.Label>
-					<Input {...attrs} type="email" bind:value={$createDirectorData.email} required />
+					<Input type="email" bind:value={$createDirectorData.email} required />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -57,9 +57,9 @@
 
 		<div class="mb-4">
 			<Form.Field name="age" form={createDirectorForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Age</Form.Label>
-					<Input {...attrs} type="number" bind:value={$createDirectorData.age} required />
+					<Input type="number" bind:value={$createDirectorData.age} required />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -67,9 +67,9 @@
 
 		<div class="mb-4">
 			<Form.Field name="isActive" form={createDirectorForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Active</Form.Label>
-					<Checkbox {...attrs} bind:checked={$createDirectorData.isActive} />
+					<Checkbox bind:checked={$createDirectorData.isActive} />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>

@@ -2,9 +2,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { todoStore } from './todoStore.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import Input from '$lib/components/ui/input/input.svelte';
-	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte';
+	import { Button } from '$shadcn/button';
+	import Input from '$shadcn/input/input.svelte';
+	import Checkbox from '$shadcn/checkbox/checkbox.svelte';
 
 	let newTodoTitle: string = $state('');
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import * as HoverCard from '$lib/components/ui/hover-card';
-	import { Badge } from '$lib/components/ui/badge/index.js';
+	import * as HoverCard from '$shadcn/hover-card';
+	import { Badge } from '$shadcn/badge/index.js';
 
 	let { director }: { director: { name: string; email: string; age: number; isActive: boolean } } =
 		$props(); // Attendez un objet 'director' comme prop

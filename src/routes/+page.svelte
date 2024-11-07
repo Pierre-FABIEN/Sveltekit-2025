@@ -1,5 +1,5 @@
 <script>
-	  import { navigationStore } from '$lib/Store/navigationStore';
+	  import { navigationStore } from '$store/navigationStore';
 	  import { enter, exit } from './TransitionPage';
 </script>
 

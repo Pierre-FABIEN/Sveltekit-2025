@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Button from '$lib/components/ui/button/button.svelte';
-	import * as Table from '$lib/components/ui/table';
+	import Button from '$shadcn/button/button.svelte';
+	import * as Table from '$shadcn/table';
 	import { toast } from 'svelte-sonner';
 
 	import { deleteDirectorSchema } from '$lib/schema/directorsSchema.js';
