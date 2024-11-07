@@ -23,9 +23,7 @@
 			from: null,
 			to: currentData
 		});
-	});
 
-	$effect(() => {
 		isClient = true;
 		const timer = setInterval(() => {
 			if (value < 100) {
@@ -143,8 +141,7 @@
 	}
 
 	main {
-		padding-top: 20vh;
 		overflow-x: hidden;
-		height: 100vh;
+		padding-top: 20vh;
 	}
 </style>

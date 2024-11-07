@@ -1,13 +1,8 @@
 <script>
 	import { navigationStore } from '$store/navigationStore';
-	import { enter, exit } from './TransitionPage';
 </script>
 
-<section
-	class="home"
-	in:enter={{ fromPath: $navigationStore.from?.routeId }}
-	out:exit={{ toPath: $navigationStore.to?.routeId }}
->
+<section class="home">
 	<div class="mt-10 flex justify-center">
 		<article class="m-2 w-full max-w-4xl rounded-lg border p-8">
 			<h1 class="mb-4 text-4xl font-bold">Présentation du test</h1>
@@ -455,13 +450,7 @@
 
 <style>
 	.home {
-		padding-top: 20vh;
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-
+		height: 100%;
 		display: flex;
 		flex-direction: column;
 		align-items: center;

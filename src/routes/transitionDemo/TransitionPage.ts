@@ -25,17 +25,15 @@ export const enter = (node: HTMLElement, { fromPath }: { fromPath: string | null
 
 	const timeline = gsap.timeline();
 
-	if (fromPath === '/') {
-		// Animation spécifique si on vient de '/'
+	if (fromPath === '/transitionDemo/transition') {
+		// Animation spécifique si on vient de '/transitionDemo/transition'
 		timeline.from(node, {
-			opacity: 0,
 			x: '-100%',
 			ease: 'power2.out'
 		});
 	} else {
 		// Animation par défaut
 		timeline.from(node, {
-			opacity: 0,
 			y: '100%',
 			ease: 'power2.out'
 		});
@@ -53,17 +51,15 @@ export const exit = (node: HTMLElement, { toPath }: { toPath: string | null | un
 
 	const timeline = gsap.timeline();
 
-	if (toPath === '/') {
-		// Animation spécifique si on va vers '/'
+	if (toPath === '/transitionDemo/transition') {
+		// Animation spécifique si on va vers '/transitionDemo/transition'
 		timeline.to(node, {
-			opacity: 0,
-			x: '100%',
+			x: '-100%',
 			ease: 'power2.in'
 		});
 	} else {
 		// Animation par défaut
 		timeline.to(node, {
-			opacity: 0,
 			y: '-100%',
 			ease: 'power2.in'
 		});

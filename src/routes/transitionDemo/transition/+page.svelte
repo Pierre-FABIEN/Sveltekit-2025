@@ -9,7 +9,7 @@
 	in:enter={{ fromPath: $navigationStore.from?.routeId }}
 	out:exit={{ toPath: $navigationStore.to?.routeId }}
 >
-	<Button href="/transitionDemo/transition">Transition</Button>
+	<Button href="/transitionDemo">Transition</Button>
 </div>
 
 <style>
@@ -21,7 +21,7 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		background-color: red;
+		background-color: blue;
 		width: 100vw;
 		height: 100vh;
 	}
