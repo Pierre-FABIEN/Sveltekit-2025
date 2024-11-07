@@ -6,6 +6,7 @@
 	import '../app.css';
 	import { navigationStore } from '$store/navigationStore';
 	import { onNavigate } from '$app/navigation';
+	import SmoothScrollBar from '$lib/components/smoothScrollBar/SmoothScrollBar.svelte';
 
 	let { children } = $props();
 	let isClient = $state(false);
@@ -123,9 +124,11 @@
 		</nav>
 	</div>
 
-	<main>
-		{@render children()}
-	</main>
+	<SmoothScrollBar>
+		<main>
+			{@render children()}
+		</main>
+	</SmoothScrollBar>
 
 	<Toaster />
 {/if}
@@ -140,12 +143,8 @@
 	}
 
 	main {
-		position: absolute;
 		padding-top: 20vh;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
 		overflow-x: hidden;
+		height: 100vh;
 	}
 </style>

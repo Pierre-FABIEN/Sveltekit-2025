@@ -64,6 +64,7 @@
 	"dependencies": {
 		"@prisma/client": "^5.22.0",
 		"apexcharts": "^4.0.0",
-		"gsap": "^3.12.5"
+		"gsap": "^3.12.5",
+		"smooth-scrollbar": "^8.8.4"
 	}
 }
