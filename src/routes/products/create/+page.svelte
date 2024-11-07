@@ -43,9 +43,9 @@
 	<form method="POST" action="?/create" use:createProductEnhance>
 		<div class="mb-4">
 			<Form.Field name="name" form={createProductForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Name</Form.Label>
-					<Input {...attrs} type="text" bind:value={$createProductData.name} required />
+					<Input name="name" type="text" bind:value={$createProductData.name} required />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -53,9 +53,9 @@
 
 		<div class="mb-4">
 			<Form.Field name="stock" form={createProductForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Stock</Form.Label>
-					<Input {...attrs} type="number" bind:value={$createProductData.stock} required />
+					<Input name="stock" type="number" bind:value={$createProductData.stock} required />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -63,10 +63,10 @@
 
 		<div class="mb-4">
 			<Form.Field name="price" form={createProductForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Price</Form.Label>
 					<Input
-						{...attrs}
+						name="price"
 						type="number"
 						step="0.01"
 						bind:value={$createProductData.price}
@@ -80,7 +80,7 @@
 		<!-- Dropdown Menu for Agence Selection -->
 		<div class="mb-4">
 			<Form.Field name="agenceId" form={createProductForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Agence</Form.Label>
 					<Popover.Root>
 						<Popover.Trigger class="rounded border px-4 py-2">

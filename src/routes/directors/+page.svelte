@@ -6,7 +6,7 @@
 	import { deleteDirectorSchema } from '$lib/schema/directorsSchema.js';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import AgenceBadge from '$lib/components/AgenceBadge.svelte';
+	import AgenceBadge from '$components/AgenceBadge.svelte';
 
 	let { data } = $props();
 
@@ -24,8 +24,7 @@
 	});
 </script>
 
-<div class="directors mx-auto mt-8 max-w-5xl px-4 sm:px-6 lg:px-8"
->
+<div class="directors mx-auto mt-8 max-w-5xl px-4 sm:px-6 lg:px-8">
 	<div class="space-y-6 rounded-md border p-4">
 		<div class="flex justify-between">
 			<h1>Directors</h1>

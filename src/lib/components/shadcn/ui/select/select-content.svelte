@@ -2,7 +2,7 @@
 	import { Select as SelectPrimitive, type WithoutChild } from 'bits-ui';
 	import SelectScrollUpButton from './select-scroll-up-button.svelte';
 	import SelectScrollDownButton from './select-scroll-down-button.svelte';
-	import { cn } from '$lib/components/shadcn/utils.js';
+	import { cn } from '$components/shadcn/utils.js';
 
 	let {
 		ref = $bindable(null),

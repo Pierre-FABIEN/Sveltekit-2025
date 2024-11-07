@@ -2,7 +2,7 @@
 	import { Menubar as MenubarPrimitive, type WithoutChild } from 'bits-ui';
 	import Check from 'lucide-svelte/icons/check';
 	import Minus from 'lucide-svelte/icons/minus';
-	import { cn } from '$lib/components/shadcn/utils.js';
+	import { cn } from '$components/shadcn/utils.js';
 
 	let {
 		ref = $bindable(null),

@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 // Common fields schema
 const directorFieldsSchema = {
-	name: z.string().min(1, 'Name is required'),
+	name: z.string().min(2, 'Name is required'),
 	email: z.string().email('Invalid email address'),
 	age: z.number().int().positive('Age must be a positive integer'),
 	isActive: z.boolean().default(true),

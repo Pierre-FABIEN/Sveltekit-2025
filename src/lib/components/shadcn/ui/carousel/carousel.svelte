@@ -5,7 +5,7 @@
 		type EmblaContext,
 		setEmblaContext
 	} from './context.js';
-	import { cn } from '$lib/components/shadcn/utils.js';
+	import { cn } from '$components/shadcn/utils.js';
 
 	let {
 		opts = {},

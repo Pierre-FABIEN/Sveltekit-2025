@@ -1,6 +1,6 @@
 <script lang="ts">
-	import * as Tooltip from '$lib/components/shadcn/ui/tooltip/index.js';
-	import { cn } from '$lib/components/shadcn/utils.js';
+	import * as Tooltip from '$components/shadcn/ui/tooltip/index.js';
+	import { cn } from '$components/shadcn/utils.js';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import {

@@ -36,9 +36,9 @@
 	<form method="POST" action="?/update" use:updateDirectorEnhance>
 		<div class="mb-4">
 			<Form.Field name="name" form={updateDirectorForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Name</Form.Label>
-					<Input {...attrs} type="text" bind:value={$updateDirectorData.name} required />
+					<Input name="name" type="text" bind:value={$updateDirectorData.name} required />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -46,9 +46,9 @@
 
 		<div class="mb-4">
 			<Form.Field name="email" form={updateDirectorForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Email</Form.Label>
-					<Input {...attrs} type="email" bind:value={$updateDirectorData.email} required />
+					<Input name="email" type="email" bind:value={$updateDirectorData.email} required />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -56,9 +56,9 @@
 
 		<div class="mb-4">
 			<Form.Field name="age" form={updateDirectorForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Age</Form.Label>
-					<Input {...attrs} type="number" bind:value={$updateDirectorData.age} required />
+					<Input name="age" type="number" bind:value={$updateDirectorData.age} required />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -66,9 +66,9 @@
 
 		<div class="mb-4">
 			<Form.Field name="isActive" form={updateDirectorForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Active</Form.Label>
-					<Checkbox {...attrs} bind:checked={$updateDirectorData.isActive} />
+					<Checkbox name="isActive" bind:checked={$updateDirectorData.isActive} />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>

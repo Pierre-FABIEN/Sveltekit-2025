@@ -13,8 +13,11 @@ export const load = async () => {
 export const actions = {
 	create: async ({ request }) => {
 		const formData = await request.formData();
+		console.log(formData);
 
 		const form = await superValidate(formData, zod(createDirectorSchema));
+
+		console.log(form);
 
 		if (!form.valid) {
 			return fail(400, {

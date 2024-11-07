@@ -6,7 +6,7 @@
 	import { deleteAgenceSchema } from '$lib/schema/agenciesSchema.js';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import DirectorBadge from '$lib/components/DirectorBadge.svelte';
+	import DirectorBadge from '$components/DirectorBadge.svelte';
 
 	let { data } = $props();
 

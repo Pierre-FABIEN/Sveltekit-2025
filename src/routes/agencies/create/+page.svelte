@@ -99,11 +99,11 @@
 	<form method="POST" action="?/create" use:createAgenceEnhance>
 		<div class="mb-4">
 			<Form.Field name="street" form={createAgenceForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Street</Form.Label>
 					<Input
 						oninput={handleInput}
-						{...attrs}
+						name="street"
 						type="text"
 						bind:value={$createAgenceData.street}
 						required
@@ -115,11 +115,11 @@
 
 		<div class="mb-4">
 			<Form.Field name="city" form={createAgenceForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>City</Form.Label>
 					<Input
 						oninput={handleInput}
-						{...attrs}
+						name="city"
 						type="text"
 						bind:value={$createAgenceData.city}
 						required
@@ -131,11 +131,11 @@
 
 		<div class="mb-4">
 			<Form.Field name="state" form={createAgenceForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>State</Form.Label>
 					<Input
 						oninput={handleInput}
-						{...attrs}
+						name="state"
 						type="text"
 						bind:value={$createAgenceData.state}
 						required
@@ -147,11 +147,11 @@
 
 		<div class="mb-4">
 			<Form.Field name="zip" form={createAgenceForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>ZIP Code</Form.Label>
 					<Input
 						oninput={handleInput}
-						{...attrs}
+						name="zip"
 						type="text"
 						bind:value={$createAgenceData.zip}
 						required
@@ -163,11 +163,11 @@
 
 		<div class="mb-4">
 			<Form.Field name="country" form={createAgenceForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Country</Form.Label>
 					<Input
 						oninput={handleInput}
-						{...attrs}
+						name="country"
 						type="text"
 						bind:value={$createAgenceData.country}
 						required
@@ -180,7 +180,7 @@
 		<!-- Dropdown Menu for Director Selection -->
 		<div class="mb-4">
 			<Form.Field name="directorId" form={createAgenceForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Director</Form.Label>
 					<Popover.Root>
 						<Popover.Trigger class="rounded border px-4 py-2">

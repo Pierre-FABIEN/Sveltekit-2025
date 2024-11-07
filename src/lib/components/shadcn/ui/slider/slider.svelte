@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Slider as SliderPrimitive, type WithoutChildrenOrChild } from 'bits-ui';
-	import { cn } from '$lib/components/shadcn/utils.js';
+	import { cn } from '$components/shadcn/utils.js';
 
 	let {
 		ref = $bindable(null),

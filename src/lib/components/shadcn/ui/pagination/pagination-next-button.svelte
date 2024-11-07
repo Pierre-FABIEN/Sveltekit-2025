@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Pagination as PaginationPrimitive } from 'bits-ui';
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
-	import { buttonVariants } from '$lib/components/shadcn/ui/button/index.js';
-	import { cn } from '$lib/components/shadcn/utils.js';
+	import { buttonVariants } from '$components/shadcn/ui/button/index.js';
+	import { cn } from '$components/shadcn/utils.js';
 
 	let {
 		ref = $bindable(null),

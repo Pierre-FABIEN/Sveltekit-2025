@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CardSnippet from '$lib/components/CardSnippet.svelte';
+	import CardSnippet from '$components/CardSnippet.svelte';
 
 	interface Agency {
 		id: string;

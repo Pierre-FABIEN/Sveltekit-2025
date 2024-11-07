@@ -7,10 +7,10 @@
 		"baseColor": "slate"
 	},
 	"aliases": {
-		"components": "$lib/components/shadcn",
-		"utils": "$lib/components/shadcn/utils",
-		"ui": "$lib/components/shadcn/ui",
-		"hooks": "$lib/components/shadcn/hooks"
+		"components": "$components/shadcn",
+		"utils": "$components/shadcn/utils",
+		"ui": "$components/shadcn/ui",
+		"hooks": "$components/shadcn/hooks"
 	},
 	"typescript": true,
 	"registry": "https://next.shadcn-svelte.com/registry"

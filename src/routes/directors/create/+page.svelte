@@ -14,7 +14,11 @@
 
 	const createDirectorForm = superForm(data.form, {
 		validators: zodClient(createDirectorSchema),
-		id: 'createDirectorForm'
+		id: 'createDirectorForm',
+		onSubmit: ({ formData, formElement }) => {
+			// Affiche chaque paire clé-valeur de formData
+			console.log(formData);
+		}
 	});
 
 	const {
@@ -28,6 +32,8 @@
 			toast.success($createDirectorMessage);
 			setTimeout(() => goto('/directors'), 0);
 		}
+
+		console.log($createDirectorData);
 	});
 </script>
 
@@ -39,7 +45,7 @@
 			<Form.Field name="name" form={createDirectorForm}>
 				<Form.Control>
 					<Form.Label>Name</Form.Label>
-					<Input type="text" bind:value={$createDirectorData.name} required />
+					<Input type="text" name="name" bind:value={$createDirectorData.name} required />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -49,7 +55,7 @@
 			<Form.Field name="email" form={createDirectorForm}>
 				<Form.Control>
 					<Form.Label>Email</Form.Label>
-					<Input type="email" bind:value={$createDirectorData.email} required />
+					<Input type="email" name="email" bind:value={$createDirectorData.email} required />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -59,7 +65,7 @@
 			<Form.Field name="age" form={createDirectorForm}>
 				<Form.Control>
 					<Form.Label>Age</Form.Label>
-					<Input type="number" bind:value={$createDirectorData.age} required />
+					<Input type="number" name="age" bind:value={$createDirectorData.age} required />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -69,7 +75,7 @@
 			<Form.Field name="isActive" form={createDirectorForm}>
 				<Form.Control>
 					<Form.Label>Active</Form.Label>
-					<Checkbox bind:checked={$createDirectorData.isActive} />
+					<Checkbox name="isActive" bind:checked={$createDirectorData.isActive} />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>

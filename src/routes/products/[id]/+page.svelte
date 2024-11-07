@@ -53,9 +53,9 @@
 	<form method="POST" action="?/update" use:updateProductEnhance>
 		<div class="mb-4">
 			<Form.Field name="name" form={updateProductForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Name</Form.Label>
-					<Input {...attrs} type="text" bind:value={$updateProductData.name} required />
+					<Input name="name" type="text" bind:value={$updateProductData.name} required />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -63,9 +63,9 @@
 
 		<div class="mb-4">
 			<Form.Field name="stock" form={updateProductForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Stock</Form.Label>
-					<Input {...attrs} type="number" bind:value={$updateProductData.stock} required />
+					<Input name="stock" type="number" bind:value={$updateProductData.stock} required />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -73,10 +73,10 @@
 
 		<div class="mb-4">
 			<Form.Field name="price" form={updateProductForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Price</Form.Label>
 					<Input
-						{...attrs}
+						name="price"
 						type="number"
 						step="0.01"
 						bind:value={$updateProductData.price}
@@ -90,7 +90,7 @@
 		<!-- Dropdown Menu for Agence Selection -->
 		<div class="mb-4">
 			<Form.Field name="agenceId" form={updateProductForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Agence</Form.Label>
 					<Popover.Root>
 						<Popover.Trigger class="rounded border px-4 py-2">

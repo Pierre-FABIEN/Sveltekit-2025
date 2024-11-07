@@ -104,11 +104,11 @@
 	<form method="POST" action="?/update" use:updateAgenceEnhance>
 		<div class="mb-4">
 			<Form.Field name="street" form={updateAgenceForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Street</Form.Label>
 					<Input
 						oninput={handleInput}
-						{...attrs}
+						name="street"
 						type="text"
 						bind:value={$updateAgenceData.street}
 						required
@@ -120,11 +120,11 @@
 
 		<div class="mb-4">
 			<Form.Field name="city" form={updateAgenceForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>City</Form.Label>
 					<Input
 						oninput={handleInput}
-						{...attrs}
+						name="city"
 						type="text"
 						bind:value={$updateAgenceData.city}
 						required
@@ -136,11 +136,11 @@
 
 		<div class="mb-4">
 			<Form.Field name="state" form={updateAgenceForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>State</Form.Label>
 					<Input
 						oninput={handleInput}
-						{...attrs}
+						name="state"
 						type="text"
 						bind:value={$updateAgenceData.state}
 						required
@@ -152,11 +152,11 @@
 
 		<div class="mb-4">
 			<Form.Field name="zip" form={updateAgenceForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>ZIP Code</Form.Label>
 					<Input
 						oninput={handleInput}
-						{...attrs}
+						name="zip"
 						type="text"
 						bind:value={$updateAgenceData.zip}
 						required
@@ -168,11 +168,11 @@
 
 		<div class="mb-4">
 			<Form.Field name="country" form={updateAgenceForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Country</Form.Label>
 					<Input
 						oninput={handleInput}
-						{...attrs}
+						name="country"
 						type="text"
 						bind:value={$updateAgenceData.country}
 						required
@@ -184,7 +184,7 @@
 
 		<div class="mb-4">
 			<Form.Field name="directorId" form={updateAgenceForm}>
-				<Form.Control let:attrs>
+				<Form.Control>
 					<Form.Label>Director</Form.Label>
 					<Popover.Root>
 						<Popover.Trigger class="rounded border px-4 py-2">
