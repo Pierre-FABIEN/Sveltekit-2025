@@ -1,44 +1,72 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import * as Form from '$shadcn/form';
+	import { Input } from '$shadcn/input';
+	import { Button } from '$shadcn/button';
+	import { superForm } from 'sveltekit-superforms/client';
+	import { signupSchema } from '$lib/schema/signupSchema';
+	import { toast } from 'svelte-sonner';
+	import { goto } from '$app/navigation';
+	import { zodClient } from 'sveltekit-superforms/adapters';
 
-	import type { ActionData } from './$types';
+	let { data } = $props();
 
-	export let form: ActionData;
+	const signupForm = superForm(data.form, {
+		validators: zodClient(signupSchema),
+		id: 'signupForm'
+	});
+
+	const { form: signupData, enhance: signupEnhance, message: signupMessage } = signupForm;
+
+	$effect(() => {
+		if ($signupMessage === 'Inscription réussie !') {
+			toast.success($signupMessage);
+			setTimeout(() => goto('/auth/login'), 0);
+		}
+	});
 </script>
 
-<h1>Create an account</h1>
-<p>
-	Your username must be at least 3 characters long and your password must be at least 8 characters
-	long.
-</p>
-<form method="post" use:enhance>
-	<label for="form-signup.username">Username</label>
-	<input
-		id="form-signup.username"
-		name="username"
-		required
-		value={form?.username ?? ''}
-		minlength="4"
-		maxlength="31"
-	/><br />
-	<label for="form-signup.email">Email</label>
-	<input
-		type="email"
-		id="form-signup.email"
-		name="email"
-		autocomplete="username"
-		required
-		value={form?.email ?? ''}
-	/><br />
-	<label for="form-signup.password">Password</label>
-	<input
-		type="password"
-		id="form-signup.password"
-		name="password"
-		autocomplete="new-password"
-		required
-	/><br />
-	<button>Continue</button>
-	<p>{form?.message ?? ''}</p>
-</form>
-<a href="/auth/login">Sign in</a>
+<div class="mx-auto mt-8 max-w-lg">
+	<h1 class="mb-4 text-2xl font-bold">Créer un compte</h1>
+
+	<form method="POST" use:signupEnhance class="space-y-4">
+		<div class="mb-4">
+			<Form.Field name="username" form={signupForm}>
+				<Form.Control>
+					<Form.Label>Nom d'utilisateur</Form.Label>
+					<Input name="username" type="text" bind:value={$signupData.username} required />
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+		</div>
+
+		<div class="mb-4">
+			<Form.Field name="email" form={signupForm}>
+				<Form.Control>
+					<Form.Label>Email</Form.Label>
+					<Input name="email" type="email" bind:value={$signupData.email} required />
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+		</div>
+
+		<div class="mb-4">
+			<Form.Field name="password" form={signupForm}>
+				<Form.Control>
+					<Form.Label>Mot de passe</Form.Label>
+					<Input name="password" type="password" bind:value={$signupData.password} required />
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+		</div>
+
+		<div class="mt-6">
+			<Button type="submit">S'inscrire</Button>
+		</div>
+	</form>
+
+	{#if $signupMessage}
+		<p class="text-green-500">{$signupMessage}</p>
+	{/if}
+
+	<p class="text-red-500">{signupForm.errors.general}</p>
+</div>

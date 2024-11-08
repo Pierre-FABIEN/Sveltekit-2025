@@ -18,7 +18,10 @@ export async function getUserEmailVerificationRequest(
 	id: string
 ): Promise<EmailVerificationRequest | null> {
 	const request = await prisma.emailVerificationRequest.findUnique({
-		where: { id_userId: { id, userId } }
+		where: {
+			id,
+			userId
+		}
 	});
 
 	if (!request) {

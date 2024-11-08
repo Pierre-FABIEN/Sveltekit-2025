@@ -5,7 +5,7 @@ import {
 	invalidateUserPasswordResetSessions,
 	sendPasswordResetEmail,
 	setPasswordResetSessionTokenCookie
-} from '$lib/lucia/password-reset';
+} from '$lib/lucia/passwordReset';
 import { RefillingTokenBucket } from '$lib/lucia/rate-limit';
 import { generateSessionToken } from '$lib/lucia/session';
 import { fail, redirect } from '@sveltejs/kit';

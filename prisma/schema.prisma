@@ -8,12 +8,12 @@ generator client {
 }
 
 model Director {
-  id        String    @id @default(uuid())
+  id        String   @id @default(uuid())
   name      String
-  email     String    @unique
+  email     String   @unique
   age       Int
-  createdAt DateTime  @default(now())
-  isActive  Boolean   @default(true)
+  createdAt DateTime @default(now())
+  isActive  Boolean  @default(true)
   agencies  Agence[]
 }
 
@@ -41,19 +41,30 @@ model Product {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
-  email         String   @unique
-  username      String
-  passwordHash  String
-  recoveryCode  String?
-  emailVerified Boolean  @default(false)
-  totpKey       Bytes?
-  sessions      Session[]  // Ajout de la relation réciproque
+  id                        Int                        @id @default(autoincrement())
+  email                     String                     @unique
+  username                  String
+  passwordHash              String
+  recoveryCode              String?
+  emailVerified             Boolean                    @default(false)
+  totpKey                   Bytes?
+  sessions                  Session[]
+  emailVerificationRequests EmailVerificationRequest[] @relation("UserEmailVerificationRequests")
 }
 
 model Session {
+  id                String   @id @default(uuid())
+  userId            Int
+  expiresAt         DateTime
+  twoFactorVerified Boolean  @default(false)
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EmailVerificationRequest {
   id        String   @id @default(uuid())
   userId    Int
+  email     String
+  code      String
   expiresAt DateTime
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation("UserEmailVerificationRequests", fields: [userId], references: [id], onDelete: Cascade)
 }
