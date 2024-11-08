@@ -8,34 +8,52 @@ generator client {
 }
 
 model Director {
-  id          String      @id @default(uuid())
-  name        String
-  email       String      @unique
-  age         Int      
-  createdAt   DateTime    @default(now())
-  isActive    Boolean     @default(true)
-  agencies    Agence[]    @relation("DirectorAgencies")
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  age       Int
+  createdAt DateTime  @default(now())
+  isActive  Boolean   @default(true)
+  agencies  Agence[]
 }
 
 model Agence {
-  id          String     @id @default(uuid())
-  street      String
-  city        String
-  state       String
-  zip         String
-  country     String
-  createdAt   DateTime    @default(now())
-  directorId  String
-  director    Director    @relation("DirectorAgencies", fields: [directorId], references: [id], onDelete: Cascade)
-  products    Product[]   @relation("AgenceProducts")
+  id         String    @id @default(uuid())
+  street     String
+  city       String
+  state      String
+  zip        String
+  country    String
+  createdAt  DateTime  @default(now())
+  directorId String
+  director   Director  @relation(fields: [directorId], references: [id], onDelete: Cascade)
+  products   Product[]
 }
 
 model Product {
-  id         String     @id @default(uuid())
-  name       String
-  stock      Int
-  price      Float
-  createdAt  DateTime   @default(now())
-  agenceId   String
-  agence     Agence     @relation("AgenceProducts", fields: [agenceId], references: [id], onDelete: Cascade)
+  id        String   @id @default(uuid())
+  name      String
+  stock     Int
+  price     Float
+  createdAt DateTime @default(now())
+  agenceId  String
+  agence    Agence   @relation(fields: [agenceId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  username      String
+  passwordHash  String
+  recoveryCode  String?
+  emailVerified Boolean  @default(false)
+  totpKey       Bytes?
+  sessions      Session[]  // Ajout de la relation réciproque
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    Int
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

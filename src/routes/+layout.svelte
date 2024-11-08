@@ -119,6 +119,12 @@
 			>
 				State
 			</a>
+			<a
+				href="/auth"
+				class={`text-sm font-medium ${$page.url.pathname === '/auth' ? 'text-primary' : 'text-muted-foreground'} transition-colors hover:text-primary`}
+			>
+				Auth
+			</a>
 		</nav>
 	</div>
 

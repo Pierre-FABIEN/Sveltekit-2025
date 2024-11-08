@@ -45,7 +45,6 @@ Zod
 apexcharts
 
 A installer:
-scrollbar
 threlte
 Loader
 Carousel

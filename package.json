@@ -62,9 +62,15 @@
 		"zod": "^3.23.8"
 	},
 	"dependencies": {
+		"@lucia-auth/adapter-prisma": "^4.0.1",
+		"@node-rs/argon2": "^2.0.0",
+		"@oslojs/crypto": "^1.0.1",
+		"@oslojs/encoding": "^1.1.0",
 		"@prisma/client": "^5.22.0",
 		"apexcharts": "^4.0.0",
 		"gsap": "^3.12.5",
+		"lucia": "^3.2.2",
+		"lucia-auth": "^1.8.0",
 		"smooth-scrollbar": "^8.8.4"
 	}
 }
