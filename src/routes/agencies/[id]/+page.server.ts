@@ -31,19 +31,13 @@ export const actions = {
 		const form = await superValidate(formData, zod(updateAgenceSchema));
 
 		if (!form.valid) {
-			return fail(400, {
-				form,
-				error: 'Invalid data'
-			});
+			return message(form, 'Invalid data');
 		}
 
 		const agenceId = form.data.id;
 
 		if (!agenceId) {
-			return fail(400, {
-				form,
-				error: 'Agence ID is required'
-			});
+			return message(form, 'Agence ID is required');
 		}
 
 		try {

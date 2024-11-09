@@ -36,6 +36,7 @@ export async function createPasswordResetSession(
 		twoFactorVerified: false
 	};
 
+	// Ajoutez les champs `emailVerified` et `twoFactorVerified` dans la requête Prisma
 	await prisma.passwordResetSession.create({
 		data: {
 			id: session.id,

@@ -17,7 +17,7 @@ import type { Actions, RequestEvent } from './$types';
 import type { SessionFlags } from '$lib/lucia/session';
 
 export const load = async (event: RequestEvent) => {
-	const { session, user } = validatePasswordResetSessionRequest(event);
+	const { session, user } = await validatePasswordResetSessionRequest(event);
 	if (session === null) {
 		return redirect(302, '/auth/forgot-password');
 	}

@@ -6,7 +6,7 @@ import { setSessionAs2FAVerified } from '$lib/lucia/session';
 
 import type { Actions, RequestEvent } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
-import { superValidate } from 'sveltekit-superforms';
+import { message, superValidate } from 'sveltekit-superforms';
 import { totpCodeSchema } from '$lib/schema/totpCodeSchema';
 
 export const load = async (event: RequestEvent) => {
@@ -33,16 +33,11 @@ export const actions: Actions = {
 		const form = await superValidate(formData, zod(totpCodeSchema));
 
 		if (!form.valid) {
-			return fail(400, {
-				form,
-				error: 'Invalid or missing ID'
-			});
+			return message(form, 'Invalid data');
 		}
 
 		if (locals.session === null || locals.user === null) {
-			return fail(401, {
-				message: 'Not authenticated'
-			});
+			return message(form, 'Not authenticated');
 		}
 
 		if (
@@ -50,39 +45,27 @@ export const actions: Actions = {
 			!locals.user.registered2FA ||
 			locals.session.twoFactorVerified
 		) {
-			return fail(403, {
-				message: 'Forbidden'
-			});
+			return message(form, 'Forbidden');
 		}
 
 		if (!totpBucket.check(locals.user.id, 1)) {
-			return fail(429, {
-				message: 'Too many requests'
-			});
+			return message(form, 'Too many requests');
 		}
 
 		const code = formData.get('code');
 		if (typeof code !== 'string') {
-			return fail(400, {
-				message: 'Invalid or missing fields'
-			});
+			return message(form, 'Invalid or missing fields');
 		}
 		if (code === '') {
-			return fail(400, {
-				message: 'Enter your code'
-			});
+			return message(form, 'Please enter your code');
 		}
 		if (!totpBucket.consume(locals.user.id, 1)) {
-			return fail(429, {
-				message: 'Too many requests'
-			});
+			return message(form, 'Too many requests');
 		}
 
 		const totpKey = await getUserTOTPKey(locals.user.id);
 		if (totpKey === null) {
-			return fail(403, {
-				message: 'Forbidden'
-			});
+			return message(form, 'Forbidden');
 		}
 
 		try {

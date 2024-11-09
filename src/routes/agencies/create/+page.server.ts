@@ -22,10 +22,7 @@ export const actions = {
 		const form = await superValidate(formData, zod(createAgenceSchema));
 
 		if (!form.valid) {
-			return fail(400, {
-				form,
-				error: 'Invalid data'
-			});
+			return message(form, 'Invalid data');
 		}
 
 		try {

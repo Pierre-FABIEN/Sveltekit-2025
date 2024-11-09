@@ -8,7 +8,7 @@ import type { SessionFlags } from '$lib/lucia/session';
 import type { Actions, PageServerLoadEvent, RequestEvent } from './$types';
 import { loginSchema } from '$lib/schema/loginSchema';
 import { zod } from 'sveltekit-superforms/adapters';
-import { superValidate } from 'sveltekit-superforms';
+import { message, superValidate } from 'sveltekit-superforms';
 
 export const load = async (event: PageServerLoadEvent) => {
 	if (event.locals.session !== null && event.locals.user !== null) {
@@ -51,34 +51,25 @@ export const actions: Actions = {
 		if (!form.valid) {
 			return fail(400, { form });
 		}
+		console.log('ojhnlouihbuib', email, password);
 
 		const user = await getUserFromEmail(email);
+
 		if (user === null) {
-			return fail(400, {
-				message: 'Account does not exist',
-				email
-			});
+			return message(form, 'Le compte nexiste pas');
 		}
+
 		if (clientIP !== null && !ipBucket.consume(clientIP, 1)) {
-			return fail(429, {
-				message: 'Too many requests',
-				email: ''
-			});
+			return message(form, 'Too many requests');
 		}
 		if (!throttler.consume(user.id)) {
-			return fail(429, {
-				message: 'Too many requests',
-				email: ''
-			});
+			return message(form, 'Too many requests');
 		}
 		const passwordHash = await getUserPasswordHash(user.id ?? undefined, email);
 
 		const validPassword = await verifyPasswordHash(passwordHash, password);
 		if (!validPassword) {
-			return fail(400, {
-				message: 'Invalid password',
-				email
-			});
+			return message(form, 'Invalid password');
 		}
 		throttler.reset(user.id);
 		const sessionFlags: SessionFlags = {

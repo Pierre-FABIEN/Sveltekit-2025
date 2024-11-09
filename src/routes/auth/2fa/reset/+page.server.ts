@@ -2,6 +2,9 @@ import { recoveryCodeBucket, resetUser2FAWithRecoveryCode } from '$lib/lucia/2fa
 import { fail, redirect } from '@sveltejs/kit';
 
 import type { Actions, RequestEvent } from './$types';
+import { message, superValidate } from 'sveltekit-superforms';
+import { verifyCodeSchema } from '$lib/schema/verifyCodeSchema';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async (event: RequestEvent) => {
 	if (event.locals.session === null || event.locals.user === null) {
@@ -16,53 +19,43 @@ export const load = async (event: RequestEvent) => {
 	if (event.locals.session.twoFactorVerified) {
 		return redirect(302, '/auth/');
 	}
-	return {};
-}
+	const verifyCodeForm = await superValidate(event, zod(verifyCodeSchema));
+	return { verifyCodeForm };
+};
 
 export const actions: Actions = {
 	recovery_code: async (event: RequestEvent) => {
+		const formData = await event.request.formData();
+		const code = formData.get('code');
+
+		const form = await superValidate(formData, zod(verifyCodeSchema));
+
 		if (event.locals.session === null || event.locals.user === null) {
-			return fail(401, {
-				message: 'Not authenticated'
-			});
+			return message(form, 'Not authenticated');
 		}
 		if (
 			!event.locals.user.emailVerified ||
 			!event.locals.user.registered2FA ||
 			event.locals.session.twoFactorVerified
 		) {
-			return fail(403, {
-				message: 'Forbidden'
-			});
+			return message(form, 'Forbidden');
 		}
 		if (!recoveryCodeBucket.check(event.locals.user.id, 1)) {
-			return fail(429, {
-				message: 'Too many requests'
-			});
+			return message(form, 'Too many requests');
 		}
 
-		const formData = await event.request.formData();
-		const code = formData.get('code');
 		if (typeof code !== 'string') {
-			return fail(400, {
-				message: 'Invalid or missing fields'
-			});
+			return message(form, 'Invalid or missing fields');
 		}
 		if (code === '') {
-			return fail(400, {
-				message: 'Please enter your code'
-			});
+			return message(form, 'Please enter your code');
 		}
 		if (!recoveryCodeBucket.consume(event.locals.user.id, 1)) {
-			return fail(429, {
-				message: 'Too many requests'
-			});
+			return message(form, 'Too many requests');
 		}
 		const valid = resetUser2FAWithRecoveryCode(event.locals.user.id, code);
 		if (!valid) {
-			return fail(400, {
-				message: 'Invalid recovery code'
-			});
+			return message(form, 'Invalid recovery code');
 		}
 		recoveryCodeBucket.reset(event.locals.user.id);
 		return redirect(302, '/auth/2fa/setup');

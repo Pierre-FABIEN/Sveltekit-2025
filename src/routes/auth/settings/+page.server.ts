@@ -15,7 +15,7 @@ import {
 	setSessionTokenCookie
 } from '$lib/lucia/session';
 import { ExpiringTokenBucket } from '$lib/lucia/rate-limit';
-import { superValidate } from 'sveltekit-superforms';
+import { message, superValidate } from 'sveltekit-superforms';
 import { emailSchema, passwordSchema } from '$lib/schema/settingsSchemas';
 import { zod } from 'sveltekit-superforms/adapters';
 
@@ -70,20 +70,14 @@ export const actions: Actions = {
 
 		const { password, new_password } = form.data;
 
-		// Vérifier la force du mot de passe
-		const strongPassword = await verifyPasswordStrength(new_password);
-		if (!strongPassword) {
-			return fail(400, { form: { message: 'Weak password', form } });
-		}
-
-		const passwordHash = getUserPasswordHash(event.locals.user.id);
+		const passwordHash = await getUserPasswordHash(event.locals.user.id);
 		const validPassword = await verifyPasswordHash(passwordHash, password);
 		if (!validPassword) {
 			return fail(400, { form: { message: 'Incorrect password', form } });
 		}
 
 		passwordUpdateBucket.reset(event.locals.session.id);
-		invalidateUserSessions(event.locals.user.id);
+		await invalidateUserSessions(event.locals.user.id);
 		await updateUserPassword(event.locals.user.id, new_password);
 
 		const sessionToken = generateSessionToken();
@@ -93,12 +87,7 @@ export const actions: Actions = {
 		const session = await createSession(sessionToken, event.locals.user.id, sessionFlags);
 		setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
-		return {
-			form: {
-				message: 'Updated password successfully',
-				form
-			}
-		};
+		return message(form, 'Password modified successfully');
 	},
 
 	email: async (event: RequestEvent) => {
@@ -121,15 +110,15 @@ export const actions: Actions = {
 		const { email } = form.data;
 
 		// Vérifier la disponibilité de l'email
-		const emailAvailable = checkEmailAvailability(email);
+		const emailAvailable = await checkEmailAvailability(email);
 		if (!emailAvailable) {
 			return fail(400, { form: { message: 'This email is already used', form } });
 		}
 
-		const verificationRequest = createEmailVerificationRequest(event.locals.user.id, email);
+		const verificationRequest = await createEmailVerificationRequest(event.locals.user.id, email);
 		sendVerificationEmail(verificationRequest.email, verificationRequest.code);
 		setEmailVerificationRequestCookie(event, verificationRequest);
 
-		return redirect(302, '/auth/verify-email');
+		redirect(302, '/auth/verify-email');
 	}
 };

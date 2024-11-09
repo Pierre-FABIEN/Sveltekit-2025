@@ -73,6 +73,11 @@ model EmailVerificationRequest {
 model PasswordResetSession {
   id        String   @id @default(uuid())
   userId    Int
+  email     String
+  code      String
   expiresAt DateTime
+  emailVerified     Boolean  @default(false) 
+  twoFactorVerified Boolean  @default(false) 
   user      User     @relation("UserPasswordResetSessions", fields: [userId], references: [id], onDelete: Cascade)
 }
+

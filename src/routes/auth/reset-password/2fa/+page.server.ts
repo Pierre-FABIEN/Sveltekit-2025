@@ -10,9 +10,13 @@ import { resetUser2FAWithRecoveryCode } from '$lib/lucia/2fa';
 import { recoveryCodeBucket } from '$lib/lucia/2fa';
 
 import type { Actions, RequestEvent } from './$types';
+import { recoveryCodeSchema } from '$lib/schema/recoveryCodeSchema';
+import { totpCodeSchema } from '$lib/schema/totpCodeSchema';
+import { zod } from 'sveltekit-superforms/adapters';
+import { message, superValidate } from 'sveltekit-superforms';
 
 export const load = async (event: RequestEvent) => {
-	const { session, user } = validatePasswordResetSessionRequest(event);
+	const { session, user } = await validatePasswordResetSessionRequest(event);
 
 	if (session === null) {
 		return redirect(302, '/auth/forgot-password');
@@ -26,7 +30,13 @@ export const load = async (event: RequestEvent) => {
 	if (session.twoFactorVerified) {
 		return redirect(302, '/auth/reset-password');
 	}
-	return {};
+	const totpForm = await superValidate(event, zod(totpCodeSchema));
+	const recoveryCodeForm = await superValidate(event, zod(recoveryCodeSchema));
+
+	return {
+		totpForm,
+		recoveryCodeForm
+	};
 };
 
 export const actions: Actions = {
@@ -36,67 +46,41 @@ export const actions: Actions = {
 
 async function totpAction(event: RequestEvent) {
 	const { session, user } = await validatePasswordResetSessionRequest(event);
-	console.log(session, user);
-
-	if (session === null) {
-		return fail(401, {
-			totp: {
-				message: 'Not authenticated'
-			}
-		});
-	}
-	if (!session.emailVerified || !user.registered2FA || session.twoFactorVerified) {
-		return fail(403, {
-			totp: {
-				message: 'Forbidden'
-			}
-		});
-	}
-	if (!totpBucket.check(session.userId, 1)) {
-		return fail(429, {
-			totp: {
-				message: 'Too many requests'
-			}
-		});
-	}
 
 	const formData = await event.request.formData();
+
+	const form = await superValidate(formData, zod(totpCodeSchema));
+
+	if (session === null) {
+		return message(form, 'Not authenticated');
+	}
+	if (!session.emailVerified || !user.registered2FA || session.twoFactorVerified) {
+		return message(form, 'Forbidden');
+	}
+	if (!totpBucket.check(session.userId, 1)) {
+		return message(form, 'Too many requests');
+	}
+
 	const code = formData.get('code');
 	if (typeof code !== 'string') {
-		return fail(400, {
-			totp: {
-				message: 'Invalid or missing fields'
-			}
-		});
+		return message(form, 'Invalid or missing fields');
 	}
 	if (code === '') {
-		return fail(400, {
-			totp: {
-				message: 'Please enter your code'
-			}
-		});
+		return message(form, 'Please enter your code');
 	}
 	const totpKey = await getUserTOTPKey(session.userId);
 	if (totpKey === null) {
-		return fail(403, {
-			totp: {
-				message: 'Forbidden'
-			}
-		});
+		return message(form, 'Forbidden');
 	}
 	if (!totpBucket.consume(session.userId, 1)) {
-		return fail(429, {
-			totp: {
-				message: 'Too many requests'
-			}
-		});
+		return message(form, 'Too many requests');
 	}
 
 	try {
 		const isValid = verifyTOTP(totpKey, 30, 6, code);
 
 		if (!isValid) {
-			return fail(400, { message: 'Invalid TOTP code', form });
+			return message(form, 'Invalid TOTP code');
 		}
 		console.log('Vérification TOTP réussie.');
 	} catch (error) {
@@ -109,61 +93,43 @@ async function totpAction(event: RequestEvent) {
 }
 
 async function recoveryCodeAction(event: RequestEvent) {
-	const { session, user } = validatePasswordResetSessionRequest(event);
+	const { session, user } = await validatePasswordResetSessionRequest(event);
+	const formData = await event.request.formData();
+
+	const form = await superValidate(formData, zod(recoveryCodeSchema));
+	console.log(form);
+
 	if (session === null) {
-		return fail(401, {
-			recoveryCode: {
-				message: 'Not authenticated'
-			}
-		});
+		return message(form, 'Not authenticated');
 	}
 	if (!session.emailVerified || !user.registered2FA || session.twoFactorVerified) {
-		return fail(403, {
-			totp: {
-				message: 'Forbidden'
-			}
-		});
+		return message(form, 'Forbidden');
 	}
 
 	if (!recoveryCodeBucket.check(session.userId, 1)) {
-		return fail(429, {
-			recoveryCode: {
-				message: 'Too many requests'
-			}
-		});
+		return message(form, 'Too many requests');
 	}
 
-	const formData = await event.request.formData();
-	const code = formData.get('code');
+	const { code } = form.data;
+
 	if (typeof code !== 'string') {
-		return fail(400, {
-			recoveryCode: {
-				message: 'Invalid or missing fields'
-			}
-		});
+		return message(form, 'Invalid or missing fields');
 	}
 	if (code === '') {
-		return fail(400, {
-			recoveryCode: {
-				message: 'Please enter your code'
-			}
-		});
+		return message(form, 'Please enter your code');
 	}
 	if (!recoveryCodeBucket.consume(session.userId, 1)) {
-		return fail(429, {
-			recoveryCode: {
-				message: 'Too many requests'
-			}
-		});
+		return message(form, 'Too many requests');
 	}
-	const valid = resetUser2FAWithRecoveryCode(session.userId, code);
+	console.log('oiyoihoihoihj', session.userId, code);
+
+	const valid = await resetUser2FAWithRecoveryCode(session.userId, code);
+	console.log('eeeeeeeee', valid);
 	if (!valid) {
-		return fail(400, {
-			recoveryCode: {
-				message: 'Invalid code'
-			}
-		});
+		return message(form, 'Invalid code');
 	}
+	console.log('fffffffffffffffff');
 	recoveryCodeBucket.reset(session.userId);
-	return redirect(302, '/auth/reset-password');
+
+	redirect(302, '/auth/reset-password');
 }

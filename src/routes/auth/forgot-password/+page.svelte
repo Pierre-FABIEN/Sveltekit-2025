@@ -1,13 +1,58 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import * as Form from '$shadcn/form';
+	import { Input } from '$shadcn/input';
+	import { Button } from '$shadcn/button';
+	import { toast } from 'svelte-sonner';
+	import { superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { forgotPasswordSchema } from '$lib/schema/forgotPasswordSchema';
+
+	let { data } = $props();
+
+	// Initialiser le formulaire Superform avec Zod
+	const forgotForm = superForm(data.forgotForm, {
+		validators: zodClient(forgotPasswordSchema),
+		id: 'forgotForm'
+	});
+
+	const { form: forgotData, enhance: forgotEnhance, message: forgotMessage } = forgotForm;
+
+	// Notification d'erreur si un message est reçu
+	$effect(() => {
+		if ($forgotMessage) {
+			toast.error($forgotMessage);
+		}
+	});
 </script>
 
-<h1>Forgot your password?</h1>
-<form method="post" action="?/forgotPassword" use:enhance>
-	<label for="form-forgot.email">Email</label>
-	<input type="email" id="form-forgot.email" name="email" required value={form?.email ?? ''} /><br
-	/>
-	<button>Send</button>
-	<p>{form?.message ?? ''}</p>
-</form>
-<a href="/auth/login">Sign in</a>
+<div class="mx-auto mt-12 max-w-lg p-6 border shadow-lg rounded-lg">
+	<h1 class="text-2xl font-semibold mb-6 text-center">Mot de passe oublié</h1>
+
+	<form method="POST" action="?/forgotPassword" use:forgotEnhance class="space-y-6">
+		<div>
+			<Form.Field name="email" form={forgotForm}>
+				<Form.Control>
+					<Form.Label>Email</Form.Label>
+					<Input
+						type="email"
+						name="email"
+						bind:value={$forgotData.email}
+						placeholder="Entrez votre adresse email"
+						required
+					/>
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+		</div>
+
+		<div class="mt-6">
+			<Button type="submit" class="w-full">Envoyer</Button>
+		</div>
+
+		<p class="text-center mt-4 text-sm text-red-500">{$forgotMessage ?? ''}</p>
+	</form>
+
+	<div class="mt-4 flex justify-center text-sm">
+		<a href="/auth/login" class="text-blue-500 hover:underline">Se connecter</a>
+	</div>
+</div>
