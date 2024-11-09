@@ -67,14 +67,24 @@ export async function setUserAsEmailVerifiedIfEmailMatches(
 }
 
 // Récupère le hash du mot de passe de l'utilisateur
-export async function getUserPasswordHash(userId: number): Promise<string> {
+export async function getUserPasswordHash(userId?: string, email?: string): Promise<string | null> {
+	// Vérifiez que l'un des deux paramètres est fourni
+	if (!userId && !email) {
+		throw new Error('Missing user identifier: userId or email is required.');
+	}
+
+	// Utilisez l'email si l'ID est manquant
+	const whereClause = userId ? { id: userId } : { email };
+
 	const user = await prisma.user.findUnique({
-		where: { id: userId },
+		where: whereClause,
 		select: { passwordHash: true }
 	});
+
 	if (!user) {
-		throw new Error('Invalid user ID');
+		throw new Error('User not found.');
 	}
+
 	return user.passwordHash;
 }
 

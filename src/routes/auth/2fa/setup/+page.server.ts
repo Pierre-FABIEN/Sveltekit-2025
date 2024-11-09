@@ -13,7 +13,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 
 const totpUpdateBucket = new RefillingTokenBucket<number>(3, 60 * 10);
 
-export async function load(event: RequestEvent) {
+export const load = async (event: RequestEvent) => {
 	if (event.locals.session === null || event.locals.user === null) {
 		return redirect(302, '/auth/login');
 	}

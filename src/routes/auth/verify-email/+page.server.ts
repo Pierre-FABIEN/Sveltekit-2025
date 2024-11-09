@@ -20,7 +20,7 @@ import { superValidate } from 'sveltekit-superforms';
 
 const bucket = new ExpiringTokenBucket<number>(5, 60 * 30);
 
-export async function load(event: RequestEvent) {
+export const load = async (event: RequestEvent) => {
 	if (event.locals.user === null) {
 		return redirect(302, '/auth/login');
 	}

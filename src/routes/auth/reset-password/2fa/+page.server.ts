@@ -11,7 +11,7 @@ import { recoveryCodeBucket } from '$lib/lucia/2fa';
 
 import type { Actions, RequestEvent } from './$types';
 
-export async function load(event: RequestEvent) {
+export const load = async (event: RequestEvent) => {
 	const { session, user } = validatePasswordResetSessionRequest(event);
 
 	if (session === null) {
@@ -27,7 +27,7 @@ export async function load(event: RequestEvent) {
 		return redirect(302, '/auth/reset-password');
 	}
 	return {};
-}
+};
 
 export const actions: Actions = {
 	totp: totpAction,
@@ -35,7 +35,9 @@ export const actions: Actions = {
 };
 
 async function totpAction(event: RequestEvent) {
-	const { session, user } = validatePasswordResetSessionRequest(event);
+	const { session, user } = await validatePasswordResetSessionRequest(event);
+	console.log(session, user);
+
 	if (session === null) {
 		return fail(401, {
 			totp: {
@@ -74,7 +76,7 @@ async function totpAction(event: RequestEvent) {
 			}
 		});
 	}
-	const totpKey = getUserTOTPKey(session.userId);
+	const totpKey = await getUserTOTPKey(session.userId);
 	if (totpKey === null) {
 		return fail(403, {
 			totp: {
@@ -89,16 +91,21 @@ async function totpAction(event: RequestEvent) {
 			}
 		});
 	}
-	if (!verifyTOTP(totpKey, 30, 6, code)) {
-		return fail(400, {
-			totp: {
-				message: 'Invalid code'
-			}
-		});
+
+	try {
+		const isValid = verifyTOTP(totpKey, 30, 6, code);
+
+		if (!isValid) {
+			return fail(400, { message: 'Invalid TOTP code', form });
+		}
+		console.log('Vérification TOTP réussie.');
+	} catch (error) {
+		return fail(500, { message: 'Internal server error', form });
 	}
+
 	totpBucket.reset(session.userId);
-	setPasswordResetSessionAs2FAVerified(session.id);
-	return redirect(302, '/auth/reset-password');
+	await setPasswordResetSessionAs2FAVerified(session.id);
+	redirect(302, '/auth/reset-password');
 }
 
 async function recoveryCodeAction(event: RequestEvent) {

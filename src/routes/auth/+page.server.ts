@@ -3,7 +3,7 @@ import { deleteSessionTokenCookie, invalidateSession } from '$lib/lucia/session'
 
 import type { Actions, PageServerLoadEvent, RequestEvent } from './$types';
 
-export function load(event: PageServerLoadEvent) {
+export const load = async (event: PageServerLoadEvent) => {
 	if (event.locals.session === null || event.locals.user === null) {
 		return redirect(302, '/auth/login');
 	}
@@ -19,19 +19,16 @@ export function load(event: PageServerLoadEvent) {
 	return {
 		user: event.locals.user
 	};
-}
-
-export const actions: Actions = {
-	default: action
 };
-
-async function action(event: RequestEvent) {
-	if (event.locals.session === null) {
-		return fail(401, {
-			message: 'Not authenticated'
-		});
+export const actions: Actions = {
+	signout: async (event: RequestEvent) => {
+		if (event.locals.session === null) {
+			return fail(401, {
+				message: 'Not authenticated'
+			});
+		}
+		invalidateSession(event.locals.session.id);
+		deleteSessionTokenCookie(event);
+		return redirect(302, 'auth/login');
 	}
-	invalidateSession(event.locals.session.id);
-	deleteSessionTokenCookie(event);
-	return redirect(302, 'auth/login');
-}
+};

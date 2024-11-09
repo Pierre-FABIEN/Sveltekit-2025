@@ -10,7 +10,7 @@ import type { Actions, RequestEvent } from './$types';
 
 const bucket = new ExpiringTokenBucket<number>(5, 60 * 30);
 
-export async function load(event: RequestEvent) {
+export const load = async (event: RequestEvent) => {
 	const { session } = validatePasswordResetSessionRequest(event);
 	if (session === null) {
 		return redirect(302, '/auth/forgot-password');

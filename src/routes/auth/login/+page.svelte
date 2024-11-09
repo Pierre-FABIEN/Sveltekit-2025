@@ -1,30 +1,72 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import * as Form from '$shadcn/form';
+	import { Input } from '$shadcn/input';
+	import { Button } from '$shadcn/button';
+	import { superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { loginSchema } from '$lib/schema/loginSchema';
+	import { toast } from 'svelte-sonner';
+
+	let { data } = $props();
+
+	// Initialiser le formulaire Superform avec Zod
+	const loginForm = superForm(data?.loginForm ?? {}, {
+		validators: zodClient(loginSchema),
+		id: 'loginForm'
+	});
+
+	const { form: loginData, enhance: loginEnhance, message: loginMessage } = loginForm;
+
+	$effect(() => {
+		if ($loginMessage) {
+			toast.error($loginMessage);
+		}
+	});
 </script>
 
-<div class="mx-auto mt-8 max-w-lg">
-	<h1>Sign in</h1>
-	<form method="post" action="?/login" use:enhance>
-		<label for="form-login.email">Email</label>
-		<input
-			type="email"
-			id="form-login.email"
-			name="email"
-			autocomplete="username"
-			required
-			value={form?.email ?? ''}
-		/><br />
-		<label for="form-login.password">Password</label>
-		<input
-			type="password"
-			id="form-login.password"
-			name="password"
-			autocomplete="current-password"
-			required
-		/><br />
-		<button>Continue</button>
-		<p>{form?.message ?? ''}</p>
+<div class="mx-auto mt-12 max-w-lg p-6 border shadow-lg rounded-lg">
+	<h1 class="text-2xl font-semibold mb-6 text-center">Connexion</h1>
+
+	<form method="POST" action="?/login" use:loginEnhance class="space-y-6">
+		<div>
+			<Form.Field name="email" form={loginForm}>
+				<Form.Control>
+					<Form.Label>Email</Form.Label>
+					<Input
+						type="email"
+						name="email"
+						bind:value={$loginData.email}
+						placeholder="Entrez votre email"
+						required
+					/>
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+		</div>
+
+		<div>
+			<Form.Field name="password" form={loginForm}>
+				<Form.Control>
+					<Form.Label>Mot de passe</Form.Label>
+					<Input
+						type="password"
+						name="password"
+						bind:value={$loginData.password}
+						placeholder="Entrez votre mot de passe"
+						required
+					/>
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+		</div>
+
+		<div class="mt-6">
+			<Button type="submit" class="w-full">Continuer</Button>
+		</div>
 	</form>
-	<a href="/auth/signup">Create an account</a>
-	<a href="/auth/forgot-password">Forgot password?</a>
+
+	<div class="mt-4 flex justify-between text-sm">
+		<a href="/auth/signup" class="text-blue-500 hover:underline">Créer un compte</a>
+		<a href="/auth/forgot-password" class="text-blue-500 hover:underline">Mot de passe oublié ?</a>
+	</div>
 </div>

@@ -10,14 +10,14 @@ import {
 } from '$lib/lucia/email-verification';
 
 import type { SessionFlags } from '$lib/lucia/session';
-import type { Actions, RequestEvent } from './$types';
+import type { Actions, PageServerLoadEvent, RequestEvent } from './$types';
 import { superValidate } from 'sveltekit-superforms';
 import { signupSchema } from '$lib/schema/signupSchema';
 import { zod } from 'sveltekit-superforms/adapters';
 
 const ipBucket = new RefillingTokenBucket<string>(3, 10);
 
-export const load = async (event) => {
+export const load = async (event: PageServerLoadEvent) => {
 	if (event.locals.session !== null && event.locals.user !== null) {
 		if (!event.locals.user.emailVerified) {
 			return redirect(302, '/auth/verify-email');

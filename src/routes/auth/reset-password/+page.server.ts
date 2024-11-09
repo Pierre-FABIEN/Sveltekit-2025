@@ -16,7 +16,7 @@ import { updateUserPassword } from '$lib/lucia/user';
 import type { Actions, RequestEvent } from './$types';
 import type { SessionFlags } from '$lib/lucia/session';
 
-export async function load(event: RequestEvent) {
+export const load = async (event: RequestEvent) => {
 	const { session, user } = validatePasswordResetSessionRequest(event);
 	if (session === null) {
 		return redirect(302, '/auth/forgot-password');
@@ -28,7 +28,7 @@ export async function load(event: RequestEvent) {
 		return redirect(302, '/auth/reset-password/2fa');
 	}
 	return {};
-}
+};
 
 export const actions: Actions = {
 	resetPassword: async (event: RequestEvent) => {
@@ -62,15 +62,15 @@ export const actions: Actions = {
 				message: 'Weak password'
 			});
 		}
-		invalidateUserPasswordResetSessions(passwordResetSession.userId);
-		invalidateUserSessions(passwordResetSession.userId);
+		await invalidateUserPasswordResetSessions(passwordResetSession.userId);
+		await invalidateUserSessions(passwordResetSession.userId);
 		await updateUserPassword(passwordResetSession.userId, password);
 
 		const sessionFlags: SessionFlags = {
 			twoFactorVerified: passwordResetSession.twoFactorVerified
 		};
 		const sessionToken = generateSessionToken();
-		const session = createSession(sessionToken, user.id, sessionFlags);
+		const session = await createSession(sessionToken, user.id, sessionFlags);
 		setSessionTokenCookie(event, sessionToken, session.expiresAt);
 		deletePasswordResetSessionTokenCookie(event);
 		return redirect(302, '/auth/');

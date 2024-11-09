@@ -6,8 +6,11 @@ import { createSession, generateSessionToken, setSessionTokenCookie } from '$lib
 
 import type { SessionFlags } from '$lib/lucia/session';
 import type { Actions, PageServerLoadEvent, RequestEvent } from './$types';
+import { loginSchema } from '$lib/schema/loginSchema';
+import { zod } from 'sveltekit-superforms/adapters';
+import { superValidate } from 'sveltekit-superforms';
 
-export function load(event: PageServerLoadEvent) {
+export const load = async (event: PageServerLoadEvent) => {
 	if (event.locals.session !== null && event.locals.user !== null) {
 		if (!event.locals.user.emailVerified) {
 			return redirect(302, '/auth/verify-email');
@@ -20,8 +23,13 @@ export function load(event: PageServerLoadEvent) {
 		}
 		return redirect(302, '/auth/');
 	}
-	return {};
-}
+
+	const loginForm = await superValidate(event, zod(loginSchema));
+
+	return {
+		loginForm
+	};
+};
 
 const throttler = new Throttler<number>([0, 1, 2, 4, 8, 16, 30, 60, 180, 300]);
 const ipBucket = new RefillingTokenBucket<string>(20, 1);
@@ -37,23 +45,14 @@ export const actions: Actions = {
 			});
 		}
 
-		const formData = await event.request.formData();
-		const email = formData.get('email');
-		const password = formData.get('password');
-		if (typeof email !== 'string' || typeof password !== 'string') {
-			return fail(400, {
-				message: 'Invalid or missing fields',
-				email: ''
-			});
-		}
-		if (email === '' || password === '') {
-			return fail(400, {
-				message: 'Please enter your email and password.',
-				email
-			});
+		const form = await superValidate(event, zod(loginSchema));
+		const { email, password } = form.data;
+
+		if (!form.valid) {
+			return fail(400, { form });
 		}
 
-		const user = getUserFromEmail(email);
+		const user = await getUserFromEmail(email);
 		if (user === null) {
 			return fail(400, {
 				message: 'Account does not exist',
@@ -72,7 +71,8 @@ export const actions: Actions = {
 				email: ''
 			});
 		}
-		const passwordHash = getUserPasswordHash(user.id);
+		const passwordHash = await getUserPasswordHash(user.id ?? undefined, email);
+
 		const validPassword = await verifyPasswordHash(passwordHash, password);
 		if (!validPassword) {
 			return fail(400, {
@@ -84,8 +84,9 @@ export const actions: Actions = {
 		const sessionFlags: SessionFlags = {
 			twoFactorVerified: false
 		};
+
 		const sessionToken = generateSessionToken();
-		const session = createSession(sessionToken, user.id, sessionFlags);
+		const session = await createSession(sessionToken, user.id, sessionFlags);
 		setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
 		if (!user.emailVerified) {
@@ -94,6 +95,7 @@ export const actions: Actions = {
 		if (!user.registered2FA) {
 			return redirect(302, '/auth/2fa/setup');
 		}
-		return redirect(302, '/auth/2fa');
+
+		redirect(302, '/auth/2fa');
 	}
 };
