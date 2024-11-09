@@ -3,30 +3,30 @@ import {
 	sendVerificationEmail,
 	sendVerificationEmailBucket,
 	setEmailVerificationRequestCookie
-} from "$lib/lucia/email-verification";
-import { fail, redirect } from "@sveltejs/kit";
-import { checkEmailAvailability, verifyEmailInput } from "$lib/lucia/email";
-import { verifyPasswordHash, verifyPasswordStrength } from "$lib/lucia/password";
-import { getUserPasswordHash, getUserRecoverCode, updateUserPassword } from "$lib/lucia/user";
+} from '$lib/lucia/email-verification';
+import { fail, redirect } from '@sveltejs/kit';
+import { checkEmailAvailability } from '$lib/lucia/email';
+import { verifyPasswordHash, verifyPasswordStrength } from '$lib/lucia/password';
+import { getUserPasswordHash, getUserRecoverCode, updateUserPassword } from '$lib/lucia/user';
 import {
 	createSession,
 	generateSessionToken,
 	invalidateUserSessions,
 	setSessionTokenCookie
-} from "$lib/lucia/session";
-import { ExpiringTokenBucket } from "$lib/lucia/rate-limit";
+} from '$lib/lucia/session';
+import { ExpiringTokenBucket } from '$lib/lucia/rate-limit';
 
-import type { Actions, RequestEvent } from "./$types";
-import type { SessionFlags } from "$lib/lucia/session";
+import type { Actions, RequestEvent } from './$types';
+import type { SessionFlags } from '$lib/lucia/session';
 
 const passwordUpdateBucket = new ExpiringTokenBucket<string>(5, 60 * 30);
 
 export async function load(event: RequestEvent) {
 	if (event.locals.session === null || event.locals.user === null) {
-		return redirect(302, "/auth/login");
+		return redirect(302, '/auth/login');
 	}
 	if (event.locals.user.registered2FA && !event.locals.session.twoFactorVerified) {
-		return redirect(302, "/auth/2fa");
+		return redirect(302, '/auth/2fa');
 	}
 	let recoveryCode: string | null = null;
 	if (event.locals.user.registered2FA) {
@@ -47,32 +47,32 @@ async function updatePasswordAction(event: RequestEvent) {
 	if (event.locals.session === null || event.locals.user === null) {
 		return fail(401, {
 			password: {
-				message: "Not authenticated"
+				message: 'Not authenticated'
 			}
 		});
 	}
 	if (event.locals.user.registered2FA && !event.locals.session.twoFactorVerified) {
 		return fail(403, {
 			password: {
-				message: "Forbidden"
+				message: 'Forbidden'
 			}
 		});
 	}
 	if (!passwordUpdateBucket.check(event.locals.session.id, 1)) {
 		return fail(429, {
 			password: {
-				message: "Too many requests"
+				message: 'Too many requests'
 			}
 		});
 	}
 
 	const formData = await event.request.formData();
-	const password = formData.get("password");
-	const newPassword = formData.get("new_password");
-	if (typeof password !== "string" || typeof newPassword !== "string") {
+	const password = formData.get('password');
+	const newPassword = formData.get('new_password');
+	if (typeof password !== 'string' || typeof newPassword !== 'string') {
 		return fail(400, {
 			password: {
-				message: "Invalid or missing fields"
+				message: 'Invalid or missing fields'
 			}
 		});
 	}
@@ -80,7 +80,7 @@ async function updatePasswordAction(event: RequestEvent) {
 	if (!strongPassword) {
 		return fail(400, {
 			password: {
-				message: "Weak password"
+				message: 'Weak password'
 			}
 		});
 	}
@@ -88,7 +88,7 @@ async function updatePasswordAction(event: RequestEvent) {
 	if (!passwordUpdateBucket.consume(event.locals.session.id, 1)) {
 		return fail(429, {
 			password: {
-				message: "Too many requests"
+				message: 'Too many requests'
 			}
 		});
 	}
@@ -98,7 +98,7 @@ async function updatePasswordAction(event: RequestEvent) {
 	if (!validPassword) {
 		return fail(400, {
 			password: {
-				message: "Incorrect password"
+				message: 'Incorrect password'
 			}
 		});
 	}
@@ -114,7 +114,7 @@ async function updatePasswordAction(event: RequestEvent) {
 	setSessionTokenCookie(event, sessionToken, session.expiresAt);
 	return {
 		password: {
-			message: "Updated password"
+			message: 'Updated password'
 		}
 	};
 }
@@ -123,65 +123,59 @@ async function updateEmailAction(event: RequestEvent) {
 	if (event.locals.session === null || event.locals.user === null) {
 		return fail(401, {
 			email: {
-				message: "Not authenticated"
+				message: 'Not authenticated'
 			}
 		});
 	}
 	if (event.locals.user.registered2FA && !event.locals.session.twoFactorVerified) {
 		return fail(403, {
 			email: {
-				message: "Forbidden"
+				message: 'Forbidden'
 			}
 		});
 	}
 	if (!sendVerificationEmailBucket.check(event.locals.user.id, 1)) {
 		return fail(429, {
 			email: {
-				message: "Too many requests"
+				message: 'Too many requests'
 			}
 		});
 	}
 
 	const formData = await event.request.formData();
-	const email = formData.get("email");
-	if (typeof email !== "string") {
+	const email = formData.get('email');
+	if (typeof email !== 'string') {
 		return fail(400, {
 			email: {
-				message: "Invalid or missing fields"
+				message: 'Invalid or missing fields'
 			}
 		});
 	}
-	if (email === "") {
+	if (email === '') {
 		return fail(400, {
 			email: {
-				message: "Please enter your email"
+				message: 'Please enter your email'
 			}
 		});
 	}
-	if (!verifyEmailInput(email)) {
-		return fail(400, {
-			email: {
-				message: "Please enter a valid email"
-			}
-		});
-	}
+
 	const emailAvailable = checkEmailAvailability(email);
 	if (!emailAvailable) {
 		return fail(400, {
 			email: {
-				message: "This email is already used"
+				message: 'This email is already used'
 			}
 		});
 	}
 	if (!sendVerificationEmailBucket.consume(event.locals.user.id, 1)) {
 		return fail(429, {
 			email: {
-				message: "Too many requests"
+				message: 'Too many requests'
 			}
 		});
 	}
 	const verificationRequest = createEmailVerificationRequest(event.locals.user.id, email);
 	sendVerificationEmail(verificationRequest.email, verificationRequest.code);
 	setEmailVerificationRequestCookie(event, verificationRequest);
-	return redirect(302, "/auth/verify-email");
+	return redirect(302, '/auth/verify-email');
 }

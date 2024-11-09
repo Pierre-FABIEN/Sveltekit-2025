@@ -3,7 +3,7 @@
 
 	import type { PageData, ActionData } from './$types';
 
-	export let data: PageData;
+	let { data } = $props();
 	export let form: ActionData;
 </script>
 

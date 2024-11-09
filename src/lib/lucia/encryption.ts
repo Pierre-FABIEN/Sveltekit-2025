@@ -22,14 +22,39 @@ export function encryptString(data: string): Uint8Array {
 	return encrypt(new TextEncoder().encode(data));
 }
 
-export function decrypt(encrypted: Uint8Array): Uint8Array {
-	if (encrypted.byteLength < 33) {
-		throw new Error('Invalid data');
+export function decrypt(encrypted: string | Uint8Array): Uint8Array {
+	// Si les données sont une chaîne de caractères, les décoder en Uint8Array
+	if (typeof encrypted === 'string') {
+		console.log('Décodage de la chaîne Base64 en Uint8Array');
+		encrypted = decodeBase64(encrypted);
 	}
-	const decipher = createDecipheriv('aes-128-gcm', key, encrypted.slice(0, 16));
-	decipher.setAuthTag(encrypted.slice(encrypted.byteLength - 16));
+
+	console.log('Données chiffrées reçues:', encrypted);
+	console.log('Longueur des données chiffrées:', encrypted.byteLength);
+
+	if (encrypted.byteLength < 32) {
+		throw new Error('Invalid data: Insufficient length');
+	}
+
+	const iv = encrypted.slice(0, 16);
+	const tag = encrypted.slice(encrypted.byteLength - 16);
+	const ciphertext = encrypted.slice(16, encrypted.byteLength - 16);
+
+	console.log('IV:', iv);
+	console.log('Tag:', tag);
+	console.log('Longueur du tag:', tag.byteLength);
+	console.log('Texte chiffré:', ciphertext);
+
+	const decipher = createDecipheriv('aes-128-gcm', key, iv);
+
+	if (tag.byteLength !== 16) {
+		throw new Error(`Invalid Auth Tag length: ${tag.byteLength}`);
+	}
+
+	decipher.setAuthTag(tag);
+
 	const decrypted = new DynamicBuffer(0);
-	decrypted.write(decipher.update(encrypted.slice(16, encrypted.byteLength - 16)));
+	decrypted.write(decipher.update(ciphertext));
 	decrypted.write(decipher.final());
 	return decrypted.bytes();
 }

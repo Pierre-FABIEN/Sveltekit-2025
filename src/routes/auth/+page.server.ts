@@ -33,5 +33,5 @@ async function action(event: RequestEvent) {
 	}
 	invalidateSession(event.locals.session.id);
 	deleteSessionTokenCookie(event);
-	return redirect(302, '/login');
+	return redirect(302, 'auth/login');
 }

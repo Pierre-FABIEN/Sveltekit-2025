@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { checkEmailAvailability, verifyEmailInput } from '$lib/lucia/email';
-import { createUser, verifyUsernameInput } from '$lib/lucia/user';
+import { checkEmailAvailability } from '$lib/lucia/email';
+import { createUser } from '$lib/lucia/user';
 import { RefillingTokenBucket } from '$lib/lucia/rate-limit';
 import { createSession, generateSessionToken, setSessionTokenCookie } from '$lib/lucia/session';
 import {
@@ -11,7 +11,7 @@ import {
 
 import type { SessionFlags } from '$lib/lucia/session';
 import type { Actions, RequestEvent } from './$types';
-import { message, superValidate } from 'sveltekit-superforms';
+import { superValidate } from 'sveltekit-superforms';
 import { signupSchema } from '$lib/schema/signupSchema';
 import { zod } from 'sveltekit-superforms/adapters';
 
@@ -37,7 +37,7 @@ export const load = async (event) => {
 };
 
 export const actions: Actions = {
-	default: async (event: RequestEvent) => {
+	signup: async (event: RequestEvent) => {
 		const clientIP = event.request.headers.get('X-Forwarded-For');
 
 		// Vérifier le rate limit
@@ -62,12 +62,6 @@ export const actions: Actions = {
 			return fail(400, { form });
 		}
 
-		// Vérifier le nom d'utilisateur
-		if (!verifyUsernameInput(form.data.username)) {
-			form.errors.username = ["Le nom d'utilisateur n'est pas valide."];
-			return fail(400, { form });
-		}
-
 		// Consommer le token du rate limit
 		if (clientIP !== null && !ipBucket.consume(clientIP, 1)) {
 			return fail(429, {
@@ -79,7 +73,8 @@ export const actions: Actions = {
 		const user = await createUser(form.data.email, form.data.username, form.data.password);
 
 		// Créer la demande de vérification de l'email
-		const emailVerificationRequest = createEmailVerificationRequest(user.id, user.email);
+		const emailVerificationRequest = await createEmailVerificationRequest(user.id, user.email);
+
 		sendVerificationEmail(emailVerificationRequest.email, emailVerificationRequest.code);
 		setEmailVerificationRequestCookie(event, emailVerificationRequest);
 
@@ -87,11 +82,15 @@ export const actions: Actions = {
 		const sessionFlags: SessionFlags = {
 			twoFactorVerified: false
 		};
+
 		const sessionToken = generateSessionToken();
+		console.log(sessionToken, 'sessionToken');
+
 		const session = await createSession(sessionToken, user.id, sessionFlags);
+		console.log(session, 'session');
 		setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
 		// Rediriger vers la configuration de la 2FA
-		throw redirect(302, '/auth/2fa/setup');
+		redirect(302, '/auth/2fa/setup');
 	}
 };

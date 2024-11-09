@@ -23,10 +23,7 @@ export async function load(event: RequestEvent) {
 }
 
 export const actions: Actions = {
-	default: action
-};
-
-async function action(event: RequestEvent) {
+	totp: async (event: RequestEvent) => {
 	if (event.locals.session === null || event.locals.user === null) {
 		return fail(401, {
 			message: 'Not authenticated'
@@ -78,4 +75,5 @@ async function action(event: RequestEvent) {
 	totpBucket.reset(event.locals.user.id);
 	setSessionAs2FAVerified(event.locals.session.id);
 	return redirect(302, '/auth/');
+}
 }

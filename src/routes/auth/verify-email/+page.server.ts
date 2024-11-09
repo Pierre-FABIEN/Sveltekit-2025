@@ -14,33 +14,43 @@ import { ExpiringTokenBucket } from '$lib/lucia/rate-limit';
 
 import type { Actions, RequestEvent } from './$types';
 
+import { verifyCodeSchema } from '$lib/schema/verifyCodeSchema';
+import { zod } from 'sveltekit-superforms/adapters';
+import { superValidate } from 'sveltekit-superforms';
+
+const bucket = new ExpiringTokenBucket<number>(5, 60 * 30);
+
 export async function load(event: RequestEvent) {
 	if (event.locals.user === null) {
 		return redirect(302, '/auth/login');
 	}
-	let verificationRequest = getUserEmailVerificationRequestFromRequest(event);
+
+	const verifyCode = await superValidate(zod(verifyCodeSchema));
+
+	let verificationRequest = await getUserEmailVerificationRequestFromRequest(event);
+
 	if (verificationRequest === null || Date.now() >= verificationRequest.expiresAt.getTime()) {
 		if (event.locals.user.emailVerified) {
 			return redirect(302, '/auth/');
 		}
 		// Note: We don't need rate limiting since it takes time before requests expire
-		verificationRequest = createEmailVerificationRequest(
+		verificationRequest = await createEmailVerificationRequest(
 			event.locals.user.id,
 			event.locals.user.email
 		);
 		sendVerificationEmail(verificationRequest.email, verificationRequest.code);
 		setEmailVerificationRequestCookie(event, verificationRequest);
 	}
+
 	return {
+		verifyCode,
 		email: verificationRequest.email
 	};
 }
 
-const bucket = new ExpiringTokenBucket<number>(5, 60 * 30);
-
 export const actions: Actions = {
-	verify: verifyCode,
-	resend: resendEmail
+	verifyCode: verifyCode,
+	resendCode: resendEmail
 };
 
 async function verifyCode(event: RequestEvent) {
@@ -66,7 +76,7 @@ async function verifyCode(event: RequestEvent) {
 		});
 	}
 
-	let verificationRequest = getUserEmailVerificationRequestFromRequest(event);
+	let verificationRequest = await getUserEmailVerificationRequestFromRequest(event);
 	if (verificationRequest === null) {
 		return fail(401, {
 			verify: {
@@ -98,7 +108,7 @@ async function verifyCode(event: RequestEvent) {
 		});
 	}
 	if (Date.now() >= verificationRequest.expiresAt.getTime()) {
-		verificationRequest = createEmailVerificationRequest(
+		verificationRequest = await createEmailVerificationRequest(
 			verificationRequest.userId,
 			verificationRequest.email
 		);
@@ -149,7 +159,8 @@ async function resendEmail(event: RequestEvent) {
 		});
 	}
 
-	let verificationRequest = getUserEmailVerificationRequestFromRequest(event);
+	let verificationRequest = await getUserEmailVerificationRequestFromRequest(event);
+
 	if (verificationRequest === null) {
 		if (event.locals.user.emailVerified) {
 			return fail(403, {
@@ -165,7 +176,7 @@ async function resendEmail(event: RequestEvent) {
 				}
 			});
 		}
-		verificationRequest = createEmailVerificationRequest(
+		verificationRequest = await createEmailVerificationRequest(
 			event.locals.user.id,
 			event.locals.user.email
 		);
@@ -177,11 +188,12 @@ async function resendEmail(event: RequestEvent) {
 				}
 			});
 		}
-		verificationRequest = createEmailVerificationRequest(
+		verificationRequest = await createEmailVerificationRequest(
 			event.locals.user.id,
 			verificationRequest.email
 		);
 	}
+
 	sendVerificationEmail(verificationRequest.email, verificationRequest.code);
 	setEmailVerificationRequestCookie(event, verificationRequest);
 	return {

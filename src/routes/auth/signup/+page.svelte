@@ -28,7 +28,7 @@
 <div class="mx-auto mt-8 max-w-lg">
 	<h1 class="mb-4 text-2xl font-bold">Créer un compte</h1>
 
-	<form method="POST" use:signupEnhance class="space-y-4">
+	<form method="POST" use:signupEnhance action="?/signup" class="space-y-4">
 		<div class="mb-4">
 			<Form.Field name="username" form={signupForm}>
 				<Form.Control>
@@ -63,10 +63,4 @@
 			<Button type="submit">S'inscrire</Button>
 		</div>
 	</form>
-
-	{#if $signupMessage}
-		<p class="text-green-500">{$signupMessage}</p>
-	{/if}
-
-	<p class="text-red-500">{signupForm.errors.general}</p>
 </div>

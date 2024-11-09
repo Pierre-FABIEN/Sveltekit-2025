@@ -11,11 +11,6 @@ export interface User {
 	registered2FA: boolean;
 }
 
-// Vérifie si le nom d'utilisateur est valide
-export function verifyUsernameInput(username: string): boolean {
-	return username.length > 3 && username.length < 32 && username.trim() === username;
-}
-
 // Crée un nouvel utilisateur avec un code de récupération chiffré
 export async function createUser(email: string, username: string, password: string) {
 	const passwordHash = await hashPassword(password);

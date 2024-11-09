@@ -50,6 +50,7 @@ model User {
   totpKey                   Bytes?
   sessions                  Session[]
   emailVerificationRequests EmailVerificationRequest[] @relation("UserEmailVerificationRequests")
+  passwordResetSessions     PasswordResetSession[]     @relation("UserPasswordResetSessions")
 }
 
 model Session {
@@ -67,4 +68,11 @@ model EmailVerificationRequest {
   code      String
   expiresAt DateTime
   user      User     @relation("UserEmailVerificationRequests", fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PasswordResetSession {
+  id        String   @id @default(uuid())
+  userId    Int
+  expiresAt DateTime
+  user      User     @relation("UserPasswordResetSessions", fields: [userId], references: [id], onDelete: Cascade)
 }
