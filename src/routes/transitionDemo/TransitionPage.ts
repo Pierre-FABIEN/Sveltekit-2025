@@ -53,8 +53,6 @@ export const exit = (node: HTMLElement, { toPath }: { toPath: string | null | un
 	const timeline = gsap.timeline();
 
 	if (toPath === '/transitionDemo/transition') {
-		console.log('ca passe', node);
-
 		// Animation spécifique si on va vers '/transitionDemo/transition'
 		timeline.to(node, {
 			x: '-100%',

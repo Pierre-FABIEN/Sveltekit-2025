@@ -26,8 +26,6 @@ export function encryptString(data: string): Uint8Array {
 export function decrypt(encrypted: string | Uint8Array): Uint8Array {
 	// Si les données sont une chaîne de caractères, les décoder en Uint8Array
 	if (typeof encrypted === 'string') {
-		console.log('Décodage de la chaîne Base64 en Uint8Array');
-
 		// Valider la chaîne Base64
 		if (!isValidBase64(encrypted)) {
 			throw new Error('Invalid Base64 string');
@@ -40,9 +38,6 @@ export function decrypt(encrypted: string | Uint8Array): Uint8Array {
 		}
 	}
 
-	console.log('Données chiffrées reçues:', encrypted);
-	console.log('Longueur des données chiffrées:', encrypted.byteLength);
-
 	if (encrypted.byteLength < 32) {
 		throw new Error('Invalid data: Insufficient length');
 	}
@@ -50,11 +45,6 @@ export function decrypt(encrypted: string | Uint8Array): Uint8Array {
 	const iv = encrypted.slice(0, 16);
 	const tag = encrypted.slice(encrypted.byteLength - 16);
 	const ciphertext = encrypted.slice(16, encrypted.byteLength - 16);
-
-	console.log('IV:', iv);
-	console.log('Tag:', tag);
-	console.log('Longueur du tag:', tag.byteLength);
-	console.log('Texte chiffré:', ciphertext);
 
 	const decipher = createDecipheriv('aes-128-gcm', key, iv);
 

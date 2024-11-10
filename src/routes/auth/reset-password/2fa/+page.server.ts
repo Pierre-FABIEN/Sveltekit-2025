@@ -82,7 +82,6 @@ async function totpAction(event: RequestEvent) {
 		if (!isValid) {
 			return message(form, 'Invalid TOTP code');
 		}
-		console.log('Vérification TOTP réussie.');
 	} catch (error) {
 		return fail(500, { message: 'Internal server error', form });
 	}
@@ -97,7 +96,6 @@ async function recoveryCodeAction(event: RequestEvent) {
 	const formData = await event.request.formData();
 
 	const form = await superValidate(formData, zod(recoveryCodeSchema));
-	console.log(form);
 
 	if (session === null) {
 		return message(form, 'Not authenticated');
@@ -121,14 +119,13 @@ async function recoveryCodeAction(event: RequestEvent) {
 	if (!recoveryCodeBucket.consume(session.userId, 1)) {
 		return message(form, 'Too many requests');
 	}
-	console.log('oiyoihoihoihj', session.userId, code);
 
 	const valid = await resetUser2FAWithRecoveryCode(session.userId, code);
-	console.log('eeeeeeeee', valid);
+
 	if (!valid) {
 		return message(form, 'Invalid code');
 	}
-	console.log('fffffffffffffffff');
+
 	recoveryCodeBucket.reset(session.userId);
 
 	redirect(302, '/auth/reset-password');

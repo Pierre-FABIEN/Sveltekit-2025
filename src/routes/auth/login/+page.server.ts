@@ -51,7 +51,6 @@ export const actions: Actions = {
 		if (!form.valid) {
 			return fail(400, { form });
 		}
-		console.log('ojhnlouihbuib', email, password);
 
 		const user = await getUserFromEmail(email);
 

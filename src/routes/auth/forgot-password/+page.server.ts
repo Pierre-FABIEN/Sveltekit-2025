@@ -41,7 +41,6 @@ export const actions: Actions = {
 		}
 
 		const user = await getUserFromEmail(email);
-		console.log(user, 'uihiuhihui');
 
 		if (user === null) {
 			return message(form, 'Account does not exist');

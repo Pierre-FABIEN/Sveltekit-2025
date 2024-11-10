@@ -51,6 +51,7 @@ Carousel
 FullScreen
 Darkmode
 Lucia - Auth
+sitemap
 
 
 Ne peut être :

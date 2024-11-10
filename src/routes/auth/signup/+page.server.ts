@@ -84,10 +84,9 @@ export const actions: Actions = {
 		};
 
 		const sessionToken = generateSessionToken();
-		console.log(sessionToken, 'sessionToken');
 
 		const session = await createSession(sessionToken, user.id, sessionFlags);
-		console.log(session, 'session');
+
 		setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
 		// Rediriger vers la configuration de la 2FA
