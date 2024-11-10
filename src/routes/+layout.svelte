@@ -73,22 +73,23 @@
 {:else if isClient}
 	<Sidebar.Provider>
 		<ModeWatcher />
-		<div class="iconeNav">
-			<Sidebar.Trigger>
-				{#if !sidebar.open}
-					<button
-						class="fixed top-[500px] left-[500px] z-50 p-2 bg-red-800 rounded-md bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent"
-						onclick={() => sidebar.toggle()}
-					>
-						<MenuIcon class="h-6 w-6" />
-						<span class="sr-only">Ouvrir la sidebar</span>
-					</button>
-				{/if}
-			</Sidebar.Trigger>
-		</div>
+
 		<SidebarMenu />
 
 		<div class="container">
+			<div class="iconeNav">
+				<Sidebar.Trigger>
+					{#if !sidebar.open}
+						<button
+							class="fixed top-[500px] left-[500px] z-50 p-2 rounded-md bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent"
+							onclick={() => sidebar.toggle()}
+						>
+							<MenuIcon class="h-6 w-6" />
+							<span class="sr-only">Ouvrir la sidebar</span>
+						</button>
+					{/if}
+				</Sidebar.Trigger>
+			</div>
 			<SmoothScrollBar>
 				<main>
 					{@render children()}
@@ -108,11 +109,5 @@
 		padding: 0;
 		margin: 0;
 		max-width: none;
-	}
-	.iconeNav {
-		position: absolute;
-		top: 10px;
-		left: 10px;
-		z-index: 10000;
 	}
 </style>

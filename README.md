@@ -50,7 +50,7 @@ Loader
 Carousel
 FullScreen
 Darkmode
-Lucia - Auth
+0auth
 sitemap
 
 
