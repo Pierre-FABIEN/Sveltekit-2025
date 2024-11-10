@@ -10,7 +10,7 @@ export const load = async ({ params }) => {
 	});
 
 	if (!directors) {
-		throw redirect(302, '/directors/not-found');
+		redirect(302, '/directors/not-found');
 	}
 
 	const updateDirector = await superValidate(directors, zod(updateDirectorSchema));

@@ -1,32 +1,43 @@
 import { decodeBase64 } from '@oslojs/encoding';
-import { createCipheriv, createDecipheriv } from 'crypto';
-import { DynamicBuffer } from '@oslojs/binary';
-
+import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
 import { ENCRYPTION_KEY } from '$env/static/private';
 
 const key = decodeBase64(ENCRYPTION_KEY);
 
+// Fonction utilitaire pour valider une chaîne Base64
+function isValidBase64(str: string): boolean {
+	return /^[A-Za-z0-9+/]+={0,2}$/.test(str);
+}
+
 export function encrypt(data: Uint8Array): Uint8Array {
-	const iv = new Uint8Array(16);
-	crypto.getRandomValues(iv);
+	const iv = randomBytes(16);
 	const cipher = createCipheriv('aes-128-gcm', key, iv);
-	const encrypted = new DynamicBuffer(0);
-	encrypted.write(iv);
-	encrypted.write(cipher.update(data));
-	encrypted.write(cipher.final());
-	encrypted.write(cipher.getAuthTag());
-	return encrypted.bytes();
+	const ciphertext = Buffer.concat([cipher.update(data), cipher.final()]);
+	const tag = cipher.getAuthTag();
+
+	// Concaténer IV, texte chiffré et tag
+	return Buffer.concat([iv, ciphertext, tag]);
 }
 
 export function encryptString(data: string): Uint8Array {
-	return encrypt(new TextEncoder().encode(data));
+	return encrypt(Buffer.from(data, 'utf-8'));
 }
 
 export function decrypt(encrypted: string | Uint8Array): Uint8Array {
 	// Si les données sont une chaîne de caractères, les décoder en Uint8Array
 	if (typeof encrypted === 'string') {
 		console.log('Décodage de la chaîne Base64 en Uint8Array');
-		encrypted = decodeBase64(encrypted);
+
+		// Valider la chaîne Base64
+		if (!isValidBase64(encrypted)) {
+			throw new Error('Invalid Base64 string');
+		}
+
+		try {
+			encrypted = decodeBase64(encrypted);
+		} catch (error) {
+			throw new Error(`Erreur lors du décodage Base64 : ${error.message}`);
+		}
 	}
 
 	console.log('Données chiffrées reçues:', encrypted);
@@ -53,12 +64,14 @@ export function decrypt(encrypted: string | Uint8Array): Uint8Array {
 
 	decipher.setAuthTag(tag);
 
-	const decrypted = new DynamicBuffer(0);
-	decrypted.write(decipher.update(ciphertext));
-	decrypted.write(decipher.final());
-	return decrypted.bytes();
+	try {
+		const decrypted = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
+		return decrypted;
+	} catch (error) {
+		throw new Error(`Erreur lors du déchiffrement : ${error.message}`);
+	}
 }
 
 export function decryptToString(data: Uint8Array): string {
-	return new TextDecoder().decode(decrypt(data));
+	return Buffer.from(decrypt(data)).toString('utf-8');
 }

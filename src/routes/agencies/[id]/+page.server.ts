@@ -12,7 +12,7 @@ export const load = async ({ params }) => {
 	const directors = await prisma.director.findMany();
 
 	if (!agence) {
-		throw redirect(302, '/agencies/not-found');
+		redirect(302, '/agencies/not-found');
 	}
 
 	const updateAgence = await superValidate(agence, zod(updateAgenceSchema));

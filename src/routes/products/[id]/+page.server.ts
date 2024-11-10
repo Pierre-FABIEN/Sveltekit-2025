@@ -13,7 +13,7 @@ export const load = async ({ params }) => {
 	const agencies = await prisma.agence.findMany();
 
 	if (!product) {
-		throw redirect(302, '/products/not-found');
+		redirect(302, '/products/not-found');
 	}
 
 	const updateProduct = await superValidate(product, zod(updateProductSchema));

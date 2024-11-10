@@ -35,7 +35,7 @@ export const load = async (event: RequestEvent) => {
 	// Récupérer le code de récupération si l'utilisateur utilise l'authentification à deux facteurs
 	let recoveryCode: string | null = null;
 	if (event.locals.user.registered2FA) {
-		recoveryCode = getUserRecoverCode(event.locals.user.id);
+		recoveryCode = await getUserRecoverCode(event.locals.user.id);
 	}
 
 	// Initialiser les formulaires Superform

@@ -1,17 +1,58 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import * as Form from '$shadcn/form';
+	import { Input } from '$shadcn/input';
+	import { Button } from '$shadcn/button';
+	import { toast } from 'svelte-sonner';
+	import { superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { resetPasswordSchema } from '$lib/schema/resetPasswordSchema';
+
+	let { data } = $props();
+
+	// Initialiser le formulaire Superform avec le schéma Zod
+	const resetPasswordForm = superForm(data?.resetPasswordForm ?? {}, {
+		validators: zodClient(resetPasswordSchema),
+		id: 'resetPasswordForm'
+	});
+
+	const {
+		form: resetPasswordData,
+		enhance: resetPasswordEnhance,
+		message: resetPasswordMessage
+	} = resetPasswordForm;
+
+	// Notification pour les messages d'erreur ou de succès
+	$effect(() => {
+		if ($resetPasswordMessage) {
+			toast.error($resetPasswordMessage);
+		}
+	});
 </script>
 
-<h1>Enter your new password</h1>
-<form method="post" action="?/resetPassword" use:enhance>
-	<label for="form-reset.password">Password</label>
-	<input
-		type="password"
-		id="form-reset.password"
-		name="password"
-		autocomplete="new-password"
-		required
-	/><br />
-	<button>Reset password</button>
-	<p>{form?.message ?? ''}</p>
-</form>
+<div class="mx-auto mt-12 max-w-lg p-6 border shadow-lg rounded-lg">
+	<h1 class="text-2xl font-semibold mb-4 text-center">Réinitialiser votre mot de passe</h1>
+
+	<p class="text-center text-gray-600 mb-6">Entrez votre nouveau mot de passe ci-dessous.</p>
+
+	<!-- Formulaire de réinitialisation du mot de passe -->
+	<form method="POST" action="?/resetPassword" use:resetPasswordEnhance class="space-y-6">
+		<Form.Field name="password" form={resetPasswordForm}>
+			<Form.Control>
+				<Form.Label>Nouveau mot de passe</Form.Label>
+				<Input
+					type="password"
+					name="password"
+					bind:value={$resetPasswordData.password}
+					placeholder="Entrez votre nouveau mot de passe"
+					autocomplete="new-password"
+					required
+				/>
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
+
+		<div class="mt-6">
+			<Button type="submit" class="w-full">Réinitialiser le mot de passe</Button>
+		</div>
+	</form>
+</div>

@@ -9,6 +9,8 @@
 
 	let { data } = $props();
 
+	console.log(data, 'data');
+
 	// Initialiser les formulaires Superform
 	const emailForm = superForm(data.emailForm, {
 		validators: zodClient(emailSchema),
@@ -123,7 +125,6 @@
 					<p class="mb-4">
 						Votre code de récupération : <span class="font-mono">{recoveryCode}</span>
 					</p>
-					<Button type="button" class="w-full">Générer un nouveau code</Button>
 				{/await}
 			{/if}
 		</section>

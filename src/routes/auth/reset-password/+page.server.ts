@@ -15,6 +15,9 @@ import { updateUserPassword } from '$lib/lucia/user';
 
 import type { Actions, RequestEvent } from './$types';
 import type { SessionFlags } from '$lib/lucia/session';
+import { message, superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import { resetPasswordSchema } from '$lib/schema/resetPasswordSchema';
 
 export const load = async (event: RequestEvent) => {
 	const { session, user } = await validatePasswordResetSessionRequest(event);
@@ -27,40 +30,37 @@ export const load = async (event: RequestEvent) => {
 	if (user.registered2FA && !session.twoFactorVerified) {
 		return redirect(302, '/auth/reset-password/2fa');
 	}
-	return {};
+
+	const resetPasswordForm = await superValidate(event, zod(resetPasswordSchema));
+	return {
+		resetPasswordForm
+	};
 };
 
 export const actions: Actions = {
 	resetPassword: async (event: RequestEvent) => {
-		const { session: passwordResetSession, user } = validatePasswordResetSessionRequest(event);
+		const { session: passwordResetSession, user } =
+			await validatePasswordResetSessionRequest(event);
+		const formData = await event.request.formData();
+		const form = await superValidate(formData, zod(resetPasswordSchema));
 		if (passwordResetSession === null) {
-			return fail(401, {
-				message: 'Not authenticated'
-			});
+			return message(form, 'Not authenticated');
 		}
 		if (!passwordResetSession.emailVerified) {
-			return fail(403, {
-				message: 'Forbidden'
-			});
+			return message(form, 'Forbidden');
 		}
 		if (user.registered2FA && !passwordResetSession.twoFactorVerified) {
-			return fail(403, {
-				message: 'Forbidden'
-			});
+			return message(form, 'Forbidden');
 		}
-		const formData = await event.request.formData();
+
 		const password = formData.get('password');
 		if (typeof password !== 'string') {
-			return fail(400, {
-				message: 'Invalid or missing fields'
-			});
+			return message(form, 'Invalid or missing fields');
 		}
 
 		const strongPassword = await verifyPasswordStrength(password);
 		if (!strongPassword) {
-			return fail(400, {
-				message: 'Weak password'
-			});
+			return message(form, 'Weak password');
 		}
 		await invalidateUserPasswordResetSessions(passwordResetSession.userId);
 		await invalidateUserSessions(passwordResetSession.userId);
