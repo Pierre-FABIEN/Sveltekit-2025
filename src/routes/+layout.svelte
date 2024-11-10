@@ -7,6 +7,12 @@
 	import { navigationStore } from '$store/navigationStore';
 	import { onNavigate } from '$app/navigation';
 	import SmoothScrollBar from '$lib/components/smoothScrollBar/SmoothScrollBar.svelte';
+	import * as Sidebar from '$lib/components/shadcn/ui/sidebar';
+	import SidebarMenu from '$lib/components/SidebarMenu.svelte';
+	import { MenuIcon } from 'lucide-svelte';
+	import { useSidebar } from '$lib/components/shadcn/ui/sidebar/index.js';
+
+	const sidebar = useSidebar();
 
 	let { children } = $props();
 	let isClient = $state(false);
@@ -65,89 +71,48 @@
 		<Progress {value} max={100} class="w-[50vw]" />
 	</div>
 {:else if isClient}
-	<ModeWatcher />
+	<Sidebar.Provider>
+		<ModeWatcher />
+		<div class="iconeNav">
+			<Sidebar.Trigger>
+				{#if !sidebar.open}
+					<button
+						class="fixed top-[500px] left-[500px] z-50 p-2 bg-red-800 rounded-md bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent"
+						onclick={() => sidebar.toggle()}
+					>
+						<MenuIcon class="h-6 w-6" />
+						<span class="sr-only">Ouvrir la sidebar</span>
+					</button>
+				{/if}
+			</Sidebar.Trigger>
+		</div>
+		<SidebarMenu />
 
-	<div class="navigation mt-5 flex justify-center">
-		<nav
-			class="rcb flex w-[80vw] items-center justify-center space-x-4 rounded border p-3 lg:space-x-6"
-		>
-			<a
-				href="/"
-				class={`text-sm font-medium ${$page.url.pathname === '/' ? 'text-primary' : 'text-muted-foreground'} transition-colors hover:text-primary`}
-			>
-				Accueil
-			</a>
-			<a
-				href="/transitionDemo"
-				class={`text-sm font-medium ${$page.url.pathname === '/transitionDemo' ? 'text-primary' : 'text-muted-foreground'} transition-colors hover:text-primary`}
-			>
-				transitionDemo
-			</a>
-			<a
-				href="/directors"
-				class={`text-sm font-medium ${$page.url.pathname === '/directors' ? 'text-primary' : 'text-muted-foreground'} transition-colors hover:text-primary`}
-			>
-				Directors
-			</a>
-			<a
-				href="/agencies"
-				class={`text-sm font-medium ${$page.url.pathname === '/agencies' ? 'text-primary' : 'text-muted-foreground'} transition-colors hover:text-primary`}
-			>
-				Agencies
-			</a>
-			<a
-				href="/products"
-				class={`text-sm font-medium ${$page.url.pathname === '/products' ? 'text-primary' : 'text-muted-foreground'} transition-colors hover:text-primary`}
-			>
-				Products
-			</a>
-			<a
-				href="/stats"
-				class={`text-sm font-medium ${$page.url.pathname === '/stats' ? 'text-primary' : 'text-muted-foreground'} transition-colors hover:text-primary`}
-			>
-				statistical
-			</a>
-			<a
-				href="/snippet"
-				class={`text-sm font-medium ${$page.url.pathname === '/snippet' ? 'text-primary' : 'text-muted-foreground'} transition-colors hover:text-primary`}
-			>
-				Snippet
-			</a>
-			<a
-				href="/state"
-				class={`text-sm font-medium ${$page.url.pathname === '/state' ? 'text-primary' : 'text-muted-foreground'} transition-colors hover:text-primary`}
-			>
-				State
-			</a>
-			<a
-				href="/auth"
-				class={`text-sm font-medium ${$page.url.pathname === '/auth' ? 'text-primary' : 'text-muted-foreground'} transition-colors hover:text-primary`}
-			>
-				Auth
-			</a>
-		</nav>
-	</div>
-
-	<SmoothScrollBar>
-		<main>
-			{@render children()}
-		</main>
-	</SmoothScrollBar>
-
-	<Toaster />
+		<div class="container">
+			<SmoothScrollBar>
+				<main>
+					{@render children()}
+				</main>
+			</SmoothScrollBar>
+		</div>
+		<Toaster />
+	</Sidebar.Provider>
 {/if}
 
 <style>
-	.navigation {
-		position: absolute;
-		width: 100vw;
-		top: 0;
-		left: 0;
-		z-index: 100;
-	}
-
 	main {
 		overflow-x: hidden;
-		padding-top: 20vh;
+	}
+	.container {
+		width: 100%;
+		padding: 0;
+		margin: 0;
+		max-width: none;
+	}
+	.iconeNav {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		z-index: 10000;
 	}
 </style>
