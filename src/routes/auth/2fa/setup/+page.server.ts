@@ -84,27 +84,18 @@ export const actions: Actions = {
 			return message(form, 'Invalid key length');
 		}
 
-		
-			key,
-			code
-		});
-
-		
-
 		try {
 			const isValid = verifyTOTP(key, 30, 6, code);
 
 			if (!isValid) {
 				return message(form, 'Invalid TOTP code');
 			}
-			
 		} catch (error) {
 			return fail(500, { message: 'Internal server error', form });
 		}
 
 		await updateUserTOTPKey(event.locals.session.userId, key);
 		await setSessionAs2FAVerified(event.locals.session.id);
-		
 
 		// Utilisez `redirect` pour rediriger correctement
 		redirect(302, '/auth/recovery-code');

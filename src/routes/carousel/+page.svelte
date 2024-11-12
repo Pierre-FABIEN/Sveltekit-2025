@@ -41,7 +41,7 @@
 
 <style lang="scss">
 	.embla {
-		width: 100vw;
+		width: 100%;
 		margin: auto;
 		--slide-height: 19rem;
 		--slide-spacing: 1rem;
