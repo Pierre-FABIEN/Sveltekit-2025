@@ -25,34 +25,36 @@
 	});
 </script>
 
-<div class="mx-auto mt-12 max-w-lg p-6 border shadow-lg rounded-lg">
-	<h1 class="text-2xl font-semibold mb-6 text-center">Mot de passe oublié</h1>
+<div class="min-w-screen min-h-screen flex justify-center items-center">
+	<div class="w-[400px] mx-auto mt-12 max-w-lg p-6 border shadow-lg rounded-lg">
+		<h1 class="text-2xl font-semibold mb-6 text-center">Mot de passe oublié</h1>
 
-	<form method="POST" action="?/forgotPassword" use:forgotEnhance class="space-y-6">
-		<div>
-			<Form.Field name="email" form={forgotForm}>
-				<Form.Control>
-					<Form.Label>Email</Form.Label>
-					<Input
-						type="email"
-						name="email"
-						bind:value={$forgotData.email}
-						placeholder="Entrez votre adresse email"
-						required
-					/>
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
+		<form method="POST" action="?/forgotPassword" use:forgotEnhance class="space-y-6">
+			<div>
+				<Form.Field name="email" form={forgotForm}>
+					<Form.Control>
+						<Form.Label>Email</Form.Label>
+						<Input
+							type="email"
+							name="email"
+							bind:value={$forgotData.email}
+							placeholder="Entrez votre adresse email"
+							required
+						/>
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+			</div>
+
+			<div class="mt-6">
+				<Button type="submit" class="w-full">Envoyer</Button>
+			</div>
+
+			<p class="text-center mt-4 text-sm text-red-500">{$forgotMessage ?? ''}</p>
+		</form>
+
+		<div class="mt-4 flex justify-center text-sm">
+			<a href="/auth/login" class="text-blue-500 hover:underline">Se connecter</a>
 		</div>
-
-		<div class="mt-6">
-			<Button type="submit" class="w-full">Envoyer</Button>
-		</div>
-
-		<p class="text-center mt-4 text-sm text-red-500">{$forgotMessage ?? ''}</p>
-	</form>
-
-	<div class="mt-4 flex justify-center text-sm">
-		<a href="/auth/login" class="text-blue-500 hover:underline">Se connecter</a>
 	</div>
 </div>

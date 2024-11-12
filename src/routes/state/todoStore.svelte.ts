@@ -20,7 +20,7 @@ export const createTodoStore = () => {
 			}
 
 			const data = await response.json();
-			todos = data.slice(0, 10); // Limiter à 10 tâches pour cet exemple
+			todos = data.slice(0, 5); // Limiter à 10 tâches pour cet exemple
 		} catch (err) {
 			error = (err as Error).message;
 		} finally {

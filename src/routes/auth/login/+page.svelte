@@ -24,49 +24,52 @@
 	});
 </script>
 
-<div class="mx-auto mt-12 max-w-lg p-6 border shadow-lg rounded-lg">
-	<h1 class="text-2xl font-semibold mb-6 text-center">Connexion</h1>
+<div class="min-w-screen min-h-screen flex justify-center items-center">
+	<div class="w-[400px] mx-auto mt-12 max-w-lg p-6 border shadow-lg rounded-lg">
+		<h1 class="text-2xl font-semibold mb-6 text-center">Connexion</h1>
 
-	<form method="POST" action="?/login" use:loginEnhance class="space-y-6">
-		<div>
-			<Form.Field name="email" form={loginForm}>
-				<Form.Control>
-					<Form.Label>Email</Form.Label>
-					<Input
-						type="email"
-						name="email"
-						bind:value={$loginData.email}
-						placeholder="Entrez votre email"
-						required
-					/>
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
+		<form method="POST" action="?/login" use:loginEnhance class="space-y-6">
+			<div>
+				<Form.Field name="email" form={loginForm}>
+					<Form.Control>
+						<Form.Label>Email</Form.Label>
+						<Input
+							type="email"
+							name="email"
+							bind:value={$loginData.email}
+							placeholder="Entrez votre email"
+							required
+						/>
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+			</div>
+
+			<div>
+				<Form.Field name="password" form={loginForm}>
+					<Form.Control>
+						<Form.Label>Mot de passe</Form.Label>
+						<Input
+							type="password"
+							name="password"
+							bind:value={$loginData.password}
+							placeholder="Entrez votre mot de passe"
+							required
+						/>
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+			</div>
+
+			<div class="mt-6">
+				<Button type="submit" class="w-full">Continuer</Button>
+			</div>
+		</form>
+
+		<div class="mt-4 flex justify-between text-sm">
+			<a href="/auth/signup" class="text-blue-500 hover:underline">Créer un compte</a>
+			<a href="/auth/forgot-password" class="text-blue-500 hover:underline">Mot de passe oublié ?</a
+			>
 		</div>
-
-		<div>
-			<Form.Field name="password" form={loginForm}>
-				<Form.Control>
-					<Form.Label>Mot de passe</Form.Label>
-					<Input
-						type="password"
-						name="password"
-						bind:value={$loginData.password}
-						placeholder="Entrez votre mot de passe"
-						required
-					/>
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-		</div>
-
-		<div class="mt-6">
-			<Button type="submit" class="w-full">Continuer</Button>
-		</div>
-	</form>
-
-	<div class="mt-4 flex justify-between text-sm">
-		<a href="/auth/signup" class="text-blue-500 hover:underline">Créer un compte</a>
-		<a href="/auth/forgot-password" class="text-blue-500 hover:underline">Mot de passe oublié ?</a>
 	</div>
 </div>

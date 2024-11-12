@@ -19,6 +19,7 @@
 	let isClient = $state(false);
 	let loading = $state(true);
 	let value = $state(0);
+	let previousRouteId = $state($page.route.id);
 
 	$effect(() => {
 		const currentData = {

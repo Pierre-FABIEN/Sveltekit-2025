@@ -94,7 +94,7 @@
 		<!-- En-tête de la Sidebar -->
 		<Sidebar.Header>
 			<Sidebar.Menu>
-				<Sidebar.MenuItem class="flex items-center w-full">
+				<Sidebar.MenuItem class="flex items-center w-full py-5">
 					<Sidebar.MenuButton size="lg" class="md:h-8 md:p-0">
 						{#snippet child({ props })}
 							<a href="/" {...props}>
@@ -105,8 +105,8 @@
 								</div>
 								{#if sidebar.state === 'expanded'}
 									<div class="ml-2 flex flex-col">
-										<span class="truncate text-lg font-semibold leading-4">BoilerPlate</span>
-										<span class="truncate text-sm text-gray-500 leading-4">SvelteKit</span>
+										<span class="truncate text-xl font-semibold leading-4">BoilerPlate</span>
+										<span class="truncate text-lg text-gray-500 leading-4">SvelteKit</span>
 									</div>
 								{/if}
 							</a>
@@ -118,7 +118,7 @@
 
 		<!-- Contenu de la Sidebar -->
 		<Sidebar.Content class="truncate">
-			<Sidebar.Group class="border rounded">
+			<Sidebar.Group class="rounded">
 				<div class="flex flex-col space-y-2">
 					<div class="flex col-6">
 						<!-- Switch pour le mode sombre -->
@@ -187,222 +187,11 @@
 					</div>
 				</div>
 			</Sidebar.Group>
-			<!-- Groupe CRUD -->
-			<Sidebar.Group class="border rounded">
-				<Collapsible.Root class="group/collapsible ">
-					<!-- Utilisation du Tooltip pour le groupe -->
-					<Tooltip.Root>
-						<Tooltip.Trigger class="flex items-center w-full justify-center  rounded-md">
-							<Collapsible.Trigger class="flex items-center w-full justify-center">
-								<DatabaseIcon class="w-5 h-5" />
-								{#if sidebar.state === 'expanded'}
-									<span class="ml-4 text-base">CRUD</span>
-									<ChevronDown
-										class="w-3 h-3 ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180"
-									/>
-								{/if}
-							</Collapsible.Trigger>
-						</Tooltip.Trigger>
-						{#if sidebar.state === 'collapsed'}
-							<Tooltip.Content side="right" align="center">
-								<p>CRUD</p>
-							</Tooltip.Content>
-						{/if}
-					</Tooltip.Root>
 
-					<Collapsible.Content>
-						<Sidebar.GroupContent>
-							<Sidebar.Menu>
-								{#each crudItems as item}
-									<Tooltip.Root>
-										<Tooltip.Trigger class="flex items-center w-full justify-center">
-											<Sidebar.MenuItem class="flex items-center w-full">
-												<Sidebar.MenuButton
-													isActive={$page.url.pathname === item.url}
-													class="pl-8 w-full"
-												>
-													<a href={item.url} class="flex items-center w-full">
-														<item.icon class="w-4 h-4 " />
-														{#if sidebar.state === 'expanded'}
-															<span class="ml-3 text-s">{item.title}</span>
-														{/if}
-													</a>
-												</Sidebar.MenuButton>
-											</Sidebar.MenuItem>
-										</Tooltip.Trigger>
-
-										{#if sidebar.state === 'collapsed'}
-											<Tooltip.Content side="right" align="center">
-												<p>{item.title}</p>
-											</Tooltip.Content>
-										{/if}
-									</Tooltip.Root>
-								{/each}
-							</Sidebar.Menu>
-						</Sidebar.GroupContent>
-					</Collapsible.Content>
-				</Collapsible.Root>
-			</Sidebar.Group>
-
-			<!-- Répétez la même structure pour les autres groupes -->
-			<!-- Groupe Authentication -->
-			<Sidebar.Group class="border rounded">
-				<Collapsible.Root class="group/collapsible ">
-					<Tooltip.Root>
-						<Tooltip.Trigger class="flex items-center w-full justify-center  rounded-md">
-							<Collapsible.Trigger class="flex items-center w-full justify-center">
-								<LockIcon class="w-5 h-5" />
-								{#if sidebar.state === 'expanded'}
-									<span class="ml-4 text-base">Authentication</span>
-									<ChevronDown
-										class="w-3 h-3 ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180"
-									/>
-								{/if}
-							</Collapsible.Trigger>
-						</Tooltip.Trigger>
-						{#if sidebar.state === 'collapsed'}
-							<Tooltip.Content side="right" align="center">
-								<p>Authentication</p>
-							</Tooltip.Content>
-						{/if}
-					</Tooltip.Root>
-
-					<Collapsible.Content>
-						<Sidebar.GroupContent>
-							<Sidebar.Menu>
-								{#each AuthItems as item}
-									<Tooltip.Root>
-										<Tooltip.Trigger class="flex items-center w-full justify-center">
-											<Sidebar.MenuItem class="flex items-center w-full">
-												<Sidebar.MenuButton isActive={$page.url.pathname === item.url} class="pl-8">
-													<a href={item.url} class="flex items-center w-full">
-														<item.icon class="w-4 h-4 " />
-														{#if sidebar.state === 'expanded'}
-															<span class="ml-3 text-s">{item.title}</span>
-														{/if}
-													</a>
-												</Sidebar.MenuButton>
-											</Sidebar.MenuItem>
-										</Tooltip.Trigger>
-
-										{#if sidebar.state === 'collapsed'}
-											<Tooltip.Content side="right" align="center">
-												<p>{item.title}</p>
-											</Tooltip.Content>
-										{/if}
-									</Tooltip.Root>
-								{/each}
-							</Sidebar.Menu>
-						</Sidebar.GroupContent>
-					</Collapsible.Content>
-				</Collapsible.Root>
-			</Sidebar.Group>
-
-			<!-- Groupe State Manager -->
-			<Sidebar.Group class="border rounded">
-				<Collapsible.Root class="group/collapsible ">
-					<Tooltip.Root>
-						<Tooltip.Trigger class="flex items-center w-full justify-center">
-							<Collapsible.Trigger class="flex items-center w-full justify-center">
-								<SettingsIcon class="w-5 h-5" />
-								{#if sidebar.state === 'expanded'}
-									<span class="ml-4 text-base">State Manager</span>
-									<ChevronDown
-										class="w-3 h-3 ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180"
-									/>
-								{/if}
-							</Collapsible.Trigger>
-						</Tooltip.Trigger>
-						{#if sidebar.state === 'collapsed'}
-							<Tooltip.Content side="right" align="center">
-								<p>State Manager</p>
-							</Tooltip.Content>
-						{/if}
-					</Tooltip.Root>
-
-					<Collapsible.Content>
-						<Sidebar.GroupContent>
-							<Sidebar.Menu>
-								{#each stateItems as item}
-									<Tooltip.Root>
-										<Tooltip.Trigger class="flex items-center w-full justify-center">
-											<Sidebar.MenuItem class="flex items-center w-full">
-												<Sidebar.MenuButton isActive={$page.url.pathname === item.url} class="pl-8">
-													<a href={item.url} class="flex items-center w-full">
-														<item.icon class="w-4 h-4 " />
-														{#if sidebar.state === 'expanded'}
-															<span class="ml-3 text-s">{item.title}</span>
-														{/if}
-													</a>
-												</Sidebar.MenuButton>
-											</Sidebar.MenuItem>
-										</Tooltip.Trigger>
-
-										{#if sidebar.state === 'collapsed'}
-											<Tooltip.Content side="right" align="center">
-												<p>{item.title}</p>
-											</Tooltip.Content>
-										{/if}
-									</Tooltip.Root>
-								{/each}
-							</Sidebar.Menu>
-						</Sidebar.GroupContent>
-					</Collapsible.Content>
-				</Collapsible.Root>
-			</Sidebar.Group>
-
-			<!-- Groupe UX/UI -->
-			<Sidebar.Group class="border rounded">
-				<Collapsible.Root class="group/collapsible ">
-					<Tooltip.Root>
-						<Tooltip.Trigger class="flex items-center w-full justify-center  rounded-md">
-							<Collapsible.Trigger class="flex items-center w-full justify-center">
-								<LayoutDashboardIcon class="w-5 h-5" />
-								{#if sidebar.state === 'expanded'}
-									<span class="ml-4 text-base">UX/UI</span>
-									<ChevronDown
-										class="w-3 h-3 ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180"
-									/>
-								{/if}
-							</Collapsible.Trigger>
-						</Tooltip.Trigger>
-						{#if sidebar.state === 'collapsed'}
-							<Tooltip.Content side="right" align="center">
-								<p>UX/UI</p>
-							</Tooltip.Content>
-						{/if}
-					</Tooltip.Root>
-
-					<Collapsible.Content>
-						<Sidebar.GroupContent>
-							<Sidebar.Menu>
-								{#each UIUXItems as item}
-									<Tooltip.Root>
-										<Tooltip.Trigger class="flex items-center w-full justify-center">
-											<Sidebar.MenuItem class="flex items-center w-full">
-												<Sidebar.MenuButton isActive={$page.url.pathname === item.url} class="pl-8">
-													<a href={item.url} class="flex items-center w-full">
-														<item.icon class="w-4 h-4 " />
-														{#if sidebar.state === 'expanded'}
-															<span class="ml-3 text-s">{item.title}</span>
-														{/if}
-													</a>
-												</Sidebar.MenuButton>
-											</Sidebar.MenuItem>
-										</Tooltip.Trigger>
-
-										{#if sidebar.state === 'collapsed'}
-											<Tooltip.Content side="right" align="center">
-												<p>{item.title}</p>
-											</Tooltip.Content>
-										{/if}
-									</Tooltip.Root>
-								{/each}
-							</Sidebar.Menu>
-						</Sidebar.GroupContent>
-					</Collapsible.Content>
-				</Collapsible.Root>
-			</Sidebar.Group>
+			{@render SidebarGroup('CRUD', DatabaseIcon, crudItems)}
+			{@render SidebarGroup('Authentication', LockIcon, AuthItems)}
+			{@render SidebarGroup('State Manager', SettingsIcon, stateItems)}
+			{@render SidebarGroup('UX/UI', LayoutDashboardIcon, UIUXItems)}
 		</Sidebar.Content>
 
 		<!-- Footer de la Sidebar -->
@@ -424,3 +213,56 @@
 		</Sidebar.Footer>
 	</Sidebar.Root>
 </Tooltip.Provider>
+
+{#snippet SidebarGroup(title: any, icon: any, items: any)}
+	<Sidebar.Group class="rounded">
+		<Collapsible.Root class="group/collapsible">
+			<Tooltip.Root>
+				<Tooltip.Trigger class="flex items-center w-full justify-center rounded-md">
+					<Collapsible.Trigger class="flex items-center w-full justify-center">
+						<svelte:component this={icon} class="w-5 h-5" />
+						{#if sidebar.state === 'expanded'}
+							<span class="ml-4 text-base">{title}</span>
+							<ChevronDown
+								class="w-3 h-3 ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180"
+							/>
+						{/if}
+					</Collapsible.Trigger>
+				</Tooltip.Trigger>
+				{#if sidebar.state === 'collapsed'}
+					<Tooltip.Content side="right" align="center">
+						<p>{title}</p>
+					</Tooltip.Content>
+				{/if}
+			</Tooltip.Root>
+
+			<Collapsible.Content>
+				<Sidebar.GroupContent>
+					<Sidebar.Menu>
+						{#each items as item}
+							<Tooltip.Root>
+								<Tooltip.Trigger class="flex items-center w-full justify-center">
+									<Sidebar.MenuItem class="flex items-center w-full">
+										<Sidebar.MenuButton isActive={$page.url.pathname === item.url} class="pl-8">
+											<a href={item.url} class="flex items-center w-full">
+												<svelte:component this={item.icon} class="w-4 h-4" />
+												{#if sidebar.state === 'expanded'}
+													<span class="ml-3 text-s">{item.title}</span>
+												{/if}
+											</a>
+										</Sidebar.MenuButton>
+									</Sidebar.MenuItem>
+								</Tooltip.Trigger>
+								{#if sidebar.state === 'collapsed'}
+									<Tooltip.Content side="right" align="center">
+										<p>{item.title}</p>
+									</Tooltip.Content>
+								{/if}
+							</Tooltip.Root>
+						{/each}
+					</Sidebar.Menu>
+				</Sidebar.GroupContent>
+			</Collapsible.Content>
+		</Collapsible.Root>
+	</Sidebar.Group>
+{/snippet}
