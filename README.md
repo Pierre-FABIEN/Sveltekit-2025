@@ -37,19 +37,11 @@ You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
 
-Deja installer:
-Tailwind
-Shadcn
-Superform
-Zod
-apexcharts
 
 A installer:
 threlte
 Loader
 Carousel
-FullScreen
-Darkmode
 0auth
 sitemap
 

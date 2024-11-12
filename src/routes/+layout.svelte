@@ -9,7 +9,8 @@
 	import SmoothScrollBar from '$lib/components/smoothScrollBar/SmoothScrollBar.svelte';
 	import * as Sidebar from '$lib/components/shadcn/ui/sidebar';
 	import SidebarMenu from '$lib/components/SidebarMenu.svelte';
-	import { MenuIcon } from 'lucide-svelte';
+
+	import AlignJustify from 'lucide-svelte/icons/align-justify';
 	import { useSidebar } from '$lib/components/shadcn/ui/sidebar/index.js';
 
 	const sidebar = useSidebar();
@@ -18,7 +19,6 @@
 	let isClient = $state(false);
 	let loading = $state(true);
 	let value = $state(0);
-	let previousRouteId: string | null = $state(null);
 
 	$effect(() => {
 		const currentData = {
@@ -38,7 +38,7 @@
 				clearInterval(timer);
 				loading = false;
 			}
-		}, 100);
+		}, 10);
 	});
 
 	onNavigate((navigation) => {
@@ -81,10 +81,10 @@
 				<Sidebar.Trigger>
 					{#if !sidebar.open}
 						<button
-							class="fixed top-[500px] left-[500px] z-50 p-2 rounded-md bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent"
+							class="fixed z-50 p-2 rounded-md bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent"
 							onclick={() => sidebar.toggle()}
 						>
-							<MenuIcon class="h-6 w-6" />
+							<AlignJustify class="h-6 w-6" />
 							<span class="sr-only">Ouvrir la sidebar</span>
 						</button>
 					{/if}
@@ -109,5 +109,9 @@
 		padding: 0;
 		margin: 0;
 		max-width: none;
+	}
+	.iconeNav {
+		position: absolute;
+		z-index: 100;
 	}
 </style>
