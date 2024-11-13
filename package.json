@@ -15,7 +15,8 @@
 		"prettier": "prettier --write \"src/**/*.{js,ts,svelte,scss}\"",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
-		"test:e2e": "playwright test"
+		"test:e2e": "playwright test",
+		"model-pipeline:run": "node scripts/model-pipeline.js"
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.5.6",
@@ -27,6 +28,7 @@
 		"@tailwindcss/container-queries": "^0.1.1",
 		"@tailwindcss/forms": "^0.5.9",
 		"@tailwindcss/typography": "^0.5.15",
+		"@theatre/studio": "^0.7.2",
 		"@types/eslint": "^9.6.0",
 		"autoprefixer": "^10.4.20",
 		"bits-ui": "^1.0.0-next.45",
@@ -59,10 +61,12 @@
 		"typescript-eslint": "^8.0.0",
 		"vaul-svelte": "^1.0.0-next.2",
 		"vite": "^5.0.3",
+		"vite-plugin-mkcert": "^1.17.6",
 		"vitest": "^2.0.4",
 		"zod": "^3.23.8"
 	},
 	"dependencies": {
+		"@dimforge/rapier3d-compat": "^0.11.2",
 		"@lucia-auth/adapter-prisma": "^4.0.1",
 		"@node-rs/argon2": "^2.0.0",
 		"@oslojs/crypto": "^1.0.1",
@@ -70,6 +74,14 @@
 		"@oslojs/otp": "^1.0.0",
 		"@pilcrowjs/object-parser": "^0.0.4",
 		"@prisma/client": "^5.22.0",
+		"@theatre/core": "^0.7.2",
+		"@threlte/core": "^8.0.0-next.30",
+		"@threlte/extras": "^9.0.0-next.39",
+		"@threlte/flex": "^2.0.0-next.12",
+		"@threlte/rapier": "^2.0.1",
+		"@threlte/theatre": "^3.0.0-next.9",
+		"@threlte/xr": "^1.0.0-next.13",
+		"@types/three": "^0.170.0",
 		"apexcharts": "^4.0.0",
 		"arctic": "^2.2.2",
 		"embla-carousel-auto-scroll": "^8.3.1",
@@ -78,6 +90,7 @@
 		"lucia": "^3.2.2",
 		"lucia-auth": "^1.8.0",
 		"smooth-scrollbar": "^8.8.4",
+		"three": "^0.170.0",
 		"uqr": "^0.1.2"
 	}
 }

@@ -57,6 +57,11 @@ export const UIUXItems = [
 		title: 'SiteMap',
 		url: '/UXUI/sitemap.xml',
 		icon: TransitionIcon
+	},
+	{
+		title: 'Threlte',
+		url: '/UXUI/threlte',
+		icon: TransitionIcon
 	}
 ];
 
