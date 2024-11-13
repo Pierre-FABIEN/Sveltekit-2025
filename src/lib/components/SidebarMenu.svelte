@@ -23,13 +23,6 @@
 	import * as Tooltip from '$lib/components/shadcn/ui/tooltip/index.js';
 	import { Switch } from '$lib/components/shadcn/ui/switch/index.js';
 
-	const user = {
-		name: 'Votre Nom',
-		email: 'vous@example.com',
-		avatar:
-			'https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_neytiri_16x9_1098_01_0e7d844a.jpeg?region=420%2C0%2C1080%2C1080'
-	};
-
 	const sidebar = useSidebar();
 
 	const DARK_MODE_KEY = 'mode-watcher-mode';
@@ -118,76 +111,6 @@
 
 		<!-- Contenu de la Sidebar -->
 		<Sidebar.Content class="truncate">
-			<Sidebar.Group class="rounded">
-				<div class="flex flex-col space-y-2">
-					<div class="flex col-6">
-						<!-- Switch pour le mode sombre -->
-						{#if sidebar.state === 'expanded'}
-							<Tooltip.Root>
-								<Tooltip.Trigger>
-									<Sidebar.Menu>
-										<Sidebar.MenuItem>
-											<Sidebar.MenuButton>
-												<div class="flex items-center w-full">
-													{#if sidebar.state === 'expanded'}
-														<SunIcon class="h-5 w-5 text-yellow-500" />
-														<Switch bind:checked={darkMod} onclick={toggleDarkMode} class="mx-2" />
-														<MoonIcon class="h-5 w-5 text-gray-500" />
-													{:else}
-														<Switch
-															bind:checked={darkMod}
-															onclick={toggleDarkMode}
-															class="mx-auto"
-														/>
-													{/if}
-												</div>
-											</Sidebar.MenuButton>
-										</Sidebar.MenuItem>
-									</Sidebar.Menu>
-								</Tooltip.Trigger>
-								<Tooltip.Content side="right" align="center">
-									<p>Mode Sombre</p>
-								</Tooltip.Content>
-							</Tooltip.Root>
-						{/if}
-
-						<!-- Bouton pour le plein écran -->
-						{#if sidebar.state === 'expanded'}
-							<Tooltip.Root>
-								<Tooltip.Trigger>
-									<Sidebar.Menu>
-										<Sidebar.MenuItem>
-											<Sidebar.MenuButton>
-												<div class="flex items-center w-full">
-													{#if sidebar.state === 'expanded'}
-														<Maximize2Icon class="h-5 w-5" />
-														<Switch
-															checked={isFullscreen}
-															onclick={toggleFullscreen}
-															class="mx-2"
-														/>
-														<Minimize2Icon class="h-5 w-5" />
-													{:else}
-														<Switch
-															checked={isFullscreen}
-															onclick={toggleFullscreen}
-															class="mx-auto"
-														/>
-													{/if}
-												</div>
-											</Sidebar.MenuButton>
-										</Sidebar.MenuItem>
-									</Sidebar.Menu>
-								</Tooltip.Trigger>
-								<Tooltip.Content side="right" align="center">
-									<p>Plein Écran</p>
-								</Tooltip.Content>
-							</Tooltip.Root>
-						{/if}
-					</div>
-				</div>
-			</Sidebar.Group>
-
 			{@render SidebarGroup('CRUD', DatabaseIcon, crudItems)}
 			{@render SidebarGroup('Authentication', LockIcon, AuthItems)}
 			{@render SidebarGroup('State Manager', SettingsIcon, stateItems)}
@@ -195,19 +118,66 @@
 		</Sidebar.Content>
 
 		<!-- Footer de la Sidebar -->
-		<Sidebar.Footer>
-			<!-- Informations utilisateur -->
-			<div class="p-4">
-				<div class="flex items-center">
-					<img src={user.avatar} alt="Avatar" class="w-8 h-8 rounded-full" />
+		<Sidebar.Footer class="p-0">
+			<Sidebar.Group class="p-3 rounded">
+				<div class="flex row space-y-2 between justify-between content-start">
+					<!-- Switch pour le mode sombre -->
 					{#if sidebar.state === 'expanded'}
-						<div class="ml-2">
-							<p class="text-sm font-medium">{user.name}</p>
-							<p class="text-xs text-gray-500">{user.email}</p>
-						</div>
+						<Tooltip.Root>
+							<Tooltip.Trigger>
+								<Sidebar.Menu>
+									<Sidebar.MenuItem>
+										<Sidebar.MenuButton class="p-0 m-0">
+											<div class="flex items-center w-full">
+												{#if sidebar.state === 'expanded'}
+													<SunIcon class="h-5 w-5 text-yellow-500" />
+													<Switch bind:checked={darkMod} onclick={toggleDarkMode} class="mx-2" />
+													<MoonIcon class="h-5 w-5 text-gray-500" />
+												{:else}
+													<Switch bind:checked={darkMod} onclick={toggleDarkMode} class="mx-auto" />
+												{/if}
+											</div>
+										</Sidebar.MenuButton>
+									</Sidebar.MenuItem>
+								</Sidebar.Menu>
+							</Tooltip.Trigger>
+							<Tooltip.Content side="right" align="center">
+								<p>Mode Sombre</p>
+							</Tooltip.Content>
+						</Tooltip.Root>
+					{/if}
+
+					<!-- Bouton pour le plein écran -->
+					{#if sidebar.state === 'expanded'}
+						<Tooltip.Root>
+							<Tooltip.Trigger style="margin-top: 0px !important;">
+								<Sidebar.Menu>
+									<Sidebar.MenuItem>
+										<Sidebar.MenuButton class="p-0 m-0">
+											<div class="flex items-center w-full">
+												{#if sidebar.state === 'expanded'}
+													<Maximize2Icon class="h-5 w-5" />
+													<Switch checked={isFullscreen} onclick={toggleFullscreen} class="mx-2" />
+													<Minimize2Icon class="h-5 w-5" />
+												{:else}
+													<Switch
+														checked={isFullscreen}
+														onclick={toggleFullscreen}
+														class="mx-auto"
+													/>
+												{/if}
+											</div>
+										</Sidebar.MenuButton>
+									</Sidebar.MenuItem>
+								</Sidebar.Menu>
+							</Tooltip.Trigger>
+							<Tooltip.Content side="right" align="center">
+								<p>Plein Écran</p>
+							</Tooltip.Content>
+						</Tooltip.Root>
 					{/if}
 				</div>
-			</div>
+			</Sidebar.Group>
 
 			<!-- Options du footer -->
 		</Sidebar.Footer>

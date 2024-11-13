@@ -46,7 +46,7 @@ export const load = async (event: RequestEvent) => {
 		verifyCode,
 		email: verificationRequest.email
 	};
-}
+};
 
 export const actions: Actions = {
 	verifyCode: verifyCode,

@@ -18,7 +18,7 @@ const config = {
 			$components: 'src/lib/components',
 			$server: 'src/lib/server',
 			$store: 'src/lib/store',
-			$shadcn: 'src/lib/components/shadcn/ui',
+			$shadcn: 'src/lib/components/shadcn/ui'
 		}
 	}
 };

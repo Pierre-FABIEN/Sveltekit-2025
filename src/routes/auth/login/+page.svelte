@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Google } from 'arctic';
 	import * as Form from '$shadcn/form';
 	import { Input } from '$shadcn/input';
 	import { Button } from '$shadcn/button';
@@ -61,6 +62,9 @@
 				</Form.Field>
 			</div>
 
+			<a href="/auth/login/google">
+				<Button class="w-full">Sign in with Google</Button>
+			</a>
 			<div class="mt-6">
 				<Button type="submit" class="w-full">Continuer</Button>
 			</div>

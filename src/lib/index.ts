@@ -48,12 +48,11 @@ export const UIUXItems = [
 		url: '/transitionDemo',
 		icon: TransitionIcon
 	},
-    {
+	{
 		title: 'Carousel',
 		url: '/carousel',
 		icon: TransitionIcon
 	}
-
 ];
 
 export const AuthItems = [

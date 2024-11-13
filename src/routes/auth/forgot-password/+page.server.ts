@@ -17,7 +17,11 @@ import { zod } from 'sveltekit-superforms/adapters';
 const ipBucket = new RefillingTokenBucket<string>(3, 60);
 const userBucket = new RefillingTokenBucket<number>(3, 60);
 
-export const load = async (event: PageServerLoadEvent) => {
+export const load = async (event) => {
+	if (event.locals.session !== null && event.locals.user !== null) {
+		return redirect(302, '/auth/');
+	}
+
 	const forgotForm = await superValidate(event, zod(forgotPasswordSchema));
 
 	return {

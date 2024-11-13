@@ -25,19 +25,21 @@ import type { SessionFlags } from '$lib/lucia/session';
 const passwordUpdateBucket = new ExpiringTokenBucket<string>(5, 60 * 30);
 
 export const load = async (event: RequestEvent) => {
+	let recoveryCode: string | null = null;
+
 	if (event.locals.session === null || event.locals.user === null) {
 		return redirect(302, '/auth/login');
 	}
-	if (event.locals.user.registered2FA && !event.locals.session.twoFactorVerified) {
-		return redirect(302, '/auth/2fa');
-	}
+	if (!event.locals.user.googleId) {
+		if (event.locals.user.registered2FA && !event.locals.session.twoFactorVerified) {
+			return redirect(302, '/auth/2fa');
+		}
 
-	// Récupérer le code de récupération si l'utilisateur utilise l'authentification à deux facteurs
-	let recoveryCode: string | null = null;
-	if (event.locals.user.registered2FA) {
-		recoveryCode = await getUserRecoverCode(event.locals.user.id);
+		// Récupérer le code de récupération si l'utilisateur utilise l'authentification à deux facteurs
+		if (event.locals.user.registered2FA) {
+			recoveryCode = await getUserRecoverCode(event.locals.user.id);
+		}
 	}
-
 	// Initialiser les formulaires Superform
 	const passwordForm = await superValidate(event, zod(passwordSchema));
 	const emailForm = await superValidate(event, zod(emailSchema));

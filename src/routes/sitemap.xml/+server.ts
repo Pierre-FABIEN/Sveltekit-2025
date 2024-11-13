@@ -2,7 +2,7 @@
 
 import type { RequestHandler } from './$types';
 
-const site = 'https://votredomaine.com'; // Remplacez par votre domaine
+const site = 'https://votredomaine.com';
 
 // Importer toutes les pages Svelte automatiquement
 const pages = import.meta.glob('../**/+page.svelte', { eager: true });

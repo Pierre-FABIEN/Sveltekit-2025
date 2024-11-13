@@ -3,21 +3,23 @@ import { hashPassword } from './password';
 import { decrypt, decryptToString, encrypt, encryptString } from './encryption';
 import { generateRandomRecoveryCode } from './utils';
 
+// Interface utilisateur unifiée
 export interface User {
 	id: number;
 	email: string;
-	username: string;
+	username: string | null;
 	emailVerified: boolean;
 	registered2FA: boolean;
+	googleId?: string;
+	name?: string;
+	picture?: string;
 }
 
-// Crée un nouvel utilisateur avec un code de récupération chiffré
-export async function createUser(email: string, username: string, password: string) {
+// Crée un nouvel utilisateur avec email et mot de passe + 2FA
+export async function createUser(email: string, username: string, password: string): Promise<User> {
 	const passwordHash = await hashPassword(password);
 	const recoveryCode = generateRandomRecoveryCode();
 	const encryptedRecoveryCode = encryptString(recoveryCode);
-
-	// Convertir le Uint8Array en base64
 	const encryptedRecoveryCodeString = Buffer.from(encryptedRecoveryCode).toString('base64');
 
 	const user = await prisma.user.create({
@@ -30,11 +32,70 @@ export async function createUser(email: string, username: string, password: stri
 			totpKey: null
 		}
 	});
-
-	return user;
+	return { ...user, registered2FA: user.totpKey !== null };
 }
 
-// Met à jour le mot de passe de l'utilisateur
+// Crée un nouvel utilisateur via Google OAuth
+// Crée un nouvel utilisateur via Google OAuth
+export async function createUserOAuth(
+	googleId: string,
+	email: string,
+	name: string,
+	picture: string
+): Promise<User> {
+	const user = await prisma.user.create({
+		data: {
+			googleId,
+			email,
+			username: name,
+			name,
+			picture,
+			emailVerified: true,
+			passwordHash: null,
+			totpKey: null
+		}
+	});
+	// Indique que l'utilisateur OAuth n'utilise pas la 2FA
+	return { ...user, registered2FA: false };
+}
+
+// Récupère un utilisateur par email
+export async function getUserFromEmail(email: string): Promise<User | null> {
+	const user = await prisma.user.findUnique({
+		where: { email },
+		select: {
+			id: true,
+			email: true,
+			username: true,
+			emailVerified: true,
+			totpKey: true,
+			googleId: true,
+			name: true,
+			picture: true
+		}
+	});
+	return user ? { ...user, registered2FA: user.totpKey !== null } : null;
+}
+
+// Récupère un utilisateur par Google ID
+export async function getUserFromGoogleId(googleId: string): Promise<User | null> {
+	const user = await prisma.user.findUnique({
+		where: { googleId },
+		select: {
+			id: true,
+			email: true,
+			username: true,
+			emailVerified: true,
+			totpKey: true,
+			googleId: true,
+			name: true,
+			picture: true
+		}
+	});
+	return user ? { ...user, registered2FA: false } : null;
+}
+
+// Fonctions de gestion utilisateur (mot de passe, récupération, etc.)
 export async function updateUserPassword(userId: number, password: string): Promise<void> {
 	const passwordHash = await hashPassword(password);
 	await prisma.user.update({
@@ -43,7 +104,6 @@ export async function updateUserPassword(userId: number, password: string): Prom
 	});
 }
 
-// Met à jour l'email de l'utilisateur et le marque comme vérifié
 export async function updateUserEmailAndSetEmailAsVerified(
 	userId: number,
 	email: string
@@ -54,7 +114,6 @@ export async function updateUserEmailAndSetEmailAsVerified(
 	});
 }
 
-// Marque l'email de l'utilisateur comme vérifié si l'email correspond
 export async function setUserAsEmailVerifiedIfEmailMatches(
 	userId: number,
 	email: string
@@ -66,53 +125,36 @@ export async function setUserAsEmailVerifiedIfEmailMatches(
 	return result.count > 0;
 }
 
-// Récupère le hash du mot de passe de l'utilisateur
-export async function getUserPasswordHash(userId?: string, email?: string): Promise<string | null> {
-	// Vérifiez que l'un des deux paramètres est fourni
-	if (!userId && !email) {
-		throw new Error('Missing user identifier: userId or email is required.');
-	}
-
-	// Utilisez l'email si l'ID est manquant
+export async function getUserPasswordHash(userId?: number, email?: string): Promise<string | null> {
+	if (!userId && !email) throw new Error('Missing user identifier: userId or email is required.');
 	const whereClause = userId ? { id: userId } : { email };
-
 	const user = await prisma.user.findUnique({
 		where: whereClause,
 		select: { passwordHash: true }
 	});
-
-	if (!user) {
-		throw new Error('User not found.');
-	}
-
+	if (!user) throw new Error('User not found.');
 	return user.passwordHash;
 }
 
-// Récupère le code de récupération de l'utilisateur (décrypté)
 export async function getUserRecoverCode(userId: number): Promise<string> {
 	const user = await prisma.user.findUnique({
 		where: { id: userId },
-		select: { recoveryCode: true }
+		select: { recoveryCode: true, googleId: true }
 	});
-	if (!user || !user.recoveryCode) {
-		throw new Error('Invalid user ID');
+	if (!user || user.googleId || !user.recoveryCode) {
+		throw new Error('Recovery code not available for this user.');
 	}
 	return decryptToString(user.recoveryCode);
 }
 
-// Récupère la clé TOTP de l'utilisateur (décryptée)
 export async function getUserTOTPKey(userId: number): Promise<Uint8Array | null> {
 	const user = await prisma.user.findUnique({
 		where: { id: userId },
 		select: { totpKey: true }
 	});
-	if (!user || !user.totpKey) {
-		return null;
-	}
-	return decrypt(user.totpKey);
+	return user && user.totpKey ? decrypt(user.totpKey) : null;
 }
 
-// Met à jour la clé TOTP de l'utilisateur
 export async function updateUserTOTPKey(userId: number, key: Uint8Array): Promise<void> {
 	const encryptedKey = encrypt(key);
 	await prisma.user.update({
@@ -121,7 +163,6 @@ export async function updateUserTOTPKey(userId: number, key: Uint8Array): Promis
 	});
 }
 
-// Réinitialise le code de récupération de l'utilisateur
 export async function resetUserRecoveryCode(userId: number): Promise<string> {
 	const recoveryCode = generateRandomRecoveryCode();
 	const encryptedCode = encryptString(recoveryCode);
@@ -132,26 +173,18 @@ export async function resetUserRecoveryCode(userId: number): Promise<string> {
 	return recoveryCode;
 }
 
-// Récupère l'utilisateur à partir de l'email
-export async function getUserFromEmail(email: string): Promise<User | null> {
-	const user = await prisma.user.findUnique({
-		where: { email },
-		select: {
-			id: true,
-			email: true,
-			username: true,
-			emailVerified: true,
-			totpKey: true
-		}
-	});
+// Gestion des sessions OAuth pour Google
+export async function handleGoogleOAuth(
+	googleId: string,
+	email: string,
+	name: string,
+	picture: string
+): Promise<User> {
+	let user = await getUserFromGoogleId(googleId);
 	if (!user) {
-		return null;
+		user = await createUserOAuth(googleId, email, name, picture);
 	}
-	return {
-		id: user.id,
-		email: user.email,
-		username: user.username,
-		emailVerified: user.emailVerified,
-		registered2FA: user.totpKey !== null
-	};
+	// Indique que l'utilisateur OAuth n'utilise pas la 2FA
+	user.registered2FA = false;
+	return user;
 }

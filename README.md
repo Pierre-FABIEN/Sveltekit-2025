@@ -37,45 +37,11 @@ You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
 
-
 A installer:
 threlte
 Loader
 0auth
-sitemap
-
 
 Ne peut être :
 multiLang
 PWA
-
-
-
-Options supplémentaires
-svelte-sitemap offre plusieurs options pour personnaliser votre sitemap :
-
---out-dir, -o : Spécifie le dossier de sortie si différent de build.
-
-bash
-Copier le code
-npx svelte-sitemap --domain https://votredomaine.com --out-dir dist
---ignore, -i : Ignore des fichiers ou des dossiers spécifiques.
-
-bash
-Copier le code
-npx svelte-sitemap --domain https://votredomaine.com --ignore '**/admin/**' --ignore 'pages/secret-page'
---trailing-slashes, -t : Ajoute des slashes à la fin des URLs.
-
-bash
-Copier le code
-npx svelte-sitemap --domain https://votredomaine.com --trailing-slashes
---reset-time, -r : Définit lastModified à la date et l'heure actuelles.
-
-bash
-Copier le code
-npx svelte-sitemap --domain https://votredomaine.com --reset-time
---change-freq, -c : Définit la fréquence de changement des pages.
-
-bash
-Copier le code
-npx svelte-sitemap --domain https://votredomaine.com --change-freq daily

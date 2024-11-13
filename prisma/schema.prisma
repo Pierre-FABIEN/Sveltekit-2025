@@ -43,11 +43,14 @@ model Product {
 model User {
   id                        Int                        @id @default(autoincrement())
   email                     String                     @unique
-  username                  String
-  passwordHash              String
+  username                  String?
+  passwordHash              String?
   recoveryCode              String?
   emailVerified             Boolean                    @default(false)
   totpKey                   Bytes?
+  googleId                  String?                    @unique
+  name                      String?
+  picture                   String?
   sessions                  Session[]
   emailVerificationRequests EmailVerificationRequest[] @relation("UserEmailVerificationRequests")
   passwordResetSessions     PasswordResetSession[]     @relation("UserPasswordResetSessions")
@@ -58,6 +61,8 @@ model Session {
   userId            Int
   expiresAt         DateTime
   twoFactorVerified Boolean  @default(false)
+  oauthProvider     String?
+
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -67,17 +72,18 @@ model EmailVerificationRequest {
   email     String
   code      String
   expiresAt DateTime
+
   user      User     @relation("UserEmailVerificationRequests", fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model PasswordResetSession {
-  id        String   @id @default(uuid())
-  userId    Int
-  email     String
-  code      String
-  expiresAt DateTime
-  emailVerified     Boolean  @default(false) 
-  twoFactorVerified Boolean  @default(false) 
-  user      User     @relation("UserPasswordResetSessions", fields: [userId], references: [id], onDelete: Cascade)
-}
+  id                String   @id @default(uuid())
+  userId            Int
+  email             String
+  code              String
+  expiresAt         DateTime
+  emailVerified     Boolean  @default(false)
+  twoFactorVerified Boolean  @default(false)
 
+  user              User     @relation("UserPasswordResetSessions", fields: [userId], references: [id], onDelete: Cascade)
+}
