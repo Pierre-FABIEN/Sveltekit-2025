@@ -9,22 +9,22 @@ import { ChartBarIcon, KeyIcon } from 'lucide-svelte';
 export const crudItems = [
 	{
 		title: 'Directors',
-		url: '/directors',
+		url: '/crud/directors',
 		icon: DirectorsIcon
 	},
 	{
 		title: 'Agencies',
-		url: '/agencies',
+		url: '/crud/agencies',
 		icon: AgenciesIcon
 	},
 	{
 		title: 'Products',
-		url: '/products',
+		url: '/crud/products',
 		icon: ProductsIcon
 	},
 	{
 		title: 'Statistical',
-		url: '/stats',
+		url: '/crud/stats',
 		icon: ChartBarIcon
 	}
 ];
@@ -32,12 +32,12 @@ export const crudItems = [
 export const stateItems = [
 	{
 		title: 'Snippet',
-		url: '/snippet',
+		url: '/stateManager/snippet',
 		icon: SnippetIcon
 	},
 	{
 		title: 'State',
-		url: '/state',
+		url: '/stateManager/state',
 		icon: StateIcon
 	}
 ];
@@ -45,12 +45,17 @@ export const stateItems = [
 export const UIUXItems = [
 	{
 		title: 'Transition Demo',
-		url: '/transitionDemo',
+		url: '/UXUI/transitionDemo',
 		icon: TransitionIcon
 	},
 	{
 		title: 'Carousel',
-		url: '/carousel',
+		url: '/UXUI/carousel',
+		icon: TransitionIcon
+	},
+	{
+		title: 'SiteMap',
+		url: '/UXUI/sitemap.xml',
 		icon: TransitionIcon
 	}
 ];

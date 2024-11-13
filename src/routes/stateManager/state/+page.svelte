@@ -1,6 +1,5 @@
 <!-- App.svelte -->
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { todoStore } from './todoStore.svelte';
 	import { Button } from '$shadcn/button';
 	import Input from '$shadcn/input/input.svelte';
@@ -21,8 +20,15 @@
 		todos = todoStore.todos;
 	});
 
-	onMount(async () => {
-		await todoStore.loadTodos();
+	$effect(() => {
+		todoStore
+			.loadTodos()
+			.then(() => {
+				// handle the promise resolution
+			})
+			.catch((error) => {
+				// handle the promise rejection
+			});
 	});
 </script>
 

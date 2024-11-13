@@ -40,7 +40,7 @@ You can preview the production build with `npm run preview`.
 A installer:
 threlte
 Loader
-0auth
+test sur les auth
 
 Ne peut être :
 multiLang

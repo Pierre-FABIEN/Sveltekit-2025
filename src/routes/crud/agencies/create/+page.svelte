@@ -56,7 +56,7 @@
 	$effect(() => {
 		if ($createAgenceMessage === 'Agence created successfully') {
 			toast.success($createAgenceMessage);
-			setTimeout(() => goto('/agencies'), 0);
+			setTimeout(() => goto('/crud/agencies'), 0);
 		}
 	});
 

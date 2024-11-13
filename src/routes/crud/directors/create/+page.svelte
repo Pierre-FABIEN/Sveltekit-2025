@@ -30,7 +30,7 @@
 	$effect(() => {
 		if ($createDirectorMessage === 'Director created successfully') {
 			toast.success($createDirectorMessage);
-			setTimeout(() => goto('/directors'), 0);
+			setTimeout(() => goto('/crud/directors'), 0);
 		}
 
 		console.log($createDirectorData);

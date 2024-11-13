@@ -25,7 +25,7 @@
 	$effect(() => {
 		if ($updateDirectorMessage === 'Director updated successfully') {
 			toast.success($updateDirectorMessage);
-			setTimeout(() => goto('/directors'), 0);
+			setTimeout(() => goto('/crud/directors'), 0);
 		}
 	});
 </script>

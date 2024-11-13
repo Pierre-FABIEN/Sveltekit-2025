@@ -57,7 +57,7 @@
 	$effect(() => {
 		if ($updateAgenceMessage === 'Agence updated successfully') {
 			toast.success($updateAgenceMessage);
-			setTimeout(() => goto('/agencies'), 0);
+			setTimeout(() => goto('/crud/agencies'), 0);
 		}
 
 		let directorId = $updateAgenceData.directorId;
