@@ -60,6 +60,11 @@ export const actions: Actions = {
 			return message(form, 'Le compte nexiste pas');
 		}
 
+		// Si l'utilisateur possède un googleId, c'est un utilisateur OAuth
+		if (user.googleId) {
+			return message(form, 'Connectez vous via Google OAuth');
+		}
+
 		if (clientIP !== null && !ipBucket.consume(clientIP, 1)) {
 			return message(form, 'Too many requests');
 		}
