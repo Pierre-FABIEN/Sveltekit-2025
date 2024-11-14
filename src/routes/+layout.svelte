@@ -64,8 +64,4 @@
 		margin: 0;
 		max-width: none;
 	}
-	.iconeNav {
-		position: absolute;
-		z-index: 100;
-	}
 </style>

@@ -4,6 +4,7 @@
 	import { SpotLightHelper, Object3D } from 'three';
 	import type * as THREE from 'three';
 
+	// Props
 	export let helpers: boolean = true; // Afficher ou masquer le helper
 	export let intensity: number = 1; // Intensité de la lumière
 	export let position: [number, number, number] = [0, 10, 0]; // Position de la lumière
@@ -11,6 +12,7 @@
 	export let penumbra: number = 0.5; // Douceur du bord
 	export let distance: number = 20; // Distance maximale d'éclairage
 	export let targetRef: THREE.Object3D | null = null; // Référence de la cible
+	export let targetPosition: [number, number, number] = [0, 0, 0]; // Position de la cible
 
 	// Accéder à la scène via Threlte
 	const { scene } = useThrelte();
@@ -24,9 +26,19 @@
 	$: activeTargetRef = targetRef || defaultTargetRef;
 
 	// Ajouter la cible à la scène uniquement si `helpers` est activé
-	if (helpers && !targetRef) {
-		defaultTargetRef.position.set(0, 0, 0);
-		scene.add(defaultTargetRef);
+	if (!targetRef) {
+		defaultTargetRef.position.set(...targetPosition);
+		if (!scene.children.includes(defaultTargetRef)) {
+			scene.add(defaultTargetRef);
+		}
+	}
+
+	// Mettre à jour la position de la cible si `targetPosition` change
+	$: {
+		if (activeTargetRef) {
+			activeTargetRef.position.set(...targetPosition);
+			activeTargetRef.updateMatrixWorld();
+		}
 	}
 </script>
 

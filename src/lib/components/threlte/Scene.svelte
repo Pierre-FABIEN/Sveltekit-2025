@@ -27,9 +27,30 @@
 	helpers={false}
 	intensity={70}
 	position={[0, 10, 0]}
-	angle={Math.PI / 6}
+	angle={Math.PI / 7}
 	penumbra={0.5}
 	distance={50}
-	targetRef={new THREE.Object3D()}
+	targetPosition={[0, 0, 0]}
 />
+
+<SpotLight
+	helpers={false}
+	intensity={70}
+	position={[0, 10, 0]}
+	angle={Math.PI / 7}
+	penumbra={0.5}
+	distance={50}
+	targetPosition={[5, 0, 10]}
+/>
+
+<SpotLight
+	helpers={false}
+	intensity={70}
+	position={[0, 10, 0]}
+	angle={Math.PI / 7}
+	penumbra={0.5}
+	distance={50}
+	targetPosition={[5, 0, -10]}
+/>
+
 <Modele />

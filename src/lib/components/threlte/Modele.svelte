@@ -1,7 +1,9 @@
-<script>
-	import { Group } from 'three';
-	import { T } from '@threlte/core';
+<script lang="ts">
+	import { Group, Object3D } from 'three';
+	import * as THREE from 'three';
+	import { T, useTask } from '@threlte/core';
 	import { useDraco, useGltf } from '@threlte/extras';
+	import { tick } from 'svelte';
 
 	export const ref = new Group();
 	const dracoLoader = useDraco('/draco/');
@@ -9,9 +11,36 @@
 	const gltf = useGltf('/models/modeleDraco.glb', {
 		dracoLoader
 	});
+
+	// Références des objets
+	let synthNode: THREE.Object3D | null = $state(null);
+	let keyboardNode: THREE.Object3D | null = $state(null);
+	let nodesInitialized = false;
+
+	// Initialisation des nœuds après le chargement de gltf
+	async function initializeNodes() {
+		if (!gltf) return;
+		nodesInitialized = true;
+	}
+
+	$effect(() => {
+		gltf.then(() => {
+			initializeNodes();
+		});
+	});
+
+	// Tâche pour animer les objets seulement si les nœuds sont initialisés
+	useTask((delta) => {
+		if (!nodesInitialized || !synthNode || !keyboardNode) return;
+		synthNode.rotation.x = 0.8;
+		keyboardNode.rotation.x = -0.8;
+		// Appliquer la rotation
+		synthNode.rotation.y += delta * 0.5;
+		keyboardNode.rotation.y += delta * 0.5;
+	});
 </script>
 
-<T is={ref} dispose={false} {...$$restProps}>
+<T is={ref} dispose={false}>
 	{#await gltf}
 		<slot name="fallback" />
 	{:then gltf}
@@ -56,6 +85,7 @@
 			position={[0.18, 3, -1.65]}
 			rotation={[Math.PI / 2, 0, -Math.PI / 2]}
 			scale={5}
+			bind:ref={keyboardNode}
 		/>
 		<T.Mesh
 			castShadow
@@ -144,6 +174,7 @@
 			position={[0, 3, 1.7]}
 			rotation={[Math.PI / 2, 0, -Math.PI / 2]}
 			scale={0.1}
+			bind:ref={synthNode}
 		/>
 	{:catch error}
 		<slot name="error" {error} />
