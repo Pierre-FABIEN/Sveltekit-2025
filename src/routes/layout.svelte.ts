@@ -3,7 +3,6 @@
 import { writable } from 'svelte/store';
 import { navigationStore } from '$store/navigationStore';
 import { onNavigate } from '$app/navigation';
-import { setFirstOpen, setRessourceToValide } from '$lib/store/initialLoaderStore';
 
 export const isClient = writable(false);
 export const loading = writable(true);
@@ -11,9 +10,6 @@ export const progressValue = writable(0);
 export const previousRouteId = writable(null);
 
 export function initializeLayoutState(currentPage) {
-	setFirstOpen(true);
-	setRessourceToValide(true);
-
 	const currentData = {
 		routeId: currentPage.route.id
 	};

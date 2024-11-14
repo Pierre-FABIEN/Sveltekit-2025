@@ -25,6 +25,9 @@
 			initializeLayoutState(currentPage);
 		});
 		setupNavigationEffect();
+		setFirstOpen(true);
+		setRessourceToValide(true);
+
 		return unsubscribe;
 	});
 </script>

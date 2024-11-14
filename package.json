@@ -92,6 +92,7 @@
 		"lucia-auth": "^1.8.0",
 		"smooth-scrollbar": "^8.8.4",
 		"three": "^0.170.0",
-		"uqr": "^0.1.2"
+		"uqr": "^0.1.2",
+		"vite-plugin-pwa": "^0.21.0"
 	}
 }
