@@ -16,7 +16,8 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright test",
-		"model-pipeline:run": "node scripts/model-pipeline.js"
+		"model-pipeline:run": "node scripts/model-pipeline.js",
+		"seed": "node src/lib/server/seed.js"
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.5.6",

@@ -38,9 +38,8 @@ You can preview the production build with `npm run preview`.
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
 
 A installer:
-threlte
-Loader
-test sur les auth
+test playwright sur les auth
+mettre une option pour la f2a
 
 Ne peut être :
 multiLang

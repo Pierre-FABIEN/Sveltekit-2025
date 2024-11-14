@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page, navigating } from '$app/stores';
 	import { ModeWatcher } from 'mode-watcher';
 	import { Toaster } from '$shadcn/sonner';
 	import { Progress } from '$shadcn/progress/index.js';
@@ -12,16 +12,25 @@
 
 	import AlignJustify from 'lucide-svelte/icons/align-justify';
 	import { useSidebar } from '$lib/components/shadcn/ui/sidebar/index.js';
+	import {
+		firstLoadComplete,
+		setFirstOpen,
+		setRessourceToValide
+	} from '$lib/store/initialLoaderStore';
+	import Loader from '$lib/components/loader/Loader.svelte';
 
 	const sidebar = useSidebar();
 
 	let { children } = $props();
 	let isClient = $state(false);
 	let loading = $state(true);
-	let value = $state(0);
+	let progressValue = $state(0);
 	let previousRouteId = $state($page.route.id);
 
 	$effect(() => {
+		setFirstOpen(true);
+		setRessourceToValide(true);
+
 		const currentData = {
 			routeId: $page.route.id
 		};
@@ -33,8 +42,8 @@
 
 		isClient = true;
 		const timer = setInterval(() => {
-			if (value < 100) {
-				value += 10;
+			if (progressValue < 100) {
+				progressValue += 10;
 			} else {
 				clearInterval(timer);
 				loading = false;
@@ -67,39 +76,44 @@
 	});
 </script>
 
-{#if loading}
-	<div class="flex h-[100vh] w-[100vw] items-center justify-center">
-		<Progress {value} max={100} class="w-[50vw]" />
-	</div>
-{:else if isClient}
-	<Sidebar.Provider>
-		<ModeWatcher />
+<svelte:head>
+	<link rel="icon" href="/favicon.png" />
+	<meta name="viewport" content="width=device-width" />
+	<link rel="manifest" href="/pwa/manifest.webmanifest" />
+	<meta name="theme-color" content="#4285f4" />
+</svelte:head>
 
-		<SidebarMenu />
-
-		<div class="container">
-			<div class="iconeNav">
-				<Sidebar.Trigger>
-					{#if !sidebar.open}
-						<button
-							class="fixed z-50 p-2 rounded-md bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent"
-							onclick={() => sidebar.toggle()}
-						>
-							<AlignJustify class="h-6 w-6" />
-							<span class="sr-only">Ouvrir la sidebar</span>
-						</button>
-					{/if}
-				</Sidebar.Trigger>
-			</div>
-			<SmoothScrollBar>
-				<main>
-					{@render children()}
-				</main>
-			</SmoothScrollBar>
-		</div>
-		<Toaster />
-	</Sidebar.Provider>
+{#if !$firstLoadComplete}
+	<Loader />
 {/if}
+
+<Sidebar.Provider>
+	<ModeWatcher />
+
+	<SidebarMenu />
+
+	<div class="container">
+		<div class="iconeNav">
+			<Sidebar.Trigger>
+				{#if !sidebar.open}
+					<button
+						class="fixed z-50 p-2 rounded-md bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent"
+						onclick={() => sidebar.toggle()}
+					>
+						<AlignJustify class="h-6 w-6" />
+						<span class="sr-only">Ouvrir la sidebar</span>
+					</button>
+				{/if}
+			</Sidebar.Trigger>
+		</div>
+		<SmoothScrollBar>
+			<main>
+				{@render children()}
+			</main>
+		</SmoothScrollBar>
+	</div>
+	<Toaster />
+</Sidebar.Provider>
 
 <style>
 	main {
