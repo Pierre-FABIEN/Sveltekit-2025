@@ -1,15 +1,12 @@
 <script lang="ts">
-	import { page, navigating } from '$app/stores';
+	import { initializeLayoutState, setupNavigationEffect, isClient } from './layout.svelte';
+
 	import { ModeWatcher } from 'mode-watcher';
 	import { Toaster } from '$shadcn/sonner';
-	import { Progress } from '$shadcn/progress/index.js';
 	import '../app.css';
-	import { navigationStore } from '$store/navigationStore';
-	import { onNavigate } from '$app/navigation';
 	import SmoothScrollBar from '$lib/components/smoothScrollBar/SmoothScrollBar.svelte';
 	import * as Sidebar from '$lib/components/shadcn/ui/sidebar';
 	import SidebarMenu from '$lib/components/SidebarMenu.svelte';
-
 	import AlignJustify from 'lucide-svelte/icons/align-justify';
 	import { useSidebar } from '$lib/components/shadcn/ui/sidebar/index.js';
 	import {
@@ -18,61 +15,17 @@
 		setRessourceToValide
 	} from '$lib/store/initialLoaderStore';
 	import Loader from '$lib/components/loader/Loader.svelte';
-
-	const sidebar = useSidebar();
+	import { page } from '$app/stores';
 
 	let { children } = $props();
-	let isClient = $state(false);
-	let loading = $state(true);
-	let progressValue = $state(0);
-	let previousRouteId = $state($page.route.id);
+	const sidebar = useSidebar();
 
 	$effect(() => {
-		setFirstOpen(true);
-		setRessourceToValide(true);
-
-		const currentData = {
-			routeId: $page.route.id
-		};
-
-		navigationStore.set({
-			from: null,
-			to: currentData
+		const unsubscribe = page.subscribe((currentPage) => {
+			initializeLayoutState(currentPage);
 		});
-
-		isClient = true;
-		const timer = setInterval(() => {
-			if (progressValue < 100) {
-				progressValue += 10;
-			} else {
-				clearInterval(timer);
-				loading = false;
-			}
-		}, 10);
-	});
-
-	onNavigate((navigation) => {
-		const fromData = navigation.from
-			? {
-					routeId: navigation.from.route.id
-				}
-			: null;
-
-		const toData = navigation.to
-			? {
-					routeId: navigation.to.route.id
-				}
-			: null;
-
-		// Vérifier les conditions avant de mettre à jour le store
-		if (fromData && toData && fromData.routeId !== toData.routeId) {
-			navigationStore.set({
-				from: fromData,
-				to: toData
-			});
-			previousRouteId = toData.routeId;
-		} else {
-		}
+		setupNavigationEffect();
+		return unsubscribe;
 	});
 </script>
 
@@ -86,34 +39,35 @@
 {#if !$firstLoadComplete}
 	<Loader />
 {/if}
+{#if $isClient}
+	<Sidebar.Provider>
+		<ModeWatcher />
 
-<Sidebar.Provider>
-	<ModeWatcher />
+		<SidebarMenu />
 
-	<SidebarMenu />
-
-	<div class="container">
-		<div class="iconeNav">
-			<Sidebar.Trigger>
-				{#if !sidebar.open}
-					<button
-						class="fixed z-50 p-2 rounded-md bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent"
-						onclick={() => sidebar.toggle()}
-					>
-						<AlignJustify class="h-6 w-6" />
-						<span class="sr-only">Ouvrir la sidebar</span>
-					</button>
-				{/if}
-			</Sidebar.Trigger>
+		<div class="container">
+			<div class="iconeNav">
+				<Sidebar.Trigger>
+					{#if !sidebar.open}
+						<button
+							class="fixed z-50 p-2 rounded-md bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent"
+							onclick={() => sidebar.toggle()}
+						>
+							<AlignJustify class="h-6 w-6" />
+							<span class="sr-only">Ouvrir la sidebar</span>
+						</button>
+					{/if}
+				</Sidebar.Trigger>
+			</div>
+			<SmoothScrollBar>
+				<main>
+					{@render children()}
+				</main>
+			</SmoothScrollBar>
 		</div>
-		<SmoothScrollBar>
-			<main>
-				{@render children()}
-			</main>
-		</SmoothScrollBar>
-	</div>
-	<Toaster />
-</Sidebar.Provider>
+		<Toaster />
+	</Sidebar.Provider>
+{/if}
 
 <style>
 	main {
