@@ -15,15 +15,22 @@
 	let desiredTarget = new THREE.Vector3(0, 2, 0);
 	let desiredCameraPosition = new THREE.Vector3(-25, 7, 0);
 
+	// Intensité des lumières avec interpolation
+	let leftSpotLightIntensity = $state(0);
+	let rightSpotLightIntensity = $state(0);
+	let targetLeftIntensity = 0;
+	let targetRightIntensity = 0;
+
 	// Fonction pour détecter la position de la souris et calculer le pourcentage
 	function handleMouseMove(event: MouseEvent) {
 		const mouseX = event.clientX;
 		const windowWidth = window.innerWidth;
 
 		mousePercentage = mouseX / windowWidth;
-		isMouseOutside = false; // Réinitialiser lorsque la souris est à l'intérieur
+		isMouseOutside = false;
 
 		updateDesiredPositions();
+		updateLightIntensityTargets();
 	}
 
 	// Fonction pour détecter si la souris quitte la fenêtre
@@ -31,6 +38,7 @@
 		if (!event.relatedTarget) {
 			isMouseOutside = true;
 			updateDesiredPositions();
+			updateLightIntensityTargets();
 		}
 	}
 
@@ -38,23 +46,43 @@
 	function handleMouseEnter() {
 		isMouseOutside = false;
 		updateDesiredPositions();
+		updateLightIntensityTargets();
 	}
 
 	// Mettre à jour les positions désirées
 	function updateDesiredPositions() {
 		if (isMouseOutside) {
-			// Réinitialiser la cible et la caméra lorsque la souris est en dehors
 			desiredTarget.set(0, 2, 0);
 			desiredCameraPosition.set(-25, 7, 0);
 		} else {
-			// Interpoler la position de la cible et inverser le mouvement de la caméra
 			const targetZ = THREE.MathUtils.lerp(-5, 5, mousePercentage);
 			desiredTarget.set(0, 2, targetZ);
 
-			// Déplacer la caméra vers la direction opposée
-			const cameraX = THREE.MathUtils.lerp(-20, -20, 1 - mousePercentage);
-			const cameraZ = THREE.MathUtils.lerp(-10, 10, 1 - mousePercentage);
+			const cameraX = THREE.MathUtils.lerp(-27, -23, 1 - mousePercentage);
+			const cameraZ = THREE.MathUtils.lerp(-4, 4, 1 - mousePercentage);
 			desiredCameraPosition.set(cameraX, 7, cameraZ);
+		}
+	}
+
+	// Mettre à jour les cibles d'intensité des lumières
+	function updateLightIntensityTargets() {
+		const centerMargin = 0.2;
+
+		if (isMouseOutside) {
+			targetLeftIntensity = 0;
+			targetRightIntensity = 0;
+		} else if (mousePercentage < 0.5 - centerMargin) {
+			// La souris est à gauche
+			targetLeftIntensity = 70;
+			targetRightIntensity = 0;
+		} else if (mousePercentage > 0.5 + centerMargin) {
+			// La souris est à droite
+			targetLeftIntensity = 0;
+			targetRightIntensity = 70;
+		} else {
+			// La souris est au centre
+			targetLeftIntensity = 0;
+			targetRightIntensity = 0;
 		}
 	}
 
@@ -62,11 +90,18 @@
 	function animate() {
 		requestAnimationFrame(animate);
 
-		// Interpoler vers les positions désirées
+		// Interpolation pour une transition fluide des intensités
+		leftSpotLightIntensity = THREE.MathUtils.lerp(leftSpotLightIntensity, targetLeftIntensity, 0.1);
+		rightSpotLightIntensity = THREE.MathUtils.lerp(
+			rightSpotLightIntensity,
+			targetRightIntensity,
+			0.1
+		);
+
+		// Interpoler les positions de la caméra et de la cible
 		OrbitControlsRef.target.lerp(desiredTarget, 0.1);
 		PerspectiveCameraRef.position.lerp(desiredCameraPosition, 0.1);
 
-		// Mettre à jour la caméra et les contrôles
 		PerspectiveCameraRef.updateProjectionMatrix();
 		OrbitControlsRef.update();
 	}
@@ -98,6 +133,7 @@
 		helpers={false}
 	/>
 
+	<!-- Lumière principale -->
 	<SpotLight
 		helpers={false}
 		intensity={70}
@@ -108,9 +144,10 @@
 		targetPosition={[0, 0, 0]}
 	/>
 
+	<!-- SpotLight droite (intensité interpolée) -->
 	<SpotLight
 		helpers={false}
-		intensity={70}
+		intensity={rightSpotLightIntensity}
 		position={[0, 10, 0]}
 		angle={Math.PI / 7}
 		penumbra={0.5}
@@ -118,9 +155,10 @@
 		targetPosition={[5, 0, 10]}
 	/>
 
+	<!-- SpotLight gauche (intensité interpolée) -->
 	<SpotLight
 		helpers={false}
-		intensity={70}
+		intensity={leftSpotLightIntensity}
 		position={[0, 10, 0]}
 		angle={Math.PI / 7}
 		penumbra={0.5}
