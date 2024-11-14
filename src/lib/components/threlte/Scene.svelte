@@ -1,43 +1,35 @@
-<script>
+<script lang="ts">
 	import { T } from '@threlte/core';
-	import { ContactShadows, Float, Grid, OrbitControls } from '@threlte/extras';
+	import { OrbitControls } from '@threlte/extras';
+	import Modele from './Modele.svelte';
+	import SpotLight from './utils/SpotLight.svelte';
+	import * as THREE from 'three';
+	import FlameLight from './utils/FlameLight.svelte';
+
+	let PerspectiveCameraRef: THREE.PerspectiveCamera;
 </script>
 
-<T.PerspectiveCamera makeDefault position={[-10, 10, 10]} fov={15}>
-	<OrbitControls autoRotate enableZoom={false} enableDamping autoRotateSpeed={0.5} target.y={1.5} />
+<T.PerspectiveCamera bind:ref={PerspectiveCameraRef} makeDefault position={[-25, 7, 0]} fov={15}>
+	<OrbitControls autoRotate={false} enableZoom={true} enableDamping={true} target={[0, 2, 0]} />
 </T.PerspectiveCamera>
 
-<T.DirectionalLight intensity={0.8} position.x={5} position.y={10} />
-<T.AmbientLight intensity={0.2} />
-
-<Grid
-	position.y={-0.001}
-	cellColor="#ffffff"
-	sectionColor="#ffffff"
-	sectionThickness={0}
-	fadeDistance={25}
-	cellSize={2}
+<FlameLight
+	color="#FFA500"
+	intensity={1}
+	position={[-0.25, 2.75, 0]}
+	distance={0.8}
+	decay={1}
+	castShadow={true}
+	helpers={false}
 />
 
-<ContactShadows scale={10} blur={2} far={2.5} opacity={0.5} />
-
-<Float floatIntensity={1} floatingRange={[0, 1]}>
-	<T.Mesh position.y={1.2} position.z={-0.75}>
-		<T.BoxGeometry />
-		<T.MeshStandardMaterial color="#0059BA" />
-	</T.Mesh>
-</Float>
-
-<Float floatIntensity={1} floatingRange={[0, 1]}>
-	<T.Mesh position={[1.2, 1.5, 0.75]} rotation.x={5} rotation.y={71}>
-		<T.TorusKnotGeometry args={[0.5, 0.15, 100, 12, 2, 3]} />
-		<T.MeshStandardMaterial color="#F85122" />
-	</T.Mesh>
-</Float>
-
-<Float floatIntensity={1} floatingRange={[0, 1]}>
-	<T.Mesh position={[-1.4, 1.5, 0.75]} rotation={[-5, 128, 10]}>
-		<T.IcosahedronGeometry />
-		<T.MeshStandardMaterial color="#F8EBCE" />
-	</T.Mesh>
-</Float>
+<SpotLight
+	helpers={false}
+	intensity={70}
+	position={[0, 10, 0]}
+	angle={Math.PI / 6}
+	penumbra={0.5}
+	distance={50}
+	targetRef={new THREE.Object3D()}
+/>
+<Modele />

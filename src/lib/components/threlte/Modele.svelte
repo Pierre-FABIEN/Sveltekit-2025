@@ -1,0 +1,153 @@
+<script>
+	import { Group } from 'three';
+	import { T } from '@threlte/core';
+	import { useDraco, useGltf } from '@threlte/extras';
+
+	export const ref = new Group();
+	const dracoLoader = useDraco('/draco/');
+
+	const gltf = useGltf('/models/modeleDraco.glb', {
+		dracoLoader
+	});
+</script>
+
+<T is={ref} dispose={false} {...$$restProps}>
+	{#await gltf}
+		<slot name="fallback" />
+	{:then gltf}
+		<T.Mesh
+			castShadow
+			receiveShadow
+			geometry={gltf.nodes.Desk.geometry}
+			material={gltf.nodes.Desk.material}
+			position={[4.62, 1.02, -6.8]}
+			rotation={[-1.57, -0.01, -0.55]}
+			scale={1.8}
+		/>
+		<T.Mesh
+			castShadow
+			receiveShadow
+			geometry={gltf.nodes.Ground.geometry}
+			material={gltf.nodes.Ground.material}
+			scale={[50, 1, 50]}
+		/>
+		<T.Mesh
+			castShadow
+			receiveShadow
+			geometry={gltf.nodes.Human.geometry}
+			material={gltf.nodes.Human.material}
+			position={[0.32, 2.99, 0.28]}
+			rotation={[2.42, 0.76, -1.98]}
+			scale={0.15}
+		/>
+		<T.Mesh
+			castShadow
+			receiveShadow
+			geometry={gltf.nodes.Humans.geometry}
+			material={gltf.nodes.Humans.material}
+			position={[-16.41, 0, 0]}
+			scale={2}
+		/>
+		<T.Mesh
+			castShadow
+			receiveShadow
+			geometry={gltf.nodes.Keyboard.geometry}
+			material={gltf.nodes.Keyboard.material}
+			position={[0.18, 3, -1.65]}
+			rotation={[Math.PI / 2, 0, -Math.PI / 2]}
+			scale={5}
+		/>
+		<T.Mesh
+			castShadow
+			receiveShadow
+			geometry={gltf.nodes.letterC.geometry}
+			material={gltf.nodes.letterC.material}
+			position={[4.19, 2.3, 9.97]}
+			rotation={[1.34, -0.11, 2.31]}
+			scale={[0.49, 0.52, 0.64]}
+		/>
+		<T.Mesh
+			castShadow
+			receiveShadow
+			geometry={gltf.nodes.letterD.geometry}
+			material={gltf.nodes.letterD.material}
+			position={[3.44, 1.65, -8.21]}
+			rotation={[Math.PI / 2, 0, 0.68]}
+			scale={[0.57, 0.66, 0.49]}
+		/>
+		<T.Mesh
+			castShadow
+			receiveShadow
+			geometry={gltf.nodes.letterE.geometry}
+			material={gltf.nodes.letterE.material}
+			position={[4.15, 1.8, -7.68]}
+			rotation={[Math.PI / 2, 0, 0.68]}
+			scale={[0.57, 0.66, 0.49]}
+		/>
+		<T.Mesh
+			castShadow
+			receiveShadow
+			geometry={gltf.nodes.letterI.geometry}
+			material={gltf.nodes.letterI.material}
+			position={[4.1, 2.34, 9.21]}
+			rotation={[1.57, -0.43, 1.99]}
+			scale={[0.49, 0.52, 0.64]}
+		/>
+		<T.Mesh
+			castShadow
+			receiveShadow
+			geometry={gltf.nodes.letterM.geometry}
+			material={gltf.nodes.letterM.material}
+			position={[5.36, 1.64, 6.74]}
+			rotation={[1.48, -0.2, 1.92]}
+			scale={[0.49, 0.52, 0.64]}
+		/>
+		<T.Mesh
+			castShadow
+			receiveShadow
+			geometry={gltf.nodes.letterS.geometry}
+			material={gltf.nodes.letterS.material}
+			position={[4.69, 2.35, 8.9]}
+			rotation={[1.41, -0.2, 1.94]}
+			scale={[0.49, 0.52, 0.64]}
+		/>
+		<T.Mesh
+			castShadow
+			receiveShadow
+			geometry={gltf.nodes.letterU.geometry}
+			material={gltf.nodes.letterU.material}
+			position={[5.2, 1.78, 7.98]}
+			rotation={[1.44, -0.31, -1.11]}
+			scale={[0.49, 0.52, 0.64]}
+		/>
+		<T.Mesh
+			castShadow
+			receiveShadow
+			geometry={gltf.nodes.letterV.geometry}
+			material={gltf.nodes.letterV.material}
+			position={[4.75, 2.01, -7.21]}
+			rotation={[Math.PI / 2, 0, 0.68]}
+			scale={[0.57, 0.66, 0.49]}
+		/>
+		<T.Mesh
+			castShadow
+			receiveShadow
+			geometry={gltf.nodes.Piano.geometry}
+			material={gltf.nodes.Piano.material}
+			position={[4.6, 0.72, 6.85]}
+		/>
+		<T.Mesh
+			castShadow
+			receiveShadow
+			geometry={gltf.nodes.Synth.geometry}
+			material={gltf.nodes.Synth.material}
+			position={[0, 3, 1.7]}
+			rotation={[Math.PI / 2, 0, -Math.PI / 2]}
+			scale={0.1}
+		/>
+	{:catch error}
+		<slot name="error" {error} />
+	{/await}
+
+	<slot {ref} />
+</T>
