@@ -1,9 +1,9 @@
 <script>
-	import Threltre from '$lib/components/threlte/Threltre.svelte';
+	import Scene from '$lib/components/threlte/Scene.svelte';
 </script>
 
 <div class="threlte">
-	<Threltre />
+	<Scene />
 </div>
 
 <style>
