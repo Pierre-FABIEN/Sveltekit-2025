@@ -7,8 +7,8 @@
 	import * as THREE from 'three';
 	import FlameLight from './utils/FlameLight.svelte';
 
-	let PerspectiveCameraRef: THREE.PerspectiveCamera;
-	let OrbitControlsRef: any;
+	let PerspectiveCameraRef = $state<THREE.PerspectiveCamera | undefined>(undefined);
+	let OrbitControlsRef = $state<any | undefined>(undefined);
 
 	let isMouseOutside = false;
 	let mousePercentage = 0;
