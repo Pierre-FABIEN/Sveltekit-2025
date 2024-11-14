@@ -11,15 +11,15 @@
 	let OrbitControlsRef = $state<any | undefined>(undefined);
 
 	let isMouseOutside = false;
-	let mousePercentage = 0;
+	let mousePercentage = $state(0);
 	let desiredTarget = new THREE.Vector3(0, 2, 0);
 	let desiredCameraPosition = new THREE.Vector3(-25, 7, 0);
 
 	// Intensité des lumières avec interpolation
 	let leftSpotLightIntensity = $state(0);
 	let rightSpotLightIntensity = $state(0);
-	let targetLeftIntensity = 0;
-	let targetRightIntensity = 0;
+	let targetLeftIntensity = $state(0);
+	let targetRightIntensity = $state(0);
 
 	// Fonction pour détecter la position de la souris et calculer le pourcentage
 	function handleMouseMove(event: MouseEvent) {
@@ -58,8 +58,8 @@
 			const targetZ = THREE.MathUtils.lerp(-5, 5, mousePercentage);
 			desiredTarget.set(0, 2, targetZ);
 
-			const cameraX = THREE.MathUtils.lerp(-27, -23, 1 - mousePercentage);
-			const cameraZ = THREE.MathUtils.lerp(-4, 4, 1 - mousePercentage);
+			const cameraX = THREE.MathUtils.lerp(-25, -25, 1 - mousePercentage);
+			const cameraZ = THREE.MathUtils.lerp(-6, 6, 1 - mousePercentage);
 			desiredCameraPosition.set(cameraX, 7, cameraZ);
 		}
 	}
@@ -100,9 +100,12 @@
 
 		// Interpoler les positions de la caméra et de la cible
 		OrbitControlsRef.target.lerp(desiredTarget, 0.1);
-		PerspectiveCameraRef.position.lerp(desiredCameraPosition, 0.1);
 
-		PerspectiveCameraRef.updateProjectionMatrix();
+		if (PerspectiveCameraRef) {
+			PerspectiveCameraRef.position.lerp(desiredCameraPosition, 0.1);
+			PerspectiveCameraRef.updateProjectionMatrix();
+		}
+
 		OrbitControlsRef.update();
 	}
 
