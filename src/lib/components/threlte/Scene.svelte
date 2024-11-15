@@ -6,6 +6,7 @@
 	import SpotLight from './utils/SpotLight.svelte';
 	import * as THREE from 'three';
 	import FlameLight from './utils/FlameLight.svelte';
+	import { tick } from 'svelte';
 
 	let PerspectiveCameraRef = $state<THREE.PerspectiveCamera | undefined>(undefined);
 	let OrbitControlsRef = $state<any | undefined>(undefined);
@@ -21,8 +22,16 @@
 	let targetLeftIntensity = $state(0);
 	let targetRightIntensity = $state(0);
 
+	let devLettersIntensity = $state(0);
+	let musicLettersIntensity = $state(0);
+
+	// Variable pour activer/désactiver les animations
+	let disableAnimations = false;
+
 	// Fonction pour détecter la position de la souris et calculer le pourcentage
 	function handleMouseMove(event: MouseEvent) {
+		if (disableAnimations) return;
+
 		const mouseX = event.clientX;
 		const windowWidth = window.innerWidth;
 
@@ -35,7 +44,7 @@
 
 	// Fonction pour détecter si la souris quitte la fenêtre
 	function handleMouseOut(event: MouseEvent) {
-		if (!event.relatedTarget) {
+		if (!event.relatedTarget || disableAnimations) {
 			isMouseOutside = true;
 			updateDesiredPositions();
 			updateLightIntensityTargets();
@@ -44,13 +53,17 @@
 
 	// Fonction pour détecter si la souris entre dans la fenêtre
 	function handleMouseEnter() {
-		isMouseOutside = false;
-		updateDesiredPositions();
-		updateLightIntensityTargets();
+		if (!disableAnimations) {
+			isMouseOutside = false;
+			updateDesiredPositions();
+			updateLightIntensityTargets();
+		}
 	}
 
 	// Mettre à jour les positions désirées
 	function updateDesiredPositions() {
+		if (disableAnimations) return;
+
 		if (isMouseOutside) {
 			desiredTarget.set(0, 2, 0);
 			desiredCameraPosition.set(-25, 7, 0);
@@ -66,23 +79,33 @@
 
 	// Mettre à jour les cibles d'intensité des lumières
 	function updateLightIntensityTargets() {
+		if (disableAnimations) return;
+
 		const centerMargin = 0.2;
 
 		if (isMouseOutside) {
 			targetLeftIntensity = 0;
 			targetRightIntensity = 0;
+			devLettersIntensity = 0;
+			musicLettersIntensity = 0;
 		} else if (mousePercentage < 0.5 - centerMargin) {
-			// La souris est à gauche
+			// La souris est à gauche, on allume 'DEV'
 			targetLeftIntensity = 70;
 			targetRightIntensity = 0;
+			devLettersIntensity = 1;
+			musicLettersIntensity = 0;
 		} else if (mousePercentage > 0.5 + centerMargin) {
-			// La souris est à droite
+			// La souris est à droite, on allume 'MUSIC'
 			targetLeftIntensity = 0;
 			targetRightIntensity = 70;
+			devLettersIntensity = 0;
+			musicLettersIntensity = 1;
 		} else {
 			// La souris est au centre
 			targetLeftIntensity = 0;
 			targetRightIntensity = 0;
+			devLettersIntensity = 0;
+			musicLettersIntensity = 0;
 		}
 	}
 
@@ -98,8 +121,9 @@
 			0.1
 		);
 
-		// Interpoler les positions de la caméra et de la cible
-		OrbitControlsRef.target.lerp(desiredTarget, 0.1);
+		if (OrbitControlsRef && OrbitControlsRef.target) {
+			OrbitControlsRef.target.lerp(desiredTarget, 0.1);
+		}
 
 		if (PerspectiveCameraRef) {
 			PerspectiveCameraRef.position.lerp(desiredCameraPosition, 0.1);
@@ -111,7 +135,11 @@
 
 	// Démarrer l'animation
 	$effect(() => {
-		animate();
+		if (!disableAnimations) {
+			tick().then(() => {
+				animate();
+			});
+		}
 	});
 </script>
 
@@ -169,7 +197,7 @@
 		targetPosition={[5, 0, -10]}
 	/>
 
-	<Modele />
+	<Modele {devLettersIntensity} {musicLettersIntensity} />
 </Canvas>
 
 <svelte:window
