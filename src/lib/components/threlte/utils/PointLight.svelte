@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { T, useThrelte } from '@threlte/core';
 	import { TransformControls } from '@threlte/extras';
-	import { SpotLightHelper, Object3D } from 'three';
+	import { PointLightHelper, Object3D } from 'three';
 	import type * as THREE from 'three';
 
 	// Récupération des props via $props
@@ -9,9 +9,8 @@
 		helpers = true,
 		intensity = 1,
 		position = [0, 10, 0],
-		angle = Math.PI / 8,
-		penumbra = 0.5,
 		distance = 20,
+		decay = 1,
 		targetRef = null,
 		targetPosition = [0, 0, 0]
 	} = $props();
@@ -21,9 +20,8 @@
 		helpers: boolean;
 		intensity: number;
 		position: [number, number, number];
-		angle: number;
-		penumbra: number;
 		distance: number;
+		decay: number;
 		targetRef: THREE.Object3D | null;
 		targetPosition: [number, number, number];
 	}
@@ -32,8 +30,8 @@
 	const { scene } = useThrelte();
 
 	// Références pour la lumière et le helper
-	let spotLightRef: THREE.SpotLight;
-	let spotLightHelper: SpotLightHelper;
+	let pointLightRef: THREE.PointLight;
+	let pointLightHelper: PointLightHelper;
 	const defaultTargetRef = new Object3D();
 
 	// État réactif pour la cible active
@@ -42,7 +40,7 @@
 	// Ajouter la cible par défaut si aucune n'est fournie
 	$effect(() => {
 		if (!targetRef) {
-			defaultTargetRef.position.set(...(targetPosition as [number, number, number]));
+			activeTargetRef.position.set(...(targetPosition as [number, number, number]));
 			if (!scene.children.includes(defaultTargetRef)) {
 				scene.add(defaultTargetRef);
 			}
@@ -57,40 +55,38 @@
 
 	// Mettre à jour le helper lorsque les propriétés changent
 	$effect(() => {
-		if (helpers && spotLightHelper) {
-			spotLightHelper.update();
+		if (helpers && pointLightHelper) {
+			pointLightHelper.update();
 		}
 	});
 </script>
 
-<!-- SpotLight avec helper optionnel -->
-<T.SpotLight
-	bind:ref={spotLightRef}
+<!-- PointLight avec helper optionnel -->
+<T.PointLight
+	bind:ref={pointLightRef}
 	color="#FFFFFF"
 	{intensity}
 	{position}
-	castShadow
-	{angle}
-	{penumbra}
 	{distance}
+	{decay}
 	target={activeTargetRef}
 	oncreate={() => {
 		// Créer le helper si helpers est activé
 		if (helpers) {
-			spotLightHelper = new SpotLightHelper(spotLightRef);
-			scene.add(spotLightHelper);
+			pointLightHelper = new PointLightHelper(pointLightRef);
+			scene.add(pointLightHelper);
 		}
 
 		// Mettre à jour la cible de la lumière
-		spotLightRef.target = activeTargetRef;
-		spotLightRef.target.updateMatrixWorld();
-		spotLightHelper?.update();
+		pointLightRef.target = activeTargetRef;
+		pointLightRef.target.updateMatrixWorld();
+		pointLightHelper?.update();
 	}}
 	ondestroy={() => {
 		// Nettoyer le helper et la cible de la scène
-		if (spotLightHelper) {
-			scene.remove(spotLightHelper);
-			spotLightHelper.dispose();
+		if (pointLightHelper) {
+			scene.remove(pointLightHelper);
+			pointLightHelper.dispose();
 		}
 		if (!targetRef && scene.children.includes(defaultTargetRef)) {
 			scene.remove(defaultTargetRef);
@@ -98,22 +94,22 @@
 	}}
 />
 
-<!-- Contrôle de transformation pour manipuler la SpotLight -->
+<!-- Contrôle de transformation pour manipuler le PointLight -->
 {#if helpers}
 	<TransformControls
-		object={spotLightRef}
+		object={pointLightRef}
 		onobjectChange={() => {
-			spotLightHelper?.update(); // Mettre à jour le helper après transformation
+			pointLightHelper?.update(); // Mettre à jour le helper après transformation
 		}}
 	/>
 
-	<!-- Contrôle de transformation pour manipuler la cible de la SpotLight -->
+	<!-- Contrôle de transformation pour manipuler la cible de la PointLight -->
 	<TransformControls
 		object={activeTargetRef}
 		onobjectChange={() => {
 			// Mettre à jour la cible de la lumière et le helper
-			spotLightRef.target.updateMatrixWorld();
-			spotLightHelper?.update();
+			pointLightRef.target.updateMatrixWorld();
+			pointLightHelper?.update();
 		}}
 	/>
 {/if}

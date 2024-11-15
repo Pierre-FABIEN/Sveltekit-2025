@@ -12,21 +12,21 @@
 	let OrbitControlsRef = $state<any | undefined>(undefined);
 
 	let isMouseOutside = false;
-	let mousePercentage = $state(0);
+	let mousePercentage: number = $state(0);
 	let desiredTarget = new THREE.Vector3(0, 2, 0);
 	let desiredCameraPosition = new THREE.Vector3(-25, 7, 0);
 
 	// Intensité des lumières avec interpolation
-	let leftSpotLightIntensity = $state(0);
-	let rightSpotLightIntensity = $state(0);
-	let targetLeftIntensity = $state(0);
-	let targetRightIntensity = $state(0);
+	let leftSpotLightIntensity: number = $state(0);
+	let rightSpotLightIntensity: number = $state(0);
+	let targetLeftIntensity: number = $state(0);
+	let targetRightIntensity: number = $state(0);
 
-	let devLettersIntensity = $state(0);
-	let musicLettersIntensity = $state(0);
+	let devLettersIntensity: number = $state(0);
+	let musicLettersIntensity: number = $state(0);
 
 	// Variable pour activer/désactiver les animations
-	let disableAnimations = false;
+	let disableAnimations: boolean = false;
 
 	// Fonction pour détecter la position de la souris et calculer le pourcentage
 	function handleMouseMove(event: MouseEvent) {
@@ -148,7 +148,9 @@
 		<OrbitControls
 			bind:ref={OrbitControlsRef}
 			autoRotate={false}
-			enableZoom={true}
+			enableRotate={false}
+			enableZoom={false}
+			enablePan={false}
 			enableDamping={true}
 			target={[0, 2, 0]}
 		/>

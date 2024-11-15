@@ -1,50 +1,46 @@
 <script lang="ts">
-	import { Group, Object3D } from 'three';
 	import * as THREE from 'three';
 	import { T, useTask } from '@threlte/core';
 	import { useDraco, useGltf } from '@threlte/extras';
 
-	export const ref = new Group();
+	export const ref = new THREE.Group();
 	const dracoLoader = useDraco('/draco/');
 
 	const gltf = useGltf('/models/modeleDraco.glb', { dracoLoader });
 	let { devLettersIntensity, musicLettersIntensity } = $props();
 
-	// Références des objets
 	let synthNode: THREE.Object3D | null = $state(null);
 	let keyboardNode: THREE.Object3D | null = $state(null);
-	let nodesInitialized = false;
 
+	// Références des objets
 	let letterD: THREE.Mesh | null = $state(null);
 	let letterE: THREE.Mesh | null = $state(null);
 	let letterV: THREE.Mesh | null = $state(null);
-
 	let letterM: THREE.Mesh | null = $state(null);
 	let letterU: THREE.Mesh | null = $state(null);
 	let letterS: THREE.Mesh | null = $state(null);
 	let letterI: THREE.Mesh | null = $state(null);
 	let letterC: THREE.Mesh | null = $state(null);
 
-	let devLight: THREE.PointLight | null = $state(null);
-	let musicLight: THREE.PointLight | null = $state(null);
+	// PointLights pour chaque lettre
+	let letterDLights: THREE.PointLight | null = $state(null);
+	let letterELights: THREE.PointLight | null = $state(null);
+	let letterVLights: THREE.PointLight | null = $state(null);
+	let letterMLights: THREE.PointLight | null = $state(null);
+	let letterULights: THREE.PointLight | null = $state(null);
+	let letterSLights: THREE.PointLight | null = $state(null);
+	let letterILights: THREE.PointLight | null = $state(null);
+	let letterCLights: THREE.PointLight | null = $state(null);
 
-	// Initialisation des nœuds après le chargement de gltf
-	async function initializeNodes() {
-		if (!gltf) return;
-		nodesInitialized = true;
-	}
+	// Variables pour gérer les timeout de clignotement
+	let timeoutIds: { [key: string]: number } = {};
 
-	$effect(() => {
-		gltf.then(() => {
-			initializeNodes();
-		});
-	});
-
+	// Appliquer une lumière et un matériau émissif à chaque lettre
 	$effect(() => {
 		// Appliquer l'émission lumineuse aux lettres 'DEV'
-		const devEmissiveColor = new THREE.Color(0xff0000);
+		const devEmissiveColor = new THREE.Color(0xffffff);
 		if (letterD?.material instanceof THREE.MeshStandardMaterial) {
-			letterD.material = letterD.material.clone(); // Cloner le matériau
+			letterD.material = letterD.material.clone();
 			letterD.material.emissive = devEmissiveColor;
 			letterD.material.emissiveIntensity = devLettersIntensity * 5;
 		}
@@ -60,37 +56,100 @@
 		}
 
 		// Appliquer l'émission lumineuse aux lettres 'MUSIC'
-		const musicEmissiveColor = new THREE.Color(0x00ff00);
+		const musicEmissiveColor = new THREE.Color(0xffffff);
 		if (letterM?.material instanceof THREE.MeshStandardMaterial) {
 			letterM.material = letterM.material.clone();
 			letterM.material.emissive = musicEmissiveColor;
-			letterM.material.emissiveIntensity = musicLettersIntensity * 0.5;
+			letterM.material.emissiveIntensity = musicLettersIntensity * 5;
 		}
 		if (letterU?.material instanceof THREE.MeshStandardMaterial) {
 			letterU.material = letterU.material.clone();
 			letterU.material.emissive = musicEmissiveColor;
-			letterU.material.emissiveIntensity = musicLettersIntensity * 0.5;
+			letterU.material.emissiveIntensity = musicLettersIntensity * 5;
 		}
 		if (letterS?.material instanceof THREE.MeshStandardMaterial) {
 			letterS.material = letterS.material.clone();
 			letterS.material.emissive = musicEmissiveColor;
-			letterS.material.emissiveIntensity = musicLettersIntensity * 0.5;
+			letterS.material.emissiveIntensity = musicLettersIntensity * 5;
 		}
 		if (letterI?.material instanceof THREE.MeshStandardMaterial) {
 			letterI.material = letterI.material.clone();
 			letterI.material.emissive = musicEmissiveColor;
-			letterI.material.emissiveIntensity = musicLettersIntensity * 0.5;
+			letterI.material.emissiveIntensity = musicLettersIntensity * 5;
 		}
 		if (letterC?.material instanceof THREE.MeshStandardMaterial) {
 			letterC.material = letterC.material.clone();
 			letterC.material.emissive = musicEmissiveColor;
-			letterC.material.emissiveIntensity = musicLettersIntensity * 0.5;
+			letterC.material.emissiveIntensity = musicLettersIntensity * 5;
+		}
+	});
+
+	// Fonction pour simuler le clignotement aléatoire
+	function randomIntensity() {
+		return Math.random() < 0.5 ? 0 : Math.random(); // 0 pour extinction, sinon un nombre entre 0 et 1
+	}
+
+	// Fonction d'animation pour gérer le clignotement synchronisé
+	function animateClignotement(
+		letterId: string,
+		light: THREE.PointLight | null,
+		mesh: THREE.Mesh | null,
+		intensity: number
+	) {
+		// Vérifier si un timeout est déjà en cours et le nettoyer
+		if (timeoutIds[letterId]) {
+			clearTimeout(timeoutIds[letterId]);
+		}
+
+		// Clignotement des lettres 'DEV' et 'MUSIC'
+		const randomIntensityValue = randomIntensity();
+		if (light) {
+			light.intensity = intensity * randomIntensityValue * 5;
+		}
+		if (mesh?.material instanceof THREE.MeshStandardMaterial) {
+			mesh.material.emissiveIntensity = intensity * randomIntensityValue * 5;
+		}
+
+		// Reprogrammer le clignotement pour chaque lettre avec un délai aléatoire
+		const randomDelay = Math.random() * 500 + 100; // Délai entre 100 ms et 600 ms
+		timeoutIds[letterId] = setTimeout(
+			() => animateClignotement(letterId, light, mesh, intensity),
+			randomDelay
+		);
+	}
+
+	// Démarrer le clignotement aléatoire lorsque les lumières sont prêtes
+	$effect(() => {
+		// Clignotement indépendant pour chaque lettre
+		if (letterDLights && letterD) {
+			animateClignotement('letterD', letterDLights, letterD, devLettersIntensity);
+		}
+		if (letterELights && letterE) {
+			animateClignotement('letterE', letterELights, letterE, devLettersIntensity);
+		}
+		if (letterVLights && letterV) {
+			animateClignotement('letterV', letterVLights, letterV, devLettersIntensity);
+		}
+		if (letterMLights && letterM) {
+			animateClignotement('letterM', letterMLights, letterM, musicLettersIntensity);
+		}
+		if (letterULights && letterU) {
+			animateClignotement('letterU', letterULights, letterU, musicLettersIntensity);
+		}
+		if (letterSLights && letterS) {
+			animateClignotement('letterS', letterSLights, letterS, musicLettersIntensity);
+		}
+		if (letterILights && letterI) {
+			animateClignotement('letterI', letterILights, letterI, musicLettersIntensity);
+		}
+		if (letterCLights && letterC) {
+			animateClignotement('letterC', letterCLights, letterC, musicLettersIntensity);
 		}
 	});
 
 	// Tâche pour animer les objets seulement si les nœuds sont initialisés
 	useTask((delta) => {
-		if (!nodesInitialized || !synthNode || !keyboardNode) return;
+		if (!synthNode || !keyboardNode) return;
 		synthNode.rotation.x = 0.8;
 		keyboardNode.rotation.x = -0.8;
 		// Appliquer la rotation
@@ -249,20 +308,76 @@
 			scale={[0.49, 0.52, 0.64]}
 		/>
 
+		<!-- PointLight pour chaque lettre -->
 		<T.PointLight
-			bind:ref={devLight}
-			intensity={devLettersIntensity * 2}
-			color="#FF0000"
-			position={[3.5, 2, -7]}
+			bind:ref={letterDLights}
+			intensity={devLettersIntensity}
+			color="#FFFFFF"
+			position={[3.44, 1.65, -8.21]}
 			distance={10}
 			castShadow
 			receiveShadow
 		/>
 		<T.PointLight
-			bind:ref={musicLight}
-			intensity={musicLettersIntensity * 2}
-			color="#00FF00"
-			position={[5, 2, 8]}
+			bind:ref={letterELights}
+			intensity={devLettersIntensity}
+			color="#FFFFFF"
+			position={[4.15, 1.8, -7.68]}
+			distance={10}
+			castShadow
+			receiveShadow
+		/>
+		<T.PointLight
+			bind:ref={letterVLights}
+			intensity={devLettersIntensity}
+			color="#FFFFFF"
+			position={[4.75, 2.01, -7.21]}
+			distance={10}
+			castShadow
+			receiveShadow
+		/>
+
+		<T.PointLight
+			bind:ref={letterMLights}
+			intensity={musicLettersIntensity}
+			color="#FFFFFF"
+			position={[5.36, 1.64, 6.74]}
+			distance={10}
+			castShadow
+			receiveShadow
+		/>
+		<T.PointLight
+			bind:ref={letterULights}
+			intensity={musicLettersIntensity}
+			color="#FFFFFF"
+			position={[5.2, 1.78, 7.98]}
+			distance={10}
+			castShadow
+			receiveShadow
+		/>
+		<T.PointLight
+			bind:ref={letterSLights}
+			intensity={musicLettersIntensity}
+			color="#FFFFFF"
+			position={[4.69, 2.35, 8.9]}
+			distance={10}
+			castShadow
+			receiveShadow
+		/>
+		<T.PointLight
+			bind:ref={letterILights}
+			intensity={musicLettersIntensity}
+			color="#FFFFFF"
+			position={[4.1, 2.34, 9.21]}
+			distance={10}
+			castShadow
+			receiveShadow
+		/>
+		<T.PointLight
+			bind:ref={letterCLights}
+			intensity={musicLettersIntensity}
+			color="#FFFFFF"
+			position={[4.19, 2.3, 9.97]}
 			distance={10}
 			castShadow
 			receiveShadow
