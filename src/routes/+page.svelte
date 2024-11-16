@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import gsap from 'gsap';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import { disableAnimationsHome } from '$lib/store/disableAnimationsStore';
@@ -6,6 +6,7 @@
 	import { cameraPosition, cameraTarget } from '$lib/store/cameraStore.ts';
 
 	gsap.registerPlugin(ScrollTrigger);
+	let cameraAnimation;
 
 	const initializeTextAppearAnimations = () => {
 		ScrollTrigger.create({
@@ -33,30 +34,52 @@
 			start: 'top center +-50%',
 			end: 'center',
 			scrub: true,
-			onEnter: (self) => {
+			onUpdate: (self) => {
 				const progress = self.progress;
 
 				// Calcul des nouvelles positions de la caméra basées sur le défilement
-				const newCameraPosition = new THREE.Vector3(
-					THREE.MathUtils.lerp(-25, -60, progress), // Interpoler entre -25 et -60
-					THREE.MathUtils.lerp(7, 70, progress), // Interpoler entre 7 et 70
-					0
-				);
+				const newCameraPosition = {
+					x: THREE.MathUtils.lerp(-25, -35, progress),
+					y: THREE.MathUtils.lerp(7, 25, progress),
+					z: 0
+				};
 
-				const newCameraTarget = new THREE.Vector3(
-					0,
-					THREE.MathUtils.lerp(2, 5, progress), // Interpoler entre 2 et 5
-					0
-				);
+				const newCameraTarget = {
+					x: 0,
+					y: THREE.MathUtils.lerp(2, 5, progress),
+					z: 0
+				};
 
-				// Mettre à jour les stores avec les nouvelles valeurs
-				cameraPosition.set(newCameraPosition);
-				cameraTarget.set(newCameraTarget);
+				// Annuler toute animation en cours
+				if (cameraAnimation) cameraAnimation.kill();
+
+				// Utiliser gsap pour animer la caméra
+				cameraAnimation = gsap.to(cameraPosition, {
+					duration: 0.5,
+					x: newCameraPosition.x,
+					y: newCameraPosition.y,
+					z: newCameraPosition.z,
+					ease: 'power2.out',
+					onUpdate: () => {
+						cameraPosition.set(
+							new THREE.Vector3(cameraPosition.x, cameraPosition.y, cameraPosition.z)
+						);
+					}
+				});
+
+				gsap.to(cameraTarget, {
+					duration: 0.5,
+					x: newCameraTarget.x,
+					y: newCameraTarget.y,
+					z: newCameraTarget.z,
+					ease: 'power2.out',
+					onUpdate: () => {
+						cameraTarget.set(new THREE.Vector3(cameraTarget.x, cameraTarget.y, cameraTarget.z));
+					}
+				});
 			},
 			onLeave: () => {
 				console.log('Quitté .about vers le bas');
-
-				console.log('sortie');
 			},
 			onEnterBack: () => {
 				console.log('Revenu dans .about depuis le bas');

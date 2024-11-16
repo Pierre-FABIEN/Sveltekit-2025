@@ -37,16 +37,20 @@
 	let isControlledByScroll = false;
 
 	const updateCamera = () => {
+		const lerpFactor = 0.1; // Facteur d'interpolation (0.1 pour une interpolation douce)
+
 		cameraPosition.subscribe((position) => {
 			if (PerspectiveCameraRef && !isControlledByScroll) {
-				PerspectiveCameraRef.position.copy(position);
+				// Utiliser lerp pour interpoler la position de la caméra
+				PerspectiveCameraRef.position.lerp(position, lerpFactor);
 				PerspectiveCameraRef.updateProjectionMatrix();
 			}
 		});
 
 		cameraTarget.subscribe((target) => {
 			if (OrbitControlsRef && !isControlledByScroll) {
-				OrbitControlsRef.target.copy(target);
+				// Utiliser lerp pour interpoler la cible de la caméra
+				OrbitControlsRef.target.lerp(target, lerpFactor);
 				OrbitControlsRef.update();
 			}
 		});
@@ -64,6 +68,9 @@
 
 			// Démarrer un retour fluide vers la position centrale et les valeurs d'intensité par interpolation
 			smoothReturnToCenter();
+		} else {
+			// Arrêter toute animation en cours
+			console.log('Animations désactivées');
 		}
 	});
 
@@ -72,6 +79,8 @@
 		const animationSpeed = 0.1; // Ajuste cette valeur pour une transition plus ou moins rapide
 
 		function animate() {
+			if ($disableAnimationsHome) return;
+
 			// Interpolation progressive vers les valeurs cibles
 			leftSpotLightIntensity = THREE.MathUtils.lerp(
 				leftSpotLightIntensity,
