@@ -1,13 +1,19 @@
 <script lang="ts">
+	import { tick } from 'svelte';
+	import * as THREE from 'three';
 	import { Canvas } from '@threlte/core';
+	import gsap from 'gsap';
+	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import { T } from '@threlte/core';
 	import { OrbitControls } from '@threlte/extras';
+
 	import Modele from './Modele.svelte';
 	import SpotLight from './utils/SpotLight.svelte';
-	import * as THREE from 'three';
 	import FlameLight from './utils/FlameLight.svelte';
 	import { disableAnimationsHome } from '$store/disableAnimationsStore';
-	import { tick } from 'svelte';
+	import { cameraPosition, cameraTarget } from '$lib/store/cameraStore';
+
+	gsap.registerPlugin(ScrollTrigger);
 
 	let PerspectiveCameraRef = $state<THREE.PerspectiveCamera | undefined>(undefined);
 	let OrbitControlsRef = $state<any | undefined>(undefined);
@@ -28,6 +34,23 @@
 
 	let PrincipalLightIntensity: number = $state(70);
 	let FlameIntensity: number = $state(1);
+	let isControlledByScroll = false;
+
+	const updateCamera = () => {
+		cameraPosition.subscribe((position) => {
+			if (PerspectiveCameraRef && !isControlledByScroll) {
+				PerspectiveCameraRef.position.copy(position);
+				PerspectiveCameraRef.updateProjectionMatrix();
+			}
+		});
+
+		cameraTarget.subscribe((target) => {
+			if (OrbitControlsRef && !isControlledByScroll) {
+				OrbitControlsRef.target.copy(target);
+				OrbitControlsRef.update();
+			}
+		});
+	};
 
 	disableAnimationsHome.subscribe((disable) => {
 		if (disable) {
@@ -204,11 +227,10 @@
 
 	// Démarrer l'animation
 	$effect(() => {
-		console.log($disableAnimationsHome, 'sorduighdoruih');
-
 		if (!$disableAnimationsHome) {
 			tick().then(() => {
 				animate();
+				updateCamera();
 			});
 		}
 	});
