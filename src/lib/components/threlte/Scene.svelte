@@ -6,6 +6,7 @@
 	import SpotLight from './utils/SpotLight.svelte';
 	import * as THREE from 'three';
 	import FlameLight from './utils/FlameLight.svelte';
+	import { disableAnimationsHome } from '$store/disableAnimationsStore';
 	import { tick } from 'svelte';
 
 	let PerspectiveCameraRef = $state<THREE.PerspectiveCamera | undefined>(undefined);
@@ -25,12 +26,74 @@
 	let devLettersIntensity: number = $state(0);
 	let musicLettersIntensity: number = $state(0);
 
-	// Variable pour activer/désactiver les animations
-	let disableAnimations: boolean = false;
+	let PrincipalLightIntensity: number = $state(70);
+	let FlameIntensity: number = $state(1);
+
+	disableAnimationsHome.subscribe((disable) => {
+		if (disable) {
+			// Mettre à jour les valeurs cibles pour la caméra et les lumières
+			desiredTarget.set(0, 2, 0);
+			desiredCameraPosition.set(-25, 7, 0);
+			targetLeftIntensity = 0;
+			targetRightIntensity = 0;
+			devLettersIntensity = 0;
+			musicLettersIntensity = 0;
+
+			// Démarrer un retour fluide vers la position centrale et les valeurs d'intensité par interpolation
+			smoothReturnToCenter();
+		}
+	});
+
+	// Fonction pour gérer le retour fluide de la caméra et des lumières
+	function smoothReturnToCenter() {
+		const animationSpeed = 0.1; // Ajuste cette valeur pour une transition plus ou moins rapide
+
+		function animate() {
+			// Interpolation progressive vers les valeurs cibles
+			leftSpotLightIntensity = THREE.MathUtils.lerp(
+				leftSpotLightIntensity,
+				targetLeftIntensity,
+				animationSpeed
+			);
+			rightSpotLightIntensity = THREE.MathUtils.lerp(
+				rightSpotLightIntensity,
+				targetRightIntensity,
+				animationSpeed
+			);
+			PrincipalLightIntensity = THREE.MathUtils.lerp(PrincipalLightIntensity, 70, animationSpeed);
+			FlameIntensity = THREE.MathUtils.lerp(FlameIntensity, 1, animationSpeed);
+
+			if (PerspectiveCameraRef) {
+				PerspectiveCameraRef.position.lerp(desiredCameraPosition, animationSpeed);
+				PerspectiveCameraRef.lookAt(desiredTarget);
+				PerspectiveCameraRef.updateProjectionMatrix();
+			}
+
+			if (OrbitControlsRef) {
+				OrbitControlsRef.target.lerp(desiredTarget, animationSpeed);
+				OrbitControlsRef.update();
+			}
+
+			// Continuer l'animation jusqu'à ce que les valeurs cibles soient atteintes
+			if (
+				Math.abs(leftSpotLightIntensity - targetLeftIntensity) > 0.01 ||
+				Math.abs(rightSpotLightIntensity - targetRightIntensity) > 0.01 ||
+				OrbitControlsRef?.target.distanceTo(desiredTarget) > 0.1 ||
+				(desiredCameraPosition &&
+					PerspectiveCameraRef &&
+					PerspectiveCameraRef.position.distanceTo(desiredCameraPosition))
+			) {
+				requestAnimationFrame(animate);
+			}
+		}
+
+		// Démarrer l'animation
+		animate();
+	}
 
 	// Fonction pour détecter la position de la souris et calculer le pourcentage
 	function handleMouseMove(event: MouseEvent) {
-		if (disableAnimations) return;
+		if ($disableAnimationsHome) return;
 
 		const mouseX = event.clientX;
 		const windowWidth = window.innerWidth;
@@ -44,7 +107,7 @@
 
 	// Fonction pour détecter si la souris quitte la fenêtre
 	function handleMouseOut(event: MouseEvent) {
-		if (!event.relatedTarget || disableAnimations) {
+		if (!event.relatedTarget || $disableAnimationsHome) {
 			isMouseOutside = true;
 			updateDesiredPositions();
 			updateLightIntensityTargets();
@@ -53,7 +116,7 @@
 
 	// Fonction pour détecter si la souris entre dans la fenêtre
 	function handleMouseEnter() {
-		if (!disableAnimations) {
+		if (!$disableAnimationsHome) {
 			isMouseOutside = false;
 			updateDesiredPositions();
 			updateLightIntensityTargets();
@@ -62,7 +125,7 @@
 
 	// Mettre à jour les positions désirées
 	function updateDesiredPositions() {
-		if (disableAnimations) return;
+		if ($disableAnimationsHome) return;
 
 		if (isMouseOutside) {
 			desiredTarget.set(0, 2, 0);
@@ -79,7 +142,7 @@
 
 	// Mettre à jour les cibles d'intensité des lumières
 	function updateLightIntensityTargets() {
-		if (disableAnimations) return;
+		if ($disableAnimationsHome) return;
 
 		const centerMargin = 0.2;
 
@@ -111,31 +174,39 @@
 
 	// Fonction d'animation continue
 	function animate() {
-		requestAnimationFrame(animate);
+		if (!$disableAnimationsHome) {
+			requestAnimationFrame(animate);
 
-		// Interpolation pour une transition fluide des intensités
-		leftSpotLightIntensity = THREE.MathUtils.lerp(leftSpotLightIntensity, targetLeftIntensity, 0.1);
-		rightSpotLightIntensity = THREE.MathUtils.lerp(
-			rightSpotLightIntensity,
-			targetRightIntensity,
-			0.1
-		);
+			// Interpolation pour une transition fluide des intensités
+			leftSpotLightIntensity = THREE.MathUtils.lerp(
+				leftSpotLightIntensity,
+				targetLeftIntensity,
+				0.1
+			);
+			rightSpotLightIntensity = THREE.MathUtils.lerp(
+				rightSpotLightIntensity,
+				targetRightIntensity,
+				0.1
+			);
 
-		if (OrbitControlsRef && OrbitControlsRef.target) {
-			OrbitControlsRef.target.lerp(desiredTarget, 0.1);
+			if (OrbitControlsRef && OrbitControlsRef.target) {
+				OrbitControlsRef.target.lerp(desiredTarget, 0.1);
+			}
+
+			if (PerspectiveCameraRef) {
+				PerspectiveCameraRef.position.lerp(desiredCameraPosition, 0.1);
+				PerspectiveCameraRef.updateProjectionMatrix();
+			}
+
+			OrbitControlsRef.update();
 		}
-
-		if (PerspectiveCameraRef) {
-			PerspectiveCameraRef.position.lerp(desiredCameraPosition, 0.1);
-			PerspectiveCameraRef.updateProjectionMatrix();
-		}
-
-		OrbitControlsRef.update();
 	}
 
 	// Démarrer l'animation
 	$effect(() => {
-		if (!disableAnimations) {
+		console.log($disableAnimationsHome, 'sorduighdoruih');
+
+		if (!$disableAnimationsHome) {
 			tick().then(() => {
 				animate();
 			});
@@ -158,7 +229,7 @@
 
 	<FlameLight
 		color="#FFA500"
-		intensity={1}
+		intensity={FlameIntensity}
 		position={[-0.25, 2.75, 0]}
 		distance={0.8}
 		decay={1}
@@ -169,7 +240,7 @@
 	<!-- Lumière principale -->
 	<SpotLight
 		helpers={false}
-		intensity={70}
+		intensity={PrincipalLightIntensity}
 		position={[0, 10, 0]}
 		angle={Math.PI / 7}
 		penumbra={0.5}

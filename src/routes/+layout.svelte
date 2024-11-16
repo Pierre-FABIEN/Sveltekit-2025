@@ -5,10 +5,6 @@
 	import { Toaster } from '$shadcn/sonner';
 	import '../app.css';
 	import SmoothScrollBar from '$lib/components/smoothScrollBar/SmoothScrollBar.svelte';
-	import * as Sidebar from '$lib/components/shadcn/ui/sidebar';
-	import SidebarMenu from '$lib/components/SidebarMenu.svelte';
-	import AlignJustify from 'lucide-svelte/icons/align-justify';
-	import { useSidebar } from '$lib/components/shadcn/ui/sidebar/index.js';
 	import {
 		firstLoadComplete,
 		setFirstOpen,
@@ -16,9 +12,9 @@
 	} from '$lib/store/initialLoaderStore';
 	import Loader from '$lib/components/loader/Loader.svelte';
 	import { page } from '$app/stores';
+	import Scene from '$lib/components/threlte/Scene.svelte';
 
 	let { children } = $props();
-	const sidebar = useSidebar();
 
 	$effect(() => {
 		const unsubscribe = page.subscribe((currentPage) => {
@@ -43,6 +39,9 @@
 	<Loader />
 {/if}
 {#if $isClient}
+	<div class="threlte">
+		<Scene />
+	</div>
 	<ModeWatcher />
 	<div class="container">
 		<SmoothScrollBar>
@@ -63,5 +62,15 @@
 		padding: 0;
 		margin: 0;
 		max-width: none;
+	}
+
+	.threlte {
+		height: 100vh;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		position: absolute;
+		z-index: -1;
 	}
 </style>
