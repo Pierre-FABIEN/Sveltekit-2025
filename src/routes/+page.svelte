@@ -1,11 +1,15 @@
 <script lang="ts">
 	import gsap from 'gsap';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
-	import { disableAnimationsHome } from '$lib/store/disableAnimationsStore';
 	import * as THREE from 'three';
-	import { cameraPosition, cameraTarget } from '$lib/store/cameraStore.ts';
+	import {
+		disableAnimationsHome,
+		cameraPosition,
+		cameraTarget
+	} from '$lib/store/ThreeStore/animationStores';
 
 	gsap.registerPlugin(ScrollTrigger);
+
 	let cameraAnimation: any;
 
 	const initializeTextAppearAnimations = () => {

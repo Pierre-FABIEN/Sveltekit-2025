@@ -1,14 +1,13 @@
 // utils/cameraUtils.ts
 
 import * as THREE from 'three';
-import { get } from 'svelte/store';
-import { cameraPosition, cameraTarget } from '$lib/store/cameraStore';
+import {
+	cameraPosition,
+	cameraTarget,
+	isControlledByScroll
+} from '$lib/store/ThreeStore/animationStores';
 
-export function updateCamera(
-	PerspectiveCameraRef: THREE.PerspectiveCamera,
-	OrbitControlsRef: any,
-	isControlledByScroll: boolean
-) {
+export function updateCamera(PerspectiveCameraRef: THREE.PerspectiveCamera, OrbitControlsRef: any) {
 	const lerpFactor = 0.2;
 
 	cameraPosition.subscribe((position) => {

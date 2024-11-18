@@ -10,44 +10,46 @@
 	import Modele from './Modele.svelte';
 	import SpotLight from './utils/Light/SpotLight.svelte';
 	import FlameLight from './utils/Light/FlameLight.svelte';
-	import { disableAnimationsHome } from '$store/disableAnimationsStore';
-	import { cameraPosition, cameraTarget } from '$lib/store/cameraStore';
 	import { updateCamera } from './utils/Functions/cameraUtils';
+
+	// Import des stores
+	import {
+		disableAnimationsHome,
+		isMouseOutside,
+		mousePercentage,
+		desiredTarget,
+		desiredCameraPosition,
+		leftSpotLightIntensity,
+		rightSpotLightIntensity,
+		targetLeftIntensity,
+		targetRightIntensity,
+		devLettersIntensity,
+		musicLettersIntensity,
+		PrincipalLightIntensity,
+		FlameIntensity
+	} from '$store/ThreeStore/animationStores';
+	import {
+		handleMouseEnter,
+		handleMouseMove,
+		handleMouseOut
+	} from './utils/Functions/mouseHandlers';
 
 	gsap.registerPlugin(ScrollTrigger);
 
 	let PerspectiveCameraRef = $state<THREE.PerspectiveCamera | undefined>(undefined);
 	let OrbitControlsRef = $state<any | undefined>(undefined);
 
-	let isMouseOutside = false;
-	let mousePercentage: number = $state(0);
-	let desiredTarget = new THREE.Vector3(0, 2, 0);
-	let desiredCameraPosition = new THREE.Vector3(-25, 7, 0);
-
-	// Intensité des lumières avec interpolation
-	let leftSpotLightIntensity: number = $state(0);
-	let rightSpotLightIntensity: number = $state(0);
-	let targetLeftIntensity: number = $state(0);
-	let targetRightIntensity: number = $state(0);
-
-	let devLettersIntensity: number = $state(0);
-	let musicLettersIntensity: number = $state(0);
-
-	let PrincipalLightIntensity: number = $state(70);
-	let FlameIntensity: number = $state(1);
-	let isControlledByScroll = false;
-
 	disableAnimationsHome.subscribe((disable) => {
 		if (disable) {
 			// Mettre à jour les valeurs cibles pour la caméra et les lumières
-			desiredTarget.set(0, 2, 0);
-			desiredCameraPosition.set(-25, 7, 0);
-			targetLeftIntensity = 0;
-			targetRightIntensity = 0;
-			rightSpotLightIntensity = 0;
-			leftSpotLightIntensity = 0;
-			devLettersIntensity = 0;
-			musicLettersIntensity = 0;
+			desiredTarget.set(new THREE.Vector3(0, 2, 0));
+			desiredCameraPosition.set(new THREE.Vector3(-25, 7, 0));
+			targetLeftIntensity.set(0);
+			targetRightIntensity.set(0);
+			rightSpotLightIntensity.set(0);
+			leftSpotLightIntensity.set(0);
+			devLettersIntensity.set(0);
+			musicLettersIntensity.set(0);
 
 			// Démarrer un retour fluide vers la position centrale et les valeurs d'intensité par interpolation
 			smoothReturnToCenter();
@@ -65,38 +67,35 @@
 			if ($disableAnimationsHome) return;
 
 			// Interpolation progressive vers les valeurs cibles
-			leftSpotLightIntensity = THREE.MathUtils.lerp(
-				leftSpotLightIntensity,
-				targetLeftIntensity,
-				animationSpeed
+			leftSpotLightIntensity.set(
+				THREE.MathUtils.lerp($leftSpotLightIntensity, $targetLeftIntensity, animationSpeed)
 			);
-			rightSpotLightIntensity = THREE.MathUtils.lerp(
-				rightSpotLightIntensity,
-				targetRightIntensity,
-				animationSpeed
+			rightSpotLightIntensity.set(
+				THREE.MathUtils.lerp($rightSpotLightIntensity, $targetRightIntensity, animationSpeed)
 			);
-			PrincipalLightIntensity = THREE.MathUtils.lerp(PrincipalLightIntensity, 70, animationSpeed);
-			FlameIntensity = THREE.MathUtils.lerp(FlameIntensity, 1, animationSpeed);
+			PrincipalLightIntensity.set(
+				THREE.MathUtils.lerp($PrincipalLightIntensity, 70, animationSpeed)
+			);
+			FlameIntensity.set(THREE.MathUtils.lerp($FlameIntensity, 1, animationSpeed));
 
 			if (PerspectiveCameraRef) {
-				PerspectiveCameraRef.position.lerp(desiredCameraPosition, animationSpeed);
-				PerspectiveCameraRef.lookAt(desiredTarget);
+				PerspectiveCameraRef.position.lerp($desiredCameraPosition, animationSpeed);
+				PerspectiveCameraRef.lookAt($desiredTarget);
 				PerspectiveCameraRef.updateProjectionMatrix();
 			}
 
 			if (OrbitControlsRef) {
-				OrbitControlsRef.target.lerp(desiredTarget, animationSpeed);
+				OrbitControlsRef.target.lerp($desiredTarget, animationSpeed);
 				OrbitControlsRef.update();
 			}
 
 			// Continuer l'animation jusqu'à ce que les valeurs cibles soient atteintes
 			if (
-				Math.abs(leftSpotLightIntensity - targetLeftIntensity) > 0.01 ||
-				Math.abs(rightSpotLightIntensity - targetRightIntensity) > 0.01 ||
-				OrbitControlsRef?.target.distanceTo(desiredTarget) > 0.1 ||
-				(desiredCameraPosition &&
-					PerspectiveCameraRef &&
-					PerspectiveCameraRef.position.distanceTo(desiredCameraPosition))
+				Math.abs($leftSpotLightIntensity - $targetLeftIntensity) > 0.01 ||
+				Math.abs($rightSpotLightIntensity - $targetRightIntensity) > 0.01 ||
+				OrbitControlsRef?.target.distanceTo($desiredTarget) > 0.1 ||
+				(PerspectiveCameraRef &&
+					PerspectiveCameraRef.position.distanceTo($desiredCameraPosition) > 0.1)
 			) {
 				requestAnimationFrame(animate);
 			}
@@ -106,110 +105,25 @@
 		animate();
 	}
 
-	// Fonction pour détecter la position de la souris et calculer le pourcentage
-	function handleMouseMove(event: MouseEvent) {
-		if ($disableAnimationsHome) return;
-
-		const mouseX = event.clientX;
-		const windowWidth = window.innerWidth;
-
-		mousePercentage = mouseX / windowWidth;
-		isMouseOutside = false;
-
-		updateDesiredPositions();
-		updateLightIntensityTargets();
-	}
-
-	// Fonction pour détecter si la souris quitte la fenêtre
-	function handleMouseOut(event: MouseEvent) {
-		if (!event.relatedTarget || $disableAnimationsHome) {
-			isMouseOutside = true;
-			updateDesiredPositions();
-			updateLightIntensityTargets();
-		}
-	}
-
-	// Fonction pour détecter si la souris entre dans la fenêtre
-	function handleMouseEnter() {
-		if (!$disableAnimationsHome) {
-			isMouseOutside = false;
-			updateDesiredPositions();
-			updateLightIntensityTargets();
-		}
-	}
-
-	// Mettre à jour les positions désirées
-	function updateDesiredPositions() {
-		if ($disableAnimationsHome) return;
-
-		if (isMouseOutside) {
-			desiredTarget.set(0, 2, 0);
-			desiredCameraPosition.set(-25, 7, 0);
-		} else {
-			const targetZ = THREE.MathUtils.lerp(-5, 5, mousePercentage);
-			desiredTarget.set(0, 2, targetZ);
-
-			const cameraX = THREE.MathUtils.lerp(-25, -25, 1 - mousePercentage);
-			const cameraZ = THREE.MathUtils.lerp(-6, 6, 1 - mousePercentage);
-			desiredCameraPosition.set(cameraX, 7, cameraZ);
-		}
-	}
-
-	// Mettre à jour les cibles d'intensité des lumières
-	function updateLightIntensityTargets() {
-		if ($disableAnimationsHome) return;
-
-		const centerMargin = 0.2;
-
-		if (isMouseOutside) {
-			targetLeftIntensity = 0;
-			targetRightIntensity = 0;
-			devLettersIntensity = 0;
-			musicLettersIntensity = 0;
-		} else if (mousePercentage < 0.5 - centerMargin) {
-			// La souris est à gauche, on allume 'DEV'
-			targetLeftIntensity = 70;
-			targetRightIntensity = 0;
-			devLettersIntensity = 1;
-			musicLettersIntensity = 0;
-		} else if (mousePercentage > 0.5 + centerMargin) {
-			// La souris est à droite, on allume 'MUSIC'
-			targetLeftIntensity = 0;
-			targetRightIntensity = 70;
-			devLettersIntensity = 0;
-			musicLettersIntensity = 1;
-		} else {
-			// La souris est au centre
-			targetLeftIntensity = 0;
-			targetRightIntensity = 0;
-			devLettersIntensity = 0;
-			musicLettersIntensity = 0;
-		}
-	}
-
 	// Fonction d'animation continue
 	function animate() {
 		if (!$disableAnimationsHome) {
 			requestAnimationFrame(animate);
 
 			// Interpolation pour une transition fluide des intensités
-			leftSpotLightIntensity = THREE.MathUtils.lerp(
-				leftSpotLightIntensity,
-				targetLeftIntensity,
-				0.1
+			leftSpotLightIntensity.set(
+				THREE.MathUtils.lerp($leftSpotLightIntensity, $targetLeftIntensity, 0.1)
 			);
-			rightSpotLightIntensity = THREE.MathUtils.lerp(
-				rightSpotLightIntensity,
-				targetRightIntensity,
-				0.1
+			rightSpotLightIntensity.set(
+				THREE.MathUtils.lerp($rightSpotLightIntensity, $targetRightIntensity, 0.1)
 			);
 
 			if (OrbitControlsRef && OrbitControlsRef.target) {
-				OrbitControlsRef.target.lerp(desiredTarget, 0.1);
+				OrbitControlsRef.target.lerp($desiredTarget, 0.1);
 			}
 
 			if (PerspectiveCameraRef) {
-				PerspectiveCameraRef.position.lerp(desiredCameraPosition, 0.1);
+				PerspectiveCameraRef.position.lerp($desiredCameraPosition, 0.1);
 				PerspectiveCameraRef.updateProjectionMatrix();
 			}
 
@@ -223,7 +137,7 @@
 			tick().then(() => {
 				animate();
 				if (PerspectiveCameraRef) {
-					updateCamera(PerspectiveCameraRef, OrbitControlsRef, false);
+					updateCamera(PerspectiveCameraRef, OrbitControlsRef);
 				}
 			});
 		}
@@ -245,7 +159,7 @@
 
 	<FlameLight
 		color="#FFA500"
-		intensity={FlameIntensity}
+		intensity={$FlameIntensity}
 		position={[-0.25, 2.75, 0]}
 		distance={0.8}
 		decay={1}
@@ -256,7 +170,7 @@
 	<!-- Lumière principale -->
 	<SpotLight
 		helpers={false}
-		intensity={PrincipalLightIntensity}
+		intensity={$PrincipalLightIntensity}
 		position={[0, 10, 0]}
 		angle={Math.PI / 7}
 		penumbra={0.5}
@@ -267,7 +181,7 @@
 	<!-- SpotLight droite (intensité interpolée) -->
 	<SpotLight
 		helpers={false}
-		intensity={rightSpotLightIntensity}
+		intensity={$rightSpotLightIntensity}
 		position={[0, 10, 0]}
 		angle={Math.PI / 7}
 		penumbra={0.5}
@@ -278,7 +192,7 @@
 	<!-- SpotLight gauche (intensité interpolée) -->
 	<SpotLight
 		helpers={false}
-		intensity={leftSpotLightIntensity}
+		intensity={$leftSpotLightIntensity}
 		position={[0, 10, 0]}
 		angle={Math.PI / 7}
 		penumbra={0.5}
@@ -286,11 +200,14 @@
 		targetPosition={[5, 0, -10]}
 	/>
 
-	<Modele {devLettersIntensity} {musicLettersIntensity} />
+	<Modele
+		devLettersIntensity={$devLettersIntensity}
+		musicLettersIntensity={$musicLettersIntensity}
+	/>
 </Canvas>
 
 <svelte:window
-	onmousemove={handleMouseMove}
-	onmouseout={handleMouseOut}
-	onmouseenter={handleMouseEnter}
+	on:mousemove={handleMouseMove}
+	on:mouseout={handleMouseOut}
+	on:mouseenter={handleMouseEnter}
 />
