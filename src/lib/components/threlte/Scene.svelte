@@ -37,6 +37,7 @@
 		handleMouseMove,
 		handleMouseOut
 	} from './utils/Functions/mouseHandlers';
+	import PointLight from './utils/Light/PointLight.svelte';
 
 	gsap.registerPlugin(ScrollTrigger);
 
@@ -81,9 +82,9 @@
 		<OrbitControls
 			bind:ref={OrbitControlsRef}
 			autoRotate={false}
-			enableRotate={false}
-			enableZoom={false}
-			enablePan={false}
+			enableRotate={true}
+			enableZoom={true}
+			enablePan={true}
 			enableDamping={true}
 			target={[0, 2, 0]}
 		/>
@@ -130,6 +131,26 @@
 		penumbra={0.5}
 		distance={50}
 		targetPosition={[5, 0, -10]}
+	/>
+
+	<!-- <SpotLight
+		helpers={false}
+		intensity={50}
+		position={[-20, 5, 0]}
+		angle={Math.PI / 1}
+		penumbra={1}
+		distance={20}
+		targetPosition={[-20, 0, 0]}
+	/> -->
+
+	<PointLight
+		helpers={false}
+		intensity={10}
+		position={[-20, 5, 0]}
+		distance={10}
+		decay{1},
+		targetRef{null},
+		targetPosition={[-20, 0, 0]}
 	/>
 
 	<Modele

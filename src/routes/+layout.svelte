@@ -57,11 +57,16 @@
 	main {
 		overflow-x: hidden;
 	}
+
 	.container {
 		width: 100%;
 		padding: 0;
 		margin: 0;
 		max-width: none;
+
+		/* pointer-events: none;
+		position: absolute;
+		z-index: -1; */
 	}
 
 	.threlte {

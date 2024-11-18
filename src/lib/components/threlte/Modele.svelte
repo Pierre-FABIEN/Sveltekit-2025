@@ -192,7 +192,7 @@
 			receiveShadow
 			geometry={gltf.nodes.Humans.geometry}
 			material={gltf.nodes.Humans.material}
-			position={[-20, 0, 0]}
+			position={[-20, 0, 0.1]}
 			scale={2}
 		/>
 		<T.Mesh
