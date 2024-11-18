@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { tick } from 'svelte';
-	import * as THREE from 'three';
-	import { Canvas } from '@threlte/core';
+
 	import gsap from 'gsap';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+
+	import * as THREE from 'three';
+	import { Canvas } from '@threlte/core';
 	import { T } from '@threlte/core';
 	import { OrbitControls } from '@threlte/extras';
 
@@ -28,6 +30,10 @@
 		PrincipalLightIntensity,
 		FlameIntensity
 	} from '$store/ThreeStore/animationStores';
+
+	// Import des fonctions déplacées
+	import { smoothReturnToCenter, startAnimationLoop } from './utils/Functions/animationUtils';
+
 	import {
 		handleMouseEnter,
 		handleMouseMove,
@@ -52,90 +58,18 @@
 			musicLettersIntensity.set(0);
 
 			// Démarrer un retour fluide vers la position centrale et les valeurs d'intensité par interpolation
-			smoothReturnToCenter();
+			smoothReturnToCenter(PerspectiveCameraRef, OrbitControlsRef);
 		} else {
 			// Arrêter toute animation en cours
 			console.log('Animations désactivées');
 		}
 	});
 
-	// Fonction pour gérer le retour fluide de la caméra et des lumières
-	function smoothReturnToCenter() {
-		const animationSpeed = 0.1; // Ajuste cette valeur pour une transition plus ou moins rapide
-
-		function animate() {
-			if ($disableAnimationsHome) return;
-
-			// Interpolation progressive vers les valeurs cibles
-			leftSpotLightIntensity.set(
-				THREE.MathUtils.lerp($leftSpotLightIntensity, $targetLeftIntensity, animationSpeed)
-			);
-			rightSpotLightIntensity.set(
-				THREE.MathUtils.lerp($rightSpotLightIntensity, $targetRightIntensity, animationSpeed)
-			);
-			PrincipalLightIntensity.set(
-				THREE.MathUtils.lerp($PrincipalLightIntensity, 70, animationSpeed)
-			);
-			FlameIntensity.set(THREE.MathUtils.lerp($FlameIntensity, 1, animationSpeed));
-
-			if (PerspectiveCameraRef) {
-				PerspectiveCameraRef.position.lerp($desiredCameraPosition, animationSpeed);
-				PerspectiveCameraRef.lookAt($desiredTarget);
-				PerspectiveCameraRef.updateProjectionMatrix();
-			}
-
-			if (OrbitControlsRef) {
-				OrbitControlsRef.target.lerp($desiredTarget, animationSpeed);
-				OrbitControlsRef.update();
-			}
-
-			// Continuer l'animation jusqu'à ce que les valeurs cibles soient atteintes
-			if (
-				Math.abs($leftSpotLightIntensity - $targetLeftIntensity) > 0.01 ||
-				Math.abs($rightSpotLightIntensity - $targetRightIntensity) > 0.01 ||
-				OrbitControlsRef?.target.distanceTo($desiredTarget) > 0.1 ||
-				(PerspectiveCameraRef &&
-					PerspectiveCameraRef.position.distanceTo($desiredCameraPosition) > 0.1)
-			) {
-				requestAnimationFrame(animate);
-			}
-		}
-
-		// Démarrer l'animation
-		animate();
-	}
-
-	// Fonction d'animation continue
-	function animate() {
-		if (!$disableAnimationsHome) {
-			requestAnimationFrame(animate);
-
-			// Interpolation pour une transition fluide des intensités
-			leftSpotLightIntensity.set(
-				THREE.MathUtils.lerp($leftSpotLightIntensity, $targetLeftIntensity, 0.1)
-			);
-			rightSpotLightIntensity.set(
-				THREE.MathUtils.lerp($rightSpotLightIntensity, $targetRightIntensity, 0.1)
-			);
-
-			if (OrbitControlsRef && OrbitControlsRef.target) {
-				OrbitControlsRef.target.lerp($desiredTarget, 0.1);
-			}
-
-			if (PerspectiveCameraRef) {
-				PerspectiveCameraRef.position.lerp($desiredCameraPosition, 0.1);
-				PerspectiveCameraRef.updateProjectionMatrix();
-			}
-
-			OrbitControlsRef.update();
-		}
-	}
-
 	// Démarrer l'animation
 	$effect(() => {
 		if (!$disableAnimationsHome) {
 			tick().then(() => {
-				animate();
+				startAnimationLoop(PerspectiveCameraRef, OrbitControlsRef);
 				if (PerspectiveCameraRef) {
 					updateCamera(PerspectiveCameraRef, OrbitControlsRef);
 				}
