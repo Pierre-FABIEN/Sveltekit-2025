@@ -3,7 +3,7 @@
 import { writable } from 'svelte/store';
 import * as THREE from 'three';
 
-export const disableAnimationsHome = writable(true);
+export const disableAnimationsHome = writable(false);
 
 export const isMouseOutside = writable<boolean>(false);
 export const mousePercentage = writable<number>(0);
@@ -24,5 +24,3 @@ export const FlameIntensity = writable<number>(1);
 
 export const cameraPosition = writable(new THREE.Vector3(-25, 7, 0));
 export const cameraTarget = writable(new THREE.Vector3(0, 2, 0));
-
-export const isControlledByScroll = writable<boolean>(false);

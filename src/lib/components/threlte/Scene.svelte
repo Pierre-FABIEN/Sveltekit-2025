@@ -17,8 +17,6 @@
 	// Import des stores
 	import {
 		disableAnimationsHome,
-		isMouseOutside,
-		mousePercentage,
 		desiredTarget,
 		desiredCameraPosition,
 		leftSpotLightIntensity,

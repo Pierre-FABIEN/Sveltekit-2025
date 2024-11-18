@@ -12,31 +12,28 @@
 
 	let cameraAnimation: any;
 
-	const initializeTextAppearAnimations = () => {
+	// Objets intermédiaires pour l'animation
+	let cameraPos = { x: -25, y: 7, z: 0 };
+	let cameraTgt = { x: 0, y: 2, z: 0 };
+
+	function initializeScrollTrigger() {
+		// ScrollTrigger pour désactiver les animations liées à la souris
 		ScrollTrigger.create({
-			trigger: '.home',
+			trigger: '.about',
 			start: 'top center',
-			end: 'center',
-			scrub: true,
 			onEnter: () => {
-				console.log('Entré dans .home depuis le haut');
-				disableAnimationsHome.set(false);
-			},
-			onLeave: () => {
-				console.log('Quitté .home vers le bas');
 				disableAnimationsHome.set(true);
-				console.log('sortie');
 			},
-			onEnterBack: () => {
-				console.log('Revenu dans .home depuis le bas');
+			onLeaveBack: () => {
 				disableAnimationsHome.set(false);
 			}
 		});
 
+		// ScrollTrigger pour animer la caméra
 		ScrollTrigger.create({
 			trigger: '.about',
-			start: 'top center +-50%',
-			end: 'center',
+			start: 'top center',
+			end: 'bottom center',
 			scrub: true,
 			onUpdate: (self) => {
 				const progress = self.progress;
@@ -55,45 +52,38 @@
 				};
 
 				// Annuler toute animation en cours
-				if (cameraAnimation) cameraAnimation.kill();
+				gsap.killTweensOf(cameraPos);
+				gsap.killTweensOf(cameraTgt);
 
 				// Utiliser gsap pour animer la caméra
-				cameraAnimation = gsap.to(cameraPosition, {
+				gsap.to(cameraPos, {
 					duration: 0.5,
 					x: newCameraPosition.x,
 					y: newCameraPosition.y,
 					z: newCameraPosition.z,
 					ease: 'power2.out',
 					onUpdate: () => {
-						cameraPosition.set(
-							new THREE.Vector3(cameraPosition.x, cameraPosition.y, cameraPosition.z)
-						);
+						cameraPosition.set(new THREE.Vector3(cameraPos.x, cameraPos.y, cameraPos.z));
 					}
 				});
 
-				gsap.to(cameraTarget, {
+				gsap.to(cameraTgt, {
 					duration: 0.5,
 					x: newCameraTarget.x,
 					y: newCameraTarget.y,
 					z: newCameraTarget.z,
 					ease: 'power2.out',
 					onUpdate: () => {
-						cameraTarget.set(new THREE.Vector3(cameraTarget.x, cameraTarget.y, cameraTarget.z));
+						cameraTarget.set(new THREE.Vector3(cameraTgt.x, cameraTgt.y, cameraTgt.z));
 					}
 				});
-			},
-			onLeave: () => {
-				console.log('Quitté .about vers le bas');
-			},
-			onEnterBack: () => {
-				console.log('Revenu dans .about depuis le bas');
 			}
 		});
-	};
+	}
 
 	$effect(() => {
 		setTimeout(() => {
-			initializeTextAppearAnimations();
+			initializeScrollTrigger();
 		}, 10);
 	});
 </script>
