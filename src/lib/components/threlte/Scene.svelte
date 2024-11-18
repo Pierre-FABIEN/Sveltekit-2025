@@ -8,10 +8,11 @@
 	import { OrbitControls } from '@threlte/extras';
 
 	import Modele from './Modele.svelte';
-	import SpotLight from './utils/SpotLight.svelte';
-	import FlameLight from './utils/FlameLight.svelte';
+	import SpotLight from './utils/Light/SpotLight.svelte';
+	import FlameLight from './utils/Light/FlameLight.svelte';
 	import { disableAnimationsHome } from '$store/disableAnimationsStore';
 	import { cameraPosition, cameraTarget } from '$lib/store/cameraStore';
+	import { updateCamera } from './utils/Functions/cameraUtils';
 
 	gsap.registerPlugin(ScrollTrigger);
 
@@ -36,26 +37,6 @@
 	let FlameIntensity: number = $state(1);
 	let isControlledByScroll = false;
 
-	const updateCamera = () => {
-		const lerpFactor = 0.1; // Facteur d'interpolation (0.1 pour une interpolation douce)
-
-		cameraPosition.subscribe((position) => {
-			if (PerspectiveCameraRef && !isControlledByScroll) {
-				// Utiliser lerp pour interpoler la position de la caméra
-				PerspectiveCameraRef.position.lerp(position, lerpFactor);
-				PerspectiveCameraRef.updateProjectionMatrix();
-			}
-		});
-
-		cameraTarget.subscribe((target) => {
-			if (OrbitControlsRef && !isControlledByScroll) {
-				// Utiliser lerp pour interpoler la cible de la caméra
-				OrbitControlsRef.target.lerp(target, lerpFactor);
-				OrbitControlsRef.update();
-			}
-		});
-	};
-
 	disableAnimationsHome.subscribe((disable) => {
 		if (disable) {
 			// Mettre à jour les valeurs cibles pour la caméra et les lumières
@@ -63,6 +44,8 @@
 			desiredCameraPosition.set(-25, 7, 0);
 			targetLeftIntensity = 0;
 			targetRightIntensity = 0;
+			rightSpotLightIntensity = 0;
+			leftSpotLightIntensity = 0;
 			devLettersIntensity = 0;
 			musicLettersIntensity = 0;
 
@@ -239,7 +222,9 @@
 		if (!$disableAnimationsHome) {
 			tick().then(() => {
 				animate();
-				updateCamera();
+				if (PerspectiveCameraRef) {
+					updateCamera(PerspectiveCameraRef, OrbitControlsRef, false);
+				}
 			});
 		}
 	});

@@ -6,7 +6,7 @@
 	import { cameraPosition, cameraTarget } from '$lib/store/cameraStore.ts';
 
 	gsap.registerPlugin(ScrollTrigger);
-	let cameraAnimation;
+	let cameraAnimation: any;
 
 	const initializeTextAppearAnimations = () => {
 		ScrollTrigger.create({
