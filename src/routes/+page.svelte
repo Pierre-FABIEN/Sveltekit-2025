@@ -5,21 +5,30 @@
 	import {
 		disableAnimationsHome,
 		cameraPosition,
-		cameraTarget
+		cameraTarget,
+		pointLightIntensity,
+		PrincipalLightIntensity,
+		FlameIntensity
 	} from '$lib/store/ThreeStore/animationStores';
+	import { tick } from 'svelte';
 
 	gsap.registerPlugin(ScrollTrigger);
 
 	// Objets intermédiaires pour l'animation
 	let cameraPos = { x: -25, y: 7, z: 0 };
 	let cameraTgt = { x: 0, y: 2, z: 0 };
+	let pointLight = { value: 0 };
+
+	// Variables pour stocker les ScrollTriggers
+	let scrollTrigger1: any;
+	let scrollTrigger2: any;
+	let scrollTrigger3: any;
 
 	function initializeScrollTrigger() {
 		// ScrollTrigger pour désactiver les animations liées à la souris
-		ScrollTrigger.create({
+		scrollTrigger1 = ScrollTrigger.create({
 			trigger: '.about',
 			start: 'top -+80%',
-
 			onEnter: () => {
 				disableAnimationsHome.set(true);
 			},
@@ -28,11 +37,10 @@
 			}
 		});
 
-		// ScrollTrigger pour animer la caméra
-		ScrollTrigger.create({
+		// ScrollTrigger pour animer la caméra et éteindre la lumière principale au milieu de '.about'
+		scrollTrigger2 = ScrollTrigger.create({
 			trigger: '.about',
-			markers: true,
-			start: 'top -+80%',
+			start: 'top -+100%',
 			end: 'bottom',
 			scrub: true,
 			onUpdate: (self) => {
@@ -41,17 +49,23 @@
 				// Calcul des nouvelles positions de la caméra basées sur le défilement
 				const newCameraPosition = {
 					x: THREE.MathUtils.lerp(-25, -50, progress),
-					y: THREE.MathUtils.lerp(7, 20, progress),
+					y: THREE.MathUtils.lerp(7, 2, progress),
 					z: 0
 				};
 
 				const newCameraTarget = {
 					x: 0,
-					y: THREE.MathUtils.lerp(0, -10, progress),
+					y: THREE.MathUtils.lerp(2, 2, progress),
 					z: 0
 				};
 
-				//PrincipalLightIntensity.set(0);
+				// Calcul de la nouvelle intensité de la lumière principale pour qu'elle atteigne zéro au milieu
+				if (progress <= 0.5) {
+					const newPrincipalLightIntensity = THREE.MathUtils.lerp(70, 0, progress * 2);
+					PrincipalLightIntensity.set(newPrincipalLightIntensity);
+				} else {
+					PrincipalLightIntensity.set(0);
+				}
 
 				// Annuler toute animation en cours
 				gsap.killTweensOf(cameraPos);
@@ -81,19 +95,83 @@
 				});
 			}
 		});
+
+		// ScrollTrigger pour animer la PointLight
+		scrollTrigger3 = ScrollTrigger.create({
+			trigger: '.suite',
+
+			start: 'top =+50%',
+			end: 'bottom',
+			scrub: true,
+			onEnter: () => {
+				console.log('Entré dans .suite');
+				// Allumer la lumière progressivement
+				gsap.to(pointLight, {
+					duration: 1,
+					value: 10,
+					ease: 'power2.out',
+					onUpdate: () => {
+						pointLightIntensity.set(pointLight.value);
+					}
+				});
+
+				gsap.to(pointLight, {
+					duration: 1,
+					value: 10,
+					ease: 'power2.out',
+					onUpdate: () => {
+						FlameIntensity.set(pointLight.value);
+					}
+				});
+			},
+			onLeaveBack: () => {
+				console.log('Sorti de .suite');
+				// Éteindre la lumière progressivement
+				gsap.to(pointLight, {
+					duration: 1,
+					value: 0,
+					ease: 'power2.out',
+					onUpdate: () => {
+						pointLightIntensity.set(pointLight.value);
+					}
+				});
+
+				gsap.to(pointLight, {
+					duration: 1,
+					value: 1,
+					ease: 'power2.out',
+					onUpdate: () => {
+						FlameIntensity.set(pointLight.value);
+					}
+				});
+			}
+		});
 	}
 
 	$effect(() => {
-		setTimeout(() => {
+		tick().then(() => {
 			initializeScrollTrigger();
-		}, 10);
+		});
+
+		return () => {
+			if (scrollTrigger1) scrollTrigger1.kill();
+			if (scrollTrigger2) scrollTrigger2.kill();
+			if (scrollTrigger3) scrollTrigger3.kill();
+		};
 	});
 </script>
 
+<!-- Votre code HTML pour les sections -->
 <section class="home flex justify-center content-center items-center">
 	<p>TEXTE</p>
 </section>
 <section class="about flex justify-center content-center items-center">
+	<p>TEXTE</p>
+</section>
+<section class="suite flex justify-center content-center items-center">
+	<p>TEXTE</p>
+</section>
+<section class="ets flex justify-center content-center items-center">
 	<p>TEXTE</p>
 </section>
 <section class="ets flex justify-center content-center items-center">

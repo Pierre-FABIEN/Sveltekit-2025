@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { tick } from 'svelte';
-
 	import gsap from 'gsap';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
-
 	import * as THREE from 'three';
 	import { Canvas } from '@threlte/core';
 	import { T } from '@threlte/core';
@@ -14,7 +12,6 @@
 	import FlameLight from './utils/Light/FlameLight.svelte';
 	import { updateCamera } from './utils/Functions/cameraUtils';
 
-	// Import des stores
 	import {
 		disableAnimationsHome,
 		desiredTarget,
@@ -26,11 +23,12 @@
 		devLettersIntensity,
 		musicLettersIntensity,
 		PrincipalLightIntensity,
-		FlameIntensity
+		FlameIntensity,
+		pointLightIntensity,
+		lerpFactor
 	} from '$store/ThreeStore/animationStores';
 
-	// Import des fonctions déplacées
-	import { smoothReturnToCenter, startAnimationLoop } from './utils/Functions/animationUtils';
+	import { startAnimationLoop } from './utils/Functions/animationUtils';
 
 	import {
 		handleMouseEnter,
@@ -44,6 +42,7 @@
 	let PerspectiveCameraRef = $state<THREE.PerspectiveCamera | undefined>(undefined);
 	let OrbitControlsRef = $state<any | undefined>(undefined);
 
+	// Gestion des animations désactivées
 	disableAnimationsHome.subscribe((disable) => {
 		if (disable) {
 			// Mettre à jour les valeurs cibles pour la caméra et les lumières
@@ -55,24 +54,23 @@
 			leftSpotLightIntensity.set(0);
 			devLettersIntensity.set(0);
 			musicLettersIntensity.set(0);
-
-			// Démarrer un retour fluide vers la position centrale et les valeurs d'intensité par interpolation
-			smoothReturnToCenter(PerspectiveCameraRef, OrbitControlsRef);
+			lerpFactor.set(0.2);
 		} else {
-			// Arrêter toute animation en cours
 			console.log('Animations désactivées');
 		}
 	});
 
-	// Démarrer l'animation
 	$effect(() => {
+		let cameraSubscriptions: any;
+
 		if (!$disableAnimationsHome) {
-			tick().then(() => {
-				startAnimationLoop(PerspectiveCameraRef, OrbitControlsRef);
-				if (PerspectiveCameraRef) {
-					updateCamera(PerspectiveCameraRef, OrbitControlsRef);
-				}
-			});
+			startAnimationLoop(PerspectiveCameraRef, OrbitControlsRef);
+			if (PerspectiveCameraRef) {
+				cameraSubscriptions = updateCamera(PerspectiveCameraRef, OrbitControlsRef);
+			}
+		} else {
+			cameraSubscriptions?.unsubscribePosition();
+			cameraSubscriptions?.unsubscribeTarget();
 		}
 	});
 </script>
@@ -133,23 +131,13 @@
 		targetPosition={[5, 0, -10]}
 	/>
 
-	<!-- <SpotLight
-		helpers={false}
-		intensity={50}
-		position={[-20, 5, 0]}
-		angle={Math.PI / 1}
-		penumbra={1}
-		distance={20}
-		targetPosition={[-20, 0, 0]}
-	/> -->
-
 	<PointLight
 		helpers={false}
-		intensity={10}
+		intensity={$pointLightIntensity}
 		position={[-20, 5, 0]}
 		distance={10}
-		decay{1},
-		targetRef{null},
+		decay={1}
+		targetRef={null}
 		targetPosition={[-20, 0, 0]}
 	/>
 

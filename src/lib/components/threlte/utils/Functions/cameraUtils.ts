@@ -1,25 +1,27 @@
 // utils/cameraUtils.ts
 
 import * as THREE from 'three';
-import { cameraPosition, cameraTarget } from '$lib/store/ThreeStore/animationStores';
+import { cameraPosition, cameraTarget, lerpFactor } from '$lib/store/ThreeStore/animationStores';
+import { get } from 'svelte/store';
 
 export function updateCamera(PerspectiveCameraRef: THREE.PerspectiveCamera, OrbitControlsRef: any) {
-	const lerpFactorcameraPosition = 0.2;
-	const lerpFactorcameraTarget = 0.05;
-
-	cameraPosition.subscribe((position) => {
+	const unsubscribePosition = cameraPosition.subscribe((position) => {
 		if (PerspectiveCameraRef) {
-			// Use lerp to interpolate the camera position
-			PerspectiveCameraRef.position.lerp(position, lerpFactorcameraPosition);
+			PerspectiveCameraRef.position.lerp(position, get(lerpFactor));
 			PerspectiveCameraRef.updateProjectionMatrix();
 		}
 	});
 
-	cameraTarget.subscribe((target) => {
+	const unsubscribeTarget = cameraTarget.subscribe((target) => {
 		if (OrbitControlsRef) {
-			// Use lerp to interpolate the camera target
-			OrbitControlsRef.target.lerp(target, lerpFactorcameraTarget);
+			OrbitControlsRef.target.lerp(target, get(lerpFactor));
 			OrbitControlsRef.update();
 		}
 	});
+
+	// Retourner les fonctions de désabonnement
+	return {
+		unsubscribePosition,
+		unsubscribeTarget
+	};
 }

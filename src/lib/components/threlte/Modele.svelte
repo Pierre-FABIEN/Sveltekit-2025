@@ -12,6 +12,10 @@
 	let synthNode: THREE.Object3D | null = $state(null);
 	let keyboardNode: THREE.Object3D | null = $state(null);
 
+	let batNode: THREE.Mesh | null = $state(null);
+	let batLight: THREE.PointLight | null = $state(null);
+	let batIntensity = 1; // Vous pouvez ajuster l'intensité selon vos besoins
+
 	// Références des objets
 	let letterD: THREE.Mesh | null = $state(null);
 	let letterE: THREE.Mesh | null = $state(null);
@@ -34,6 +38,15 @@
 
 	// Variables pour gérer les timeout de clignotement
 	let timeoutIds: { [key: string]: number } = {};
+
+	// Variables pour l'animation de clignotement
+	let blinkTimers: { [key: string]: number } = {};
+	let blinkDurations: { [key: string]: number } = {};
+
+	// Initialiser les durées de clignotement
+	function initBlinkDuration(id: string) {
+		blinkDurations[id] = Math.random() * 0.5 + 0.1; // Durée entre 0.1s et 0.6s
+	}
 
 	// Appliquer une lumière et un matériau émissif à chaque lettre
 	$effect(() => {
@@ -81,6 +94,14 @@
 			letterC.material = letterC.material.clone();
 			letterC.material.emissive = musicEmissiveColor;
 			letterC.material.emissiveIntensity = musicLettersIntensity * 5;
+		}
+
+		const batEmissiveColor = new THREE.Color(0xffffff);
+		if (batNode?.material instanceof THREE.MeshStandardMaterial) {
+			batNode.material = batNode.material.clone();
+			batNode.material.emissive = batEmissiveColor;
+			batNode.material.emissiveIntensity = batIntensity * 5;
+			batNode.frustumCulled = false;
 		}
 	});
 
@@ -145,9 +166,69 @@
 		if (letterCLights && letterC) {
 			animateClignotement('letterC', letterCLights, letterC, musicLettersIntensity);
 		}
+		if (batLight && batNode) {
+			animateClignotement('bat', batLight, batNode, devLettersIntensity); // Utilisez une intensité appropriée
+		}
 	});
 
 	// Tâche pour animer les objets seulement si les nœuds sont initialisés
+	useTask((delta) => {
+		const ids = [
+			'letterD',
+			'letterE',
+			'letterV',
+			'letterM',
+			'letterU',
+			'letterS',
+			'letterI',
+			'letterC',
+			'bat'
+		];
+		ids.forEach((id) => {
+			if (!blinkTimers[id]) {
+				blinkTimers[id] = 0;
+				initBlinkDuration(id);
+			}
+			blinkTimers[id] += delta;
+			if (blinkTimers[id] >= blinkDurations[id]) {
+				// Basculer l'intensité
+				const randomIntensityValue = randomIntensity();
+				let light: THREE.PointLight | null = null;
+				let mesh: THREE.Mesh | null = null;
+				let intensity = 1;
+
+				switch (id) {
+					case 'letterD':
+						light = letterDLights;
+						mesh = letterD;
+						intensity = devLettersIntensity;
+						break;
+					// ... gérer les autres lettres ...
+					case 'bat':
+						light = batLight;
+						mesh = batNode;
+						intensity = batIntensity;
+						break;
+				}
+
+				if (light) {
+					light.intensity = intensity * randomIntensityValue * 5;
+					light.updateMatrix();
+					light.updateMatrixWorld();
+				}
+				if (mesh?.material instanceof THREE.MeshStandardMaterial) {
+					mesh.material.emissiveIntensity = intensity * randomIntensityValue * 5;
+					mesh.material.needsUpdate = true;
+				}
+
+				// Réinitialiser le timer et la durée
+				blinkTimers[id] = 0;
+				initBlinkDuration(id);
+			}
+		});
+	});
+
+	// Autres animations
 	useTask((delta) => {
 		if (!synthNode || !keyboardNode) return;
 		synthNode.rotation.x = 0.8;
@@ -183,8 +264,18 @@
 			receiveShadow
 			geometry={gltf.nodes.Human.geometry}
 			material={gltf.nodes.Human.material}
-			position={[0.32, 2.99, 0.28]}
-			rotation={[2.42, 0.76, -1.98]}
+			position={[0.13, 0, 0.06]}
+			rotation={[0, 0, 0]}
+			scale={1}
+		/>
+		<T.Mesh
+			castShadow
+			receiveShadow
+			bind:ref={batNode}
+			geometry={gltf.nodes.Bat.geometry}
+			material={gltf.nodes.Bat.material}
+			position={[0.26, 2.94, 0.32]}
+			rotation={[0.3, 0, -0.56]}
 			scale={0.15}
 		/>
 		<T.Mesh
@@ -378,6 +469,15 @@
 			intensity={musicLettersIntensity}
 			color="#FFFFFF"
 			position={[4.19, 2.3, 9.97]}
+			distance={10}
+			castShadow
+			receiveShadow
+		/>
+		<T.PointLight
+			bind:ref={batLight}
+			intensity={batIntensity}
+			color="#FFFFFF"
+			position={[0.26, 2.94, 0.32]}
 			distance={10}
 			castShadow
 			receiveShadow
