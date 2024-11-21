@@ -1,37 +1,66 @@
 import type { PageServerLoad } from './$types';
 import { prisma, socio } from '$lib/server';
+import { participantSchema } from '$lib/schema/participantsSchema';
+import { superValidate, message, fail } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = (async () => {
+	// Charger les participants existants depuis la base de données
 	const participants = await prisma.participant.findMany();
-	return { participants };
+
+	// Initialiser un formulaire Superform avec Zod
+	const form = await superValidate(zod(participantSchema));
+
+	return { participants, form };
 }) satisfies PageServerLoad;
 
 export const actions = {
 	insertParticipant: async ({ request }) => {
+		// Récupérer les données du formulaire
 		const formData = await request.formData();
-		const name = formData.get('name')?.toString() ?? '';
-		const num = parseInt(formData.get('num')?.toString() ?? '0', 10);
 
-		if (!name || isNaN(num)) {
-			return { error: 'Invalid input' };
+		// Valider les données avec Superform et Zod
+		const form = await superValidate(formData, zod(participantSchema));
+
+		// Si les données sont invalides, retourner les erreurs au client
+		if (!form.valid) {
+			return fail(400, {
+				form,
+				error: 'Invalid data'
+			});
 		}
 
-		const newParticipant = await prisma.participant.create({ data: { name, num } });
+		try {
+			// Ajouter le participant dans la base de données
+			const newParticipant = await prisma.participant.create({
+				data: form.data
+			});
 
-		console.log(newParticipant, '(newParticipant');
+			console.log(newParticipant, '(newParticipant)');
 
-		const currentParticipants = (await socio.GetPropVal('participants')) || [];
-		console.log('Participants actuels via GetPropVal :', currentParticipants);
+			// Synchroniser la liste des participants via SocioServer
+			const currentParticipants = (await socio.GetPropVal('participants')) || [];
+			const updatedParticipants = [...currentParticipants, newParticipant];
 
-		const updatedParticipants = [...currentParticipants, newParticipant];
-		const success = await socio.SetPropVal('participants', updatedParticipants);
-		if (!success) {
-			console.error('Échec de la synchronisation avec SocioServer');
-		} else {
-			console.log('Synchronisation réussie :', updatedParticipants);
+			const syncSuccess = await socio.SetPropVal('participants', updatedParticipants);
+
+			if (!syncSuccess) {
+				console.error('Échec de la synchronisation avec SocioServer');
+				return fail(500, {
+					error: 'Failed to sync with SocioServer',
+					form
+				});
+			}
+
+			// Retourner un message de succès
+			return message(form, 'Participant added successfully');
+		} catch (error) {
+			// Gestion des erreurs inattendues
+			console.error('Erreur dans insertParticipant:', error);
+			return fail(500, {
+				error: 'Internal server error',
+				form
+			});
 		}
-
-		// Retourner un objet cohérent
-		return { success: true, participant: newParticipant };
 	}
 };
