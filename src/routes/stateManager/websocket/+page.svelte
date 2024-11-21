@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { SocioClient } from 'socio/dist/core-client.js';
 
 	let { data } = $props();
@@ -25,7 +26,20 @@
 
 <main>
 	<section>
-		<form method="post" action="?/insertParticipant">
+		<form
+			method="post"
+			action="?/insertParticipant"
+			use:enhance={async ({ data, update }) => {
+				if (data && data.success) {
+					console.log('Participant ajouté avec succès:', data.participant);
+					await update(); // Rafraîchir la page ou synchroniser les données
+				} else if (data && data.error) {
+					console.error('Erreur lors de l’ajout du participant:', data.error);
+				} else {
+					console.error('Réponse inattendue:', data);
+				}
+			}}
+		>
 			<input type="text" name="name" placeholder="Name" required />
 			<input type="number" name="num" min="0" placeholder="Number" required />
 			<button type="submit">Add Participant</button>
@@ -41,7 +55,3 @@
 		{/each}
 	</section>
 </main>
-
-<style>
-	/* Styles simplifiés */
-</style>

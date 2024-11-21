@@ -34,17 +34,21 @@ export const socio = new SocioServer(
 console.log('Initialisation des participants dans SocioServer');
 socio.RegisterProp('participants', [], {
 	assigner: (currentValue, newValue) => {
+		console.log('Assignation des participants :', currentValue, newValue);
 		if (Array.isArray(newValue)) {
-			console.log('Mise à jour des participants :', newValue);
 			return socio.SetPropVal('participants', newValue);
 		}
 		return false;
-	}
+	},
+	client_writable: true,
+	observationaly_temporary: false
 });
 
-// Charger les participants initiaux depuis la base de données
 (async () => {
 	const initialParticipants = await prisma.participant.findMany();
-	console.log('Participants initiaux :', initialParticipants);
-	await socio.SetPropVal('participants', initialParticipants);
+	console.log('Participants initiaux chargés depuis la BDD :', initialParticipants);
+
+	const success = await socio.SetPropVal('participants', initialParticipants);
+	console.log('Initialisation de participants réussie ?', success);
+	//console.log('Propriétés Socio enregistrées :', Object.keys(socio.props));
 })();

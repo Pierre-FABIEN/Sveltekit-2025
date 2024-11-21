@@ -1,4 +1,4 @@
-import type { PageServerLoad, Actions } from './$types';
+import type { PageServerLoad } from './$types';
 import { prisma, socio } from '$lib/server';
 
 export const load = (async () => {
@@ -16,16 +16,22 @@ export const actions = {
 			return { error: 'Invalid input' };
 		}
 
-		// Ajoutez un participant dans la base de données
 		const newParticipant = await prisma.participant.create({ data: { name, num } });
 
-		// Vérifiez que la propriété existe dans socio.props
-		const currentParticipants = socio.props?.['participants'] || [];
+		console.log(newParticipant, '(newParticipant');
+
+		const currentParticipants = (await socio.GetPropVal('participants')) || [];
+		console.log('Participants actuels via GetPropVal :', currentParticipants);
+
 		const updatedParticipants = [...currentParticipants, newParticipant];
+		const success = await socio.SetPropVal('participants', updatedParticipants);
+		if (!success) {
+			console.error('Échec de la synchronisation avec SocioServer');
+		} else {
+			console.log('Synchronisation réussie :', updatedParticipants);
+		}
 
-		// Synchronisez la propriété avec SocioServer
-		await socio.SetPropVal('participants', updatedParticipants);
-
-		return { success: true };
+		// Retourner un objet cohérent
+		return { success: true, participant: newParticipant };
 	}
 };
