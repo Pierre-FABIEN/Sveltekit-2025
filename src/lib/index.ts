@@ -39,6 +39,11 @@ export const stateItems = [
 		title: 'State',
 		url: '/stateManager/state',
 		icon: StateIcon
+	},
+	{
+		title: 'WebSocket',
+		url: '/stateManager/websocket',
+		icon: StateIcon
 	}
 ];
 

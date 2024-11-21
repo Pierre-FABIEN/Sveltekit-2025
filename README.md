@@ -43,4 +43,3 @@ mettre une option pour la f2a
 
 Ne peut être :
 multiLang
-Pierre-Fabien-Website

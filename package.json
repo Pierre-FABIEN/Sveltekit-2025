@@ -90,9 +90,13 @@
 		"gsap": "^3.12.5",
 		"lucia": "^3.2.2",
 		"lucia-auth": "^1.8.0",
+		"sass": "^1.81.0",
 		"smooth-scrollbar": "^8.8.4",
+		"socio": "^1.10.0",
+		"sqlite3": "^5.1.7",
 		"three": "^0.170.0",
 		"uqr": "^0.1.2",
-		"vite-plugin-pwa": "^0.21.0"
+		"vite-plugin-pwa": "^0.21.0",
+		"ws": "^8.18.0"
 	}
 }

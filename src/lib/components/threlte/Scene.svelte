@@ -1,154 +1,43 @@
-<script lang="ts">
-	import { tick } from 'svelte';
-	import gsap from 'gsap';
-	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
-	import * as THREE from 'three';
-	import { Canvas } from '@threlte/core';
+<script>
 	import { T } from '@threlte/core';
-	import { OrbitControls } from '@threlte/extras';
-
-	import Modele from './Modele.svelte';
-	import SpotLight from './utils/Light/SpotLight.svelte';
-	import FlameLight from './utils/Light/FlameLight.svelte';
-	import { updateCamera } from './utils/Functions/cameraUtils';
-
-	import {
-		disableAnimationsHome,
-		desiredTarget,
-		desiredCameraPosition,
-		leftSpotLightIntensity,
-		rightSpotLightIntensity,
-		targetLeftIntensity,
-		targetRightIntensity,
-		devLettersIntensity,
-		musicLettersIntensity,
-		PrincipalLightIntensity,
-		FlameIntensity,
-		pointLightIntensity,
-		lerpFactor
-	} from '$store/ThreeStore/animationStores';
-
-	import { startAnimationLoop } from './utils/Functions/animationUtils';
-
-	import {
-		handleMouseEnter,
-		handleMouseMove,
-		handleMouseOut
-	} from './utils/Functions/mouseHandlers';
-	import PointLight from './utils/Light/PointLight.svelte';
-
-	gsap.registerPlugin(ScrollTrigger);
-
-	let PerspectiveCameraRef = $state<THREE.PerspectiveCamera | undefined>(undefined);
-	let OrbitControlsRef = $state<any | undefined>(undefined);
-
-	// Gestion des animations désactivées
-	disableAnimationsHome.subscribe((disable) => {
-		if (disable) {
-			// Mettre à jour les valeurs cibles pour la caméra et les lumières
-			desiredTarget.set(new THREE.Vector3(0, 2, 0));
-			desiredCameraPosition.set(new THREE.Vector3(-25, 7, 0));
-			targetLeftIntensity.set(0);
-			targetRightIntensity.set(0);
-			rightSpotLightIntensity.set(0);
-			leftSpotLightIntensity.set(0);
-			devLettersIntensity.set(0);
-			musicLettersIntensity.set(0);
-			lerpFactor.set(0.2);
-		} else {
-			console.log('Animations désactivées');
-		}
-	});
-
-	$effect(() => {
-		let cameraSubscriptions: any;
-
-		if (!$disableAnimationsHome) {
-			startAnimationLoop(PerspectiveCameraRef, OrbitControlsRef);
-			if (PerspectiveCameraRef) {
-				cameraSubscriptions = updateCamera(PerspectiveCameraRef, OrbitControlsRef);
-			}
-		} else {
-			cameraSubscriptions?.unsubscribePosition();
-			cameraSubscriptions?.unsubscribeTarget();
-		}
-	});
+	import { ContactShadows, Float, Grid, OrbitControls } from '@threlte/extras';
 </script>
 
-<Canvas>
-	<T.PerspectiveCamera bind:ref={PerspectiveCameraRef} makeDefault position={[-25, 7, 0]} fov={15}>
-		<OrbitControls
-			bind:ref={OrbitControlsRef}
-			autoRotate={false}
-			enableRotate={true}
-			enableZoom={true}
-			enablePan={true}
-			enableDamping={true}
-			target={[0, 2, 0]}
-		/>
-	</T.PerspectiveCamera>
+<T.PerspectiveCamera makeDefault position={[-10, 10, 10]} fov={15}>
+	<OrbitControls autoRotate enableZoom={false} enableDamping autoRotateSpeed={0.5} target.y={1.5} />
+</T.PerspectiveCamera>
 
-	<FlameLight
-		color="#FFA500"
-		intensity={$FlameIntensity}
-		position={[-0.25, 2.75, 0]}
-		distance={0.8}
-		decay={1}
-		castShadow={true}
-		helpers={false}
-	/>
+<T.DirectionalLight intensity={0.8} position.x={5} position.y={10} />
+<T.AmbientLight intensity={0.2} />
 
-	<!-- Lumière principale -->
-	<SpotLight
-		helpers={false}
-		intensity={$PrincipalLightIntensity}
-		position={[0, 10, 0]}
-		angle={Math.PI / 7}
-		penumbra={0.5}
-		distance={50}
-		targetPosition={[0, 0, 0]}
-	/>
-
-	<!-- SpotLight droite (intensité interpolée) -->
-	<SpotLight
-		helpers={false}
-		intensity={$rightSpotLightIntensity}
-		position={[0, 10, 0]}
-		angle={Math.PI / 7}
-		penumbra={0.5}
-		distance={50}
-		targetPosition={[5, 0, 10]}
-	/>
-
-	<!-- SpotLight gauche (intensité interpolée) -->
-	<SpotLight
-		helpers={false}
-		intensity={$leftSpotLightIntensity}
-		position={[0, 10, 0]}
-		angle={Math.PI / 7}
-		penumbra={0.5}
-		distance={50}
-		targetPosition={[5, 0, -10]}
-	/>
-
-	<PointLight
-		helpers={false}
-		intensity={$pointLightIntensity}
-		position={[-20, 5, 0]}
-		distance={10}
-		decay={1}
-		targetRef={null}
-		targetPosition={[-20, 0, 0]}
-	/>
-
-	<Modele
-		devLettersIntensity={$devLettersIntensity}
-		musicLettersIntensity={$musicLettersIntensity}
-	/>
-</Canvas>
-
-<svelte:window
-	on:mousemove={handleMouseMove}
-	on:mouseout={handleMouseOut}
-	on:mouseenter={handleMouseEnter}
+<Grid
+	position.y={-0.001}
+	cellColor="#ffffff"
+	sectionColor="#ffffff"
+	sectionThickness={0}
+	fadeDistance={25}
+	cellSize={2}
 />
+
+<ContactShadows scale={10} blur={2} far={2.5} opacity={0.5} />
+
+<Float floatIntensity={1} floatingRange={[0, 1]}>
+	<T.Mesh position.y={1.2} position.z={-0.75}>
+		<T.BoxGeometry />
+		<T.MeshStandardMaterial color="#0059BA" />
+	</T.Mesh>
+</Float>
+
+<Float floatIntensity={1} floatingRange={[0, 1]}>
+	<T.Mesh position={[1.2, 1.5, 0.75]} rotation.x={5} rotation.y={71}>
+		<T.TorusKnotGeometry args={[0.5, 0.15, 100, 12, 2, 3]} />
+		<T.MeshStandardMaterial color="#F85122" />
+	</T.Mesh>
+</Float>
+
+<Float floatIntensity={1} floatingRange={[0, 1]}>
+	<T.Mesh position={[-1.4, 1.5, 0.75]} rotation={[-5, 128, 10]}>
+		<T.IcosahedronGeometry />
+		<T.MeshStandardMaterial color="#F8EBCE" />
+	</T.Mesh>
+</Float>

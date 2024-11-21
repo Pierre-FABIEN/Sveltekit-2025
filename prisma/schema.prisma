@@ -87,3 +87,10 @@ model PasswordResetSession {
 
   user              User     @relation("UserPasswordResetSessions", fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model Participant {
+  id        Int      @id @default(autoincrement())
+  name      String
+  num       Int
+  createdAt DateTime @default(now())
+}
