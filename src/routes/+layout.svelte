@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { initializeLayoutState, setupNavigationEffect, isClient } from './layout.svelte';
-
 	import { ModeWatcher } from 'mode-watcher';
 	import { Toaster } from '$shadcn/sonner';
 	import '../app.css';
