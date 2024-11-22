@@ -1,33 +1,45 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
 	import { SocioClient } from 'socio/dist/core-client.js';
-	import { writable } from 'svelte/store';
+	import { writable, type Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	const sc = new SocioClient(`ws://${location.hostname}:3000`, {
-		logging: { verbose: true },
-		name: 'Main'
-	});
-
-	let participants = writable([]);
+	let sc: SocioClient;
+	let participants: Writable<any[]> = writable([]);
 	let newParticipant = $state({ name: '', num: 0 });
 	let ready = $state(false);
 
+	// Connexion au Socio Server
 	$effect(() => {
-		async () => {
-			ready = await sc.ready();
-			toast.success('Connected to Socio Server!');
+		sc = new SocioClient(`ws://${location.hostname}:3000`, {
+			logging: { verbose: true },
+			name: 'Main'
+		});
 
-			// Subscribe to participants
-			const id = sc.Subscribe({ sql: `SELECT * FROM Participants;` }, (res) =>
-				participants.set(res)
-			);
+		console.log(sc);
 
-			// Cleanup on destroy
-			return () => {
-				sc.Unsubscribe(id);
-			};
-		};
+		sc.ready()
+			.then(() => {
+				ready = true;
+				toast.success('Connected to Socio Server!');
+
+				// Abonnement à la table Participant
+				const id = sc.Subscribe({ sql: `SELECT * FROM Participant;` }, (res) => {
+					if (Array.isArray(res)) {
+						participants.set(res);
+					} else {
+						console.error('Expected an array of participants, but got:', res);
+					}
+				});
+
+				// Cleanup on destroy
+				return () => {
+					sc.Unsubscribe(id);
+				};
+			})
+			.catch((error) => {
+				console.error('Failed to connect to Socio Server:', error);
+				toast.error('Failed to connect to Socio Server.');
+			});
 	});
 
 	async function addParticipant() {
@@ -37,13 +49,14 @@
 		}
 
 		try {
-			await sc.Query(`INSERT INTO Participants (name, num) VALUES (:name, :num);`, {
+			await sc.Query(`INSERT INTO Participant (name, num) VALUES (:name, :num);`, {
 				name: newParticipant.name,
 				num: newParticipant.num
 			});
 			toast.success('Participant added successfully!');
 			newParticipant = { name: '', num: 0 };
 		} catch (error) {
+			console.error('Failed to add participant:', error);
 			toast.error('Failed to add participant!');
 		}
 	}
@@ -56,7 +69,7 @@
 			<ul>
 				{#each $participants as participant (participant.id)}
 					<li>
-						<strong>{participant.name}</strong>: {participant.num}
+						<strong>{participant.id} - {participant.name}</strong>: {participant.num}
 					</li>
 				{/each}
 			</ul>

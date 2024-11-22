@@ -20,23 +20,14 @@ export const socio = new SocioServer(
 );
 
 async function SetUpDBInterface() {
-	// Initialisation des données de test
-	await prisma.$executeRawUnsafe(`
-        CREATE TABLE IF NOT EXISTS Participants (
-            id INTEGER PRIMARY KEY AUTOINCREMENT, 
-            name VARCHAR(50), 
-            num INTEGER NOT NULL DEFAULT 0
-        )
-    `);
-
 	// Insérer des données de test si nécessaire
 	const participantCount = await prisma.$queryRawUnsafe<{ count: number }[]>(`
-        SELECT COUNT(*) AS count FROM Participants
+        SELECT COUNT(*) AS count FROM Participant
     `);
 
 	if (participantCount[0]?.count === 0) {
-		await prisma.$executeRawUnsafe(`INSERT INTO Participants (name, num) VALUES ("Jane", 42)`);
-		await prisma.$executeRawUnsafe(`INSERT INTO Participants (name, num) VALUES ("John", 69)`);
+		await prisma.$executeRawUnsafe(`INSERT INTO Participant (name, num) VALUES ("Jane", 42)`);
+		await prisma.$executeRawUnsafe(`INSERT INTO Participant (name, num) VALUES ("John", 69)`);
 	}
 
 	// Retour de l'interface DB compatible avec Socio

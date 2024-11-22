@@ -89,8 +89,7 @@ model PasswordResetSession {
 }
 
 model Participant {
-  id        Int      @id @default(autoincrement())
-  name      String
-  num       Int
-  createdAt DateTime @default(now())
+  id   Int    @id @default(autoincrement())
+  name String
+  num  Int    @default(0)
 }
