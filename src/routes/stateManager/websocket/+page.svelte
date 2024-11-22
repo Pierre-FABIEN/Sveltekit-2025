@@ -113,7 +113,6 @@
 								style="
 								width: 100%;
 								display: flex;
-								shadow-lg
 								flex-direction: {participant.client_id === sc.client_id ? 'row-reverse' : 'row'}"
 							>
 								<div
@@ -122,11 +121,10 @@
 									border: 1px solid {generateColorFromStringBorder(participant.client_id)};		
 									background-color: {generateColorFromString(participant.client_id)}; 
 									
-									
-									width: fit-content;"
+									flex-direction: {participant.client_id === sc.client_id ? 'row-reverse' : 'row'}"
 								>
 									<div
-										style=" flex-direction: {participant.client_id === sc.client_id
+										style="flex-direction: {participant.client_id === sc.client_id
 											? 'row-reverse'
 											: 'row'}"
 										class="flex items-center bg-shadow w-full h-full rounded-xl p-4 hover:bg-white/20 transition-all"
