@@ -45,7 +45,7 @@ const config = {
 			$lib: 'src/lib',
 			$components: 'src/lib/components',
 			$server: 'src/lib/server',
-			$store: 'src/lib/Store',
+			$store: 'src/lib/store',
 			$shadcn: 'src/lib/components/shadcn/ui'
 		}
 	}
