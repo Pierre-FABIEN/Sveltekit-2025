@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { initializeLayoutState, setupNavigationEffect, isClient } from './layout.svelte';
+
 	import { ModeWatcher } from 'mode-watcher';
 	import { Toaster } from '$shadcn/sonner';
 	import '../app.css';
@@ -11,7 +13,7 @@
 		firstLoadComplete,
 		setFirstOpen,
 		setRessourceToValide
-	} from '$store/initialLoaderStore';
+	} from '$lib/store/initialLoaderStore';
 	import Loader from '$lib/components/loader/Loader.svelte';
 	import { page } from '$app/stores';
 
@@ -19,14 +21,14 @@
 	const sidebar = useSidebar();
 
 	$effect(() => {
-		// const unsubscribe = page.subscribe((currentPage) => {
-		// 	initializeLayoutState(currentPage);
-		// });
-		//setupNavigationEffect();
+		const unsubscribe = page.subscribe((currentPage) => {
+			initializeLayoutState(currentPage);
+		});
+		setupNavigationEffect();
 		setFirstOpen(true);
 		setRessourceToValide(true);
 
-		//return unsubscribe;
+		return unsubscribe;
 	});
 </script>
 
@@ -40,7 +42,7 @@
 {#if !$firstLoadComplete}
 	<Loader />
 {/if}
-
+{#if $isClient}
 	<Sidebar.Provider>
 		<ModeWatcher />
 
@@ -68,7 +70,7 @@
 		</div>
 		<Toaster />
 	</Sidebar.Provider>
-
+{/if}
 
 <style>
 	main {

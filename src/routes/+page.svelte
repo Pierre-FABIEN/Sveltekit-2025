@@ -1,3 +1,7 @@
+<script>
+	import { navigationStore } from '$store/navigationStore';
+</script>
+
 <section class="home">
 	<div class="mt-10 column justify-center">
 		<article class="m-2 w-full max-w-4xl rounded-lg border p-8">

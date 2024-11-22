@@ -20,16 +20,6 @@ export const socio = new SocioServer(
 );
 
 async function SetUpDBInterface() {
-	// Insérer des données de test si nécessaire
-	const participantCount = await prisma.$queryRawUnsafe<{ count: number }[]>(`
-        SELECT COUNT(*) AS count FROM Participant
-    `);
-
-	if (participantCount[0]?.count === 0) {
-		await prisma.$executeRawUnsafe(`INSERT INTO Participant (name, num) VALUES ("Jane", 42)`);
-		await prisma.$executeRawUnsafe(`INSERT INTO Participant (name, num) VALUES ("John", 69)`);
-	}
-
 	// Retour de l'interface DB compatible avec Socio
 	return {
 		Query: async (client: SocioSession, id: id, sql: string, params?: any): Promise<object> => {

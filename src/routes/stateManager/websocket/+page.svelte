@@ -3,27 +3,25 @@
 	import { writable, type Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
-	let sc: SocioClient;
+	let SocioClientInit: SocioClient;
 	let participants: Writable<any[]> = writable([]);
 	let newParticipant = $state({ name: '', num: 0 });
 	let ready = $state(false);
 
 	// Connexion au Socio Server
 	$effect(() => {
-		sc = new SocioClient(`ws://${location.hostname}:3000`, {
+		SocioClientInit = new SocioClient(`ws://${location.hostname}:3000`, {
 			logging: { verbose: true },
 			name: 'Main'
 		});
 
-		console.log(sc);
-
-		sc.ready()
+		SocioClientInit.ready()
 			.then(() => {
 				ready = true;
 				toast.success('Connected to Socio Server!');
 
 				// Abonnement à la table Participant
-				const id = sc.Subscribe({ sql: `SELECT * FROM Participant;` }, (res) => {
+				const id = SocioClientInit.Subscribe({ sql: `SELECT * FROM Participant;` }, (res) => {
 					if (Array.isArray(res)) {
 						participants.set(res);
 					} else {
@@ -33,7 +31,7 @@
 
 				// Cleanup on destroy
 				return () => {
-					sc.Unsubscribe(id);
+					SocioClientInit.Unsubscribe(id);
 				};
 			})
 			.catch((error) => {
@@ -49,7 +47,7 @@
 		}
 
 		try {
-			await sc.Query(`INSERT INTO Participant (name, num) VALUES (:name, :num);`, {
+			await SocioClientInit.Query(`INSERT INTO Participant (name, num) VALUES (:name, :num);`, {
 				name: newParticipant.name,
 				num: newParticipant.num
 			});
