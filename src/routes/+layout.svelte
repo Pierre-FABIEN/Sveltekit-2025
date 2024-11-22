@@ -13,7 +13,7 @@
 		firstLoadComplete,
 		setFirstOpen,
 		setRessourceToValide
-	} from '$lib/store/initialLoaderStore';
+	} from '$store/initialLoaderStore';
 	import Loader from '$lib/components/loader/Loader.svelte';
 	import { page } from '$app/stores';
 

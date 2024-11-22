@@ -1,7 +1,7 @@
 import gsap from 'gsap';
 import type Scrollbar from 'smooth-scrollbar';
 import { get } from 'svelte/store';
-import SmoothScrollBarStore from '$lib/store/SmoothScrollBarStore';
+import SmoothScrollBarStore from '$store/SmoothScrollBarStore';
 
 let smoothScroll: Scrollbar | null = null;
 
