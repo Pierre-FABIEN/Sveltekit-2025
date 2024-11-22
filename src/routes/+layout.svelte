@@ -21,14 +21,14 @@
 	const sidebar = useSidebar();
 
 	$effect(() => {
-		const unsubscribe = page.subscribe((currentPage) => {
-			initializeLayoutState(currentPage);
-		});
-		setupNavigationEffect();
+		// const unsubscribe = page.subscribe((currentPage) => {
+		// 	initializeLayoutState(currentPage);
+		// });
+		//setupNavigationEffect();
 		setFirstOpen(true);
 		setRessourceToValide(true);
 
-		return unsubscribe;
+		//return unsubscribe;
 	});
 </script>
 
@@ -42,7 +42,7 @@
 {#if !$firstLoadComplete}
 	<Loader />
 {/if}
-{#if $isClient}
+
 	<Sidebar.Provider>
 		<ModeWatcher />
 
@@ -70,7 +70,7 @@
 		</div>
 		<Toaster />
 	</Sidebar.Provider>
-{/if}
+
 
 <style>
 	main {
