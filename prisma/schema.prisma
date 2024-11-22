@@ -90,6 +90,8 @@ model PasswordResetSession {
 
 model Participant {
   id   Int    @id @default(autoincrement())
-  name String
-  num  Int    @default(0)
+  client_id String
+  color String
+  message String
+  avatar    String
 }

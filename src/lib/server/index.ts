@@ -12,7 +12,11 @@ export const prisma = new PrismaClient();
 
 // Configuration SocioServer
 export const socio = new SocioServer(
-	{ port: 3000, perMessageDeflate },
+	{
+		address: 'localhost',
+		port: 3000,
+		family: 'IPv4'
+	},
 	{
 		db: await SetUpDBInterface(),
 		logging: { verbose: true, hard_crash: false }
