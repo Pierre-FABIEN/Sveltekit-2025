@@ -1,54 +1,50 @@
 import { PrismaClient } from '@prisma/client';
 import { SocioServer } from 'socio/dist/core-server.js';
-import { SocioSecurity } from 'socio/dist/secure.js';
+import type { SocioSession } from 'socio/dist/core-session.js';
+import type { id } from 'socio/dist/types';
+
 import { perMessageDeflate } from 'socio/dist/utils.js';
 
 import { SECRET_SECURE_PRIVATE_KEY } from '$env/static/private';
 
+// Initialisation de Prisma
 export const prisma = new PrismaClient();
 
-// SocioServer Configuration
+// Configuration SocioServer
 export const socio = new SocioServer(
-	{ port: 3000, perMessageDeflate }, // Options WebSocket
+	{ port: 3000, perMessageDeflate },
 	{
-		db: {
-			Query: async (client, id, sql, params) => {
-				// Exemple d'intégration avec Prisma
-				if (sql.trim().startsWith('SELECT * FROM Participants')) {
-					return await prisma.participant.findMany();
-				} else if (sql.trim().startsWith('INSERT INTO Participants')) {
-					const { name, num } = params;
-					return await prisma.participant.create({ data: { name, num } });
-				}
-				return [];
-			}
-		},
-		socio_security: new SocioSecurity({
-			secure_private_key: SECRET_SECURE_PRIVATE_KEY,
-			logging: { verbose: true }
-		}),
+		db: await SetUpDBInterface(),
 		logging: { verbose: true, hard_crash: false }
 	}
 );
 
-console.log('Initialisation des participants dans SocioServer');
-socio.RegisterProp('participants', [], {
-	assigner: (currentValue, newValue) => {
-		console.log('Assignation des participants :', currentValue, newValue);
-		if (Array.isArray(newValue)) {
-			return socio.SetPropVal('participants', newValue);
+async function SetUpDBInterface() {
+	// Initialisation des données de test
+	await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS Participants (
+            id INTEGER PRIMARY KEY AUTOINCREMENT, 
+            name VARCHAR(50), 
+            num INTEGER NOT NULL DEFAULT 0
+        )
+    `);
+
+	// Insérer des données de test si nécessaire
+	const participantCount = await prisma.$queryRawUnsafe<{ count: number }[]>(`
+        SELECT COUNT(*) AS count FROM Participants
+    `);
+
+	if (participantCount[0]?.count === 0) {
+		await prisma.$executeRawUnsafe(`INSERT INTO Participants (name, num) VALUES ("Jane", 42)`);
+		await prisma.$executeRawUnsafe(`INSERT INTO Participants (name, num) VALUES ("John", 69)`);
+	}
+
+	// Retour de l'interface DB compatible avec Socio
+	return {
+		Query: async (client: SocioSession, id: id, sql: string, params?: any): Promise<object> => {
+			// Utilisation de Prisma pour exécuter des requêtes brutes en toute sécurité
+			const result = await prisma.$queryRawUnsafe(sql, ...(params ? Object.values(params) : []));
+			return result as object; // Cast explicite pour correspondre au type attendu
 		}
-		return false;
-	},
-	client_writable: true,
-	observationaly_temporary: false
-});
-
-(async () => {
-	const initialParticipants = await prisma.participant.findMany();
-	console.log('Participants initiaux chargés depuis la BDD :', initialParticipants);
-
-	const success = await socio.SetPropVal('participants', initialParticipants);
-	console.log('Initialisation de participants réussie ?', success);
-	//console.log('Propriétés Socio enregistrées :', Object.keys(socio.props));
-})();
+	};
+}

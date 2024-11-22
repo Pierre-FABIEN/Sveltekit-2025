@@ -5,13 +5,10 @@ import { superValidate, message, fail } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = (async () => {
-	// Charger les participants existants depuis la base de données
-	const participants = await prisma.participant.findMany();
-
 	// Initialiser un formulaire Superform avec Zod
 	const form = await superValidate(zod(participantSchema));
 
-	return { participants, form };
+	return { form };
 }) satisfies PageServerLoad;
 
 export const actions = {
@@ -38,19 +35,19 @@ export const actions = {
 
 			console.log(newParticipant, '(newParticipant)');
 
-			// Synchroniser la liste des participants via SocioServer
-			const currentParticipants = (await socio.GetPropVal('participants')) || [];
-			const updatedParticipants = [...currentParticipants, newParticipant];
+			// // Synchroniser la liste des participants via SocioServer
+			// const currentParticipants = (await socio.GetPropVal('participants')) || [];
+			// const updatedParticipants = [...currentParticipants, newParticipant];
 
-			const syncSuccess = await socio.SetPropVal('participants', updatedParticipants);
+			// const syncSuccess = await socio.SetPropVal('participants', updatedParticipants);
 
-			if (!syncSuccess) {
-				console.error('Échec de la synchronisation avec SocioServer');
-				return fail(500, {
-					error: 'Failed to sync with SocioServer',
-					form
-				});
-			}
+			// if (!syncSuccess) {
+			// 	console.error('Échec de la synchronisation avec SocioServer');
+			// 	return fail(500, {
+			// 		error: 'Failed to sync with SocioServer',
+			// 		form
+			// 	});
+			// }
 
 			// Retourner un message de succès
 			return message(form, 'Participant added successfully');
