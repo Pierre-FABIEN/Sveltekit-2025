@@ -97,7 +97,7 @@
 	}
 </script>
 
-<div class="min-h-screen flex flex-col items-center p-6">
+<div class="flex flex-col items-center">
 	{#if ready}
 		<Card
 			style="background-color: rgb(255 255 255 / 4%); backdrop-filter: blur(30px) !important;"

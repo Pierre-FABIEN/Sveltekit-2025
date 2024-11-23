@@ -6,18 +6,19 @@
 	import {
 		MoonIcon,
 		SunIcon,
-		DatabaseIcon,
+		NotebookPen,
 		LockIcon,
 		SettingsIcon,
 		LayoutDashboardIcon,
 		ChevronDown,
 		Minimize2Icon,
-		Maximize2Icon
+		Maximize2Icon,
+		Combine
 	} from 'lucide-svelte';
 
 	import { Collapsible } from 'bits-ui';
 	import { toggleMode } from 'mode-watcher';
-	import { crudItems, stateItems, UIUXItems, AuthItems } from '$lib';
+	import { crudItems, stateItems, UIUXItems, AuthItems, socketItems } from '$lib';
 
 	import * as Tooltip from '$lib/components/shadcn/ui/tooltip/index.js';
 	import { Switch } from '$lib/components/shadcn/ui/switch/index.js';
@@ -92,8 +93,9 @@
 		</Sidebar.Header>
 
 		<Sidebar.Content class="truncate">
-			{@render SidebarGroup('CRUD', DatabaseIcon, crudItems)}
+			{@render SidebarGroup('CRUD', NotebookPen, crudItems)}
 			{@render SidebarGroup('Authentication', LockIcon, AuthItems)}
+			{@render SidebarGroup('Websocket', Combine, socketItems)}
 			{@render SidebarGroup('State Manager', SettingsIcon, stateItems)}
 			{@render SidebarGroup('UX/UI', LayoutDashboardIcon, UIUXItems)}
 		</Sidebar.Content>
@@ -152,7 +154,7 @@
 	<Sidebar.Group class="rounded">
 		<Collapsible.Root class="group/collapsible">
 			<Tooltip.Root>
-				<Tooltip.Trigger class="flex items-center w-full justify-center rounded-md">
+				<Tooltip.Trigger class="flex p-2 items-center w-full justify-center rounded-md">
 					<Collapsible.Trigger class="flex items-center w-full justify-center">
 						<Icon class="w-5 h-5" />
 						{#if sidebar.state === 'expanded'}

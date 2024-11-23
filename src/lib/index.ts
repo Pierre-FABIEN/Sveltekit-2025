@@ -39,14 +39,15 @@ export const stateItems = [
 		title: 'State svelte',
 		url: '/stateManager/state',
 		icon: StateIcon
-	},
+	}
+];
+export const socketItems = [
 	{
-		title: 'WebSocket',
-		url: '/stateManager/websocket',
+		title: 'Chat Session',
+		url: '/websocket/chat',
 		icon: StateIcon
 	}
 ];
-
 export const UIUXItems = [
 	{
 		title: 'Transition Demo',

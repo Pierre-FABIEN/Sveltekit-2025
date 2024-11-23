@@ -78,6 +78,8 @@
 	.mainLayout {
 		/* overflow-x: hidden;
 		min-height: 100%; */
+		/* padding-top: 5vh;
+		padding-bottom: 5vh; */
 	}
 	.container {
 		width: 100%;

@@ -61,6 +61,6 @@
 		top: 0;
 		left: 0; */
 		height: 80vh;
-		width: 70vw;
+		width: 80vw;
 	}
 </style>

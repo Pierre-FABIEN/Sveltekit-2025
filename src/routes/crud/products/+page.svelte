@@ -25,7 +25,7 @@
 	});
 </script>
 
-<div class="mx-auto mt-8 px-4 sm:px-6 lg:px-8" >
+<div class="mx-auto my-10 px-4 sm:px-6 lg:px-8" >
 	<div class="space-y-6 rounded-md border p-4 drop-shadow-2xl backdrop-blur">
 		<div class="flex justify-between">
 			<h1 class="text-4xl font-s text-[#fe3d00]">Products</h1>
