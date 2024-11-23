@@ -4,7 +4,19 @@ import AgenciesIcon from 'lucide-svelte/icons/building';
 import ProductsIcon from 'lucide-svelte/icons/package';
 import SnippetIcon from 'lucide-svelte/icons/code';
 import StateIcon from 'lucide-svelte/icons/database';
-import { ChartBarIcon, KeyIcon } from 'lucide-svelte';
+import {
+	BookMarked,
+	Box,
+	ChartBarIcon,
+	GalleryHorizontal,
+	KeyIcon,
+	KeyRound,
+	LayoutPanelLeft,
+	MessageCircle,
+	Settings2,
+	Map,
+	CreditCard
+} from 'lucide-svelte';
 
 export const crudItems = [
 	{
@@ -45,7 +57,14 @@ export const socketItems = [
 	{
 		title: 'Chat Session',
 		url: '/websocket/chat',
-		icon: StateIcon
+		icon: MessageCircle
+	}
+];
+export const stripeItems = [
+	{
+		title: 'Stripe',
+		url: '/stripe',
+		icon: CreditCard
 	}
 ];
 export const UIUXItems = [
@@ -57,17 +76,17 @@ export const UIUXItems = [
 	{
 		title: 'Carousel',
 		url: '/UXUI/carousel',
-		icon: TransitionIcon
+		icon: GalleryHorizontal
 	},
 	{
 		title: 'SiteMap',
 		url: '/UXUI/sitemap.xml',
-		icon: TransitionIcon
+		icon: Map
 	},
 	{
 		title: 'Threlte',
 		url: '/UXUI/threlte',
-		icon: TransitionIcon
+		icon: Box
 	}
 ];
 
@@ -75,12 +94,12 @@ export const AuthItems = [
 	{
 		title: 'Login',
 		url: '/auth/login',
-		icon: KeyIcon
+		icon: KeyRound
 	},
 	{
 		title: 'Register',
 		url: '/auth/signup',
-		icon: KeyIcon
+		icon: BookMarked
 	},
 	{
 		title: 'Forgot Password',
@@ -90,11 +109,11 @@ export const AuthItems = [
 	{
 		title: 'Dashboard',
 		url: '/auth',
-		icon: KeyIcon
+		icon: LayoutPanelLeft
 	},
 	{
 		title: 'Settings',
 		url: '/auth/settings',
-		icon: KeyIcon
+		icon: Settings2
 	}
 ];

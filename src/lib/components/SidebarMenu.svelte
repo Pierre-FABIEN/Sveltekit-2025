@@ -13,12 +13,13 @@
 		ChevronDown,
 		Minimize2Icon,
 		Maximize2Icon,
-		Combine
+		Combine,
+		HandCoins
 	} from 'lucide-svelte';
 
 	import { Collapsible } from 'bits-ui';
 	import { toggleMode } from 'mode-watcher';
-	import { crudItems, stateItems, UIUXItems, AuthItems, socketItems } from '$lib';
+	import { crudItems, stateItems, UIUXItems, AuthItems, socketItems, stripeItems } from '$lib';
 
 	import * as Tooltip from '$lib/components/shadcn/ui/tooltip/index.js';
 	import { Switch } from '$lib/components/shadcn/ui/switch/index.js';
@@ -97,7 +98,8 @@
 			{@render SidebarGroup('Authentication', LockIcon, AuthItems)}
 			{@render SidebarGroup('Websocket', Combine, socketItems)}
 			{@render SidebarGroup('State Manager', SettingsIcon, stateItems)}
-			{@render SidebarGroup('UX/UI', LayoutDashboardIcon, UIUXItems)}
+			{@render SidebarGroup('UX / UI', LayoutDashboardIcon, UIUXItems)}
+			{@render SidebarGroup('Stripe', HandCoins, stripeItems)}
 		</Sidebar.Content>
 
 		<Sidebar.Footer class="p-0">
@@ -154,7 +156,7 @@
 	<Sidebar.Group class="rounded">
 		<Collapsible.Root class="group/collapsible">
 			<Tooltip.Root>
-				<Tooltip.Trigger class="flex p-2 items-center w-full justify-center rounded-md">
+				<Tooltip.Trigger class="flex pb-2 items-center w-full justify-center rounded-md">
 					<Collapsible.Trigger class="flex items-center w-full justify-center">
 						<Icon class="w-5 h-5" />
 						{#if sidebar.state === 'expanded'}

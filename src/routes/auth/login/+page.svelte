@@ -61,18 +61,19 @@
 					<Form.FieldErrors />
 				</Form.Field>
 			</div>
-
-			<a href="/auth/login/google">
-				<Button class="w-full">Sign in with Google</Button>
-			</a>
 			<div class="mt-6">
 				<Button type="submit" class="w-full">Continuer</Button>
 			</div>
+
+			<a href="/auth/login/google">
+				<Button class="w-full mt-10">Sign in with Google</Button>
+			</a>
 		</form>
 
 		<div class="mt-4 flex justify-between text-sm">
 			<a href="/auth/signup" class="text-orange-700 hover:underline">Créer un compte</a>
-			<a href="/auth/forgot-password" class="text-orange-700 hover:underline">Mot de passe oublié ?</a
+			<a href="/auth/forgot-password" class="text-orange-700 hover:underline"
+				>Mot de passe oublié ?</a
 			>
 		</div>
 	</div>
