@@ -71,8 +71,8 @@
 		</form>
 
 		<div class="mt-4 flex justify-between text-sm">
-			<a href="/auth/signup" class="text-blue-500 hover:underline">Créer un compte</a>
-			<a href="/auth/forgot-password" class="text-blue-500 hover:underline">Mot de passe oublié ?</a
+			<a href="/auth/signup" class="text-orange-700 hover:underline">Créer un compte</a>
+			<a href="/auth/forgot-password" class="text-orange-700 hover:underline">Mot de passe oublié ?</a
 			>
 		</div>
 	</div>

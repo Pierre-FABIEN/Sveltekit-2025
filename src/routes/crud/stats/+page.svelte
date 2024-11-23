@@ -51,4 +51,16 @@
 	});
 </script>
 
-<div bind:this={chartElement} class="chartcss h-[80vh] w-[100%] text-black"></div>
+<div class="">
+	<div bind:this={chartElement} class="lplp"></div>
+</div>
+
+<style>
+	.lplp {
+		/* position: absolute;
+		top: 0;
+		left: 0; */
+		height: 80vh;
+		width: 70vw;
+	}
+</style>

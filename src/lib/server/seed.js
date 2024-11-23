@@ -1,192 +1,106 @@
 import { PrismaClient } from '@prisma/client';
+import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
 async function main() {
-	console.log('Début du peuplement de la base de données...');
+	console.log('Début du peuplement de la base de données avec des données fictives...');
 
-	// Création des directeurs
-	const directors = await prisma.$transaction([
-		prisma.director.create({
-			data: {
-				name: 'Alice Johnson',
-				email: 'alice.johnson@example.com',
-				age: 50
-			}
-		}),
-		prisma.director.create({
-			data: {
-				name: 'Bob Williams',
-				email: 'bob.williams@example.com',
-				age: 42
-			}
-		}),
-		prisma.director.create({
-			data: {
-				name: 'Catherine Brown',
-				email: 'catherine.brown@example.com',
-				age: 37
-			}
-		}),
-		prisma.director.create({
-			data: {
-				name: 'David Miller',
-				email: 'david.miller@example.com',
-				age: 55
-			}
-		})
-	]);
+	try {
+		// Création des directeurs fictifs
+		const directors = [];
+		for (let i = 0; i < 5; i++) {
+			directors.push(
+				await prisma.director.create({
+					data: {
+						name: faker.person.fullName(),
+						email: faker.internet.email(),
+						age: faker.number.int({ min: 30, max: 60 }),
+						isActive: faker.datatype.boolean()
+					}
+				})
+			);
+		}
+		console.log(`${directors.length} directeurs créés.`);
 
-	// Création des agences
-	const agencies = await prisma.$transaction([
-		prisma.agence.create({
-			data: {
-				street: '10 Downing St',
-				city: 'London',
-				state: 'London',
-				zip: 'SW1A 2AA',
-				country: 'UK',
-				directorId: directors[0].id
+		// Création des agences fictives
+		const agencies = [];
+		for (const director of directors) {
+			for (let i = 0; i < 3; i++) {
+				agencies.push(
+					await prisma.agence.create({
+						data: {
+							street: faker.location.streetAddress(),
+							city: faker.location.city(),
+							state: faker.location.state(),
+							zip: faker.location.zipCode(),
+							country: faker.location.country(),
+							directorId: director.id
+						}
+					})
+				);
 			}
-		}),
-		prisma.agence.create({
-			data: {
-				street: '1600 Pennsylvania Ave',
-				city: 'Washington',
-				state: 'DC',
-				zip: '20500',
-				country: 'USA',
-				directorId: directors[1].id
-			}
-		}),
-		prisma.agence.create({
-			data: {
-				street: 'Champs-Élysées',
-				city: 'Paris',
-				state: 'Île-de-France',
-				zip: '75008',
-				country: 'France',
-				directorId: directors[2].id
-			}
-		}),
-		prisma.agence.create({
-			data: {
-				street: 'Piazza del Colosseo',
-				city: 'Rome',
-				state: 'Lazio',
-				zip: '00184',
-				country: 'Italy',
-				directorId: directors[3].id
-			}
-		}),
-		prisma.agence.create({
-			data: {
-				street: 'Shibuya Crossing',
-				city: 'Tokyo',
-				state: 'Tokyo',
-				zip: '150-0002',
-				country: 'Japan',
-				directorId: directors[0].id
-			}
-		})
-	]);
+		}
+		console.log(`${agencies.length} agences créées.`);
 
-	// Création des produits
-	const products = await prisma.$transaction([
-		prisma.product.create({
-			data: {
-				name: 'Laptop X200',
-				stock: 150,
-				price: 999.99,
-				agenceId: agencies[0].id
+		// Création des produits fictifs
+		const products = [];
+		for (const agency of agencies) {
+			for (let i = 0; i < 5; i++) {
+				products.push(
+					await prisma.product.create({
+						data: {
+							name: faker.commerce.productName(),
+							stock: faker.number.int({ min: 10, max: 500 }),
+							price: parseFloat(faker.commerce.price({ min: 10, max: 1000, dec: 2 })),
+							agenceId: agency.id
+						}
+					})
+				);
 			}
-		}),
-		prisma.product.create({
-			data: {
-				name: 'Smartphone Pro',
-				stock: 200,
-				price: 799.99,
-				agenceId: agencies[1].id
-			}
-		}),
-		prisma.product.create({
-			data: {
-				name: '4K TV',
-				stock: 50,
-				price: 1200.0,
-				agenceId: agencies[2].id
-			}
-		}),
-		prisma.product.create({
-			data: {
-				name: 'Gaming Console',
-				stock: 100,
-				price: 499.99,
-				agenceId: agencies[3].id
-			}
-		}),
-		prisma.product.create({
-			data: {
-				name: 'Wireless Earbuds',
-				stock: 500,
-				price: 199.99,
-				agenceId: agencies[4].id
-			}
-		}),
-		prisma.product.create({
-			data: {
-				name: 'Smartwatch',
-				stock: 300,
-				price: 299.99,
-				agenceId: agencies[0].id
-			}
-		}),
-		prisma.product.create({
-			data: {
-				name: 'Digital Camera',
-				stock: 75,
-				price: 899.99,
-				agenceId: agencies[1].id
-			}
-		}),
-		prisma.product.create({
-			data: {
-				name: 'Bluetooth Speaker',
-				stock: 250,
-				price: 149.99,
-				agenceId: agencies[2].id
-			}
-		}),
-		prisma.product.create({
-			data: {
-				name: 'E-Reader',
-				stock: 120,
-				price: 129.99,
-				agenceId: agencies[3].id
-			}
-		}),
-		prisma.product.create({
-			data: {
-				name: 'Tablet',
-				stock: 180,
-				price: 399.99,
-				agenceId: agencies[4].id
-			}
-		})
-	]);
+		}
+		console.log(`${products.length} produits créés.`);
 
-	console.log('Peuplement terminé avec succès !');
-	console.log(
-		`Créé : ${directors.length} directeurs, ${agencies.length} agences, et ${products.length} produits.`
-	);
+		// Création des utilisateurs fictifs
+		const users = [];
+		for (let i = 0; i < 10; i++) {
+			users.push(
+				await prisma.user.create({
+					data: {
+						email: faker.internet.email(),
+						username: faker.internet.userName(),
+						passwordHash: faker.internet.password(),
+						name: faker.person.fullName(),
+						picture: faker.image.avatar(),
+						emailVerified: faker.datatype.boolean()
+					}
+				})
+			);
+		}
+		console.log(`${users.length} utilisateurs créés.`);
+
+		// Création des participants fictifs
+		const participants = [];
+		for (let i = 0; i < 20; i++) {
+			participants.push(
+				await prisma.participant.create({
+					data: {
+						client_id: faker.string.uuid(),
+						color: faker.color.rgb(),
+						message: faker.lorem.sentence(),
+						avatar: faker.image.avatar()
+					}
+				})
+			);
+		}
+		console.log(`${participants.length} participants créés.`);
+
+		console.log('Peuplement terminé avec succès !');
+	} catch (error) {
+		console.error('Erreur lors du peuplement :', error);
+	} finally {
+		await prisma.$disconnect();
+	}
 }
 
-main()
-	.then(async () => {
-		await prisma.$disconnect();
-	})
-	.catch(async (e) => {
-		console.error(e);
-		await prisma.$disconnect();
-		process.exit(1);
-	});
+main();

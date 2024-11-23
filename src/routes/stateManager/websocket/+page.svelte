@@ -20,7 +20,7 @@
 
 	// Connexion au Socio Server
 	$: {
-		sc = new SocioClient(`ws://${location.hostname}:3000`, {
+		sc = new SocioClient(`ws://${location.hostname}:5000`, {
 			logging: { verbose: true },
 			name: 'Main'
 		});
@@ -54,7 +54,7 @@
 	function generateColorFromString(str: string, alpha: number = 1): string {
 		const hash = hashString(str);
 		const hue = hash % 360; // Calcul de la teinte en fonction du hash
-		return `hsl(${hue}deg 70% 50% / ${alpha * 50}%)`; // Alpha en pourcentage
+		return `hsl(${hue}deg 70% 50% / ${alpha * 15}%)`; // Alpha en pourcentage
 	}
 
 	function generateColorFromStringBorder(str: string): string {
@@ -97,10 +97,11 @@
 	}
 </script>
 
-<main class="min-h-screen flex flex-col items-center p-6">
+<div class="min-h-screen flex flex-col items-center p-6">
 	{#if ready}
 		<Card
-			class="w-full shadow-lg bg-white/10 backdrop-blur-lg border border-gray-700 rounded-2xl border-white"
+			style="background-color: rgb(255 255 255 / 4%); backdrop-filter: blur(30px) !important;"
+			class="w-full shadow-lg bg-white/10 backdrop-blur-lg border border-gray-700 rounded-2xl border"
 		>
 			<CardHeader>
 				<CardTitle class="text-2xl  font-bold">Chat Websocket</CardTitle>
@@ -116,7 +117,7 @@
 								flex-direction: {participant.client_id === sc.client_id ? 'row-reverse' : 'row'}"
 							>
 								<div
-									class="flex items-center p-4 rounded-lg shadow-md transition-transform transform"
+									class="flex items-center p-2 rounded-lg shadow-xl transition-transform transform"
 									style="						
 									border: 1px solid {generateColorFromStringBorder(participant.client_id)};		
 									background-color: {generateColorFromString(participant.client_id)}; 
@@ -127,7 +128,7 @@
 										style="flex-direction: {participant.client_id === sc.client_id
 											? 'row-reverse'
 											: 'row'}"
-										class="flex items-center bg-shadow w-full h-full rounded-xl p-4 hover:bg-white/20 transition-all"
+										class="flex items-center bg-shadow w-full h-full rounded-xl transition-all"
 									>
 										<!-- Avatar -->
 										<Avatar class="flex-shrink-0">
@@ -163,7 +164,7 @@
 							id="message"
 							placeholder="Tapez votre message..."
 							bind:value={newParticipant.message}
-							class="w-full  border-gray-600 text-white placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-purple-500"
+							class="w-full  border-gray-600  placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-purple-500"
 						/>
 					</div>
 
@@ -180,4 +181,4 @@
 	{:else}
 		<p class="text-gray-300 text-lg animate-pulse">Connexion en cours...</p>
 	{/if}
-</main>
+</div>

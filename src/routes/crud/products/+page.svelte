@@ -25,13 +25,19 @@
 	});
 </script>
 
-<div class="mx-auto mt-8 max-w-5xl px-4 sm:px-6 lg:px-8">
-	<div class="space-y-6 rounded-md border p-4">
+<div class="mx-auto mt-8 px-4 sm:px-6 lg:px-8" >
+	<div class="space-y-6 rounded-md border p-4 drop-shadow-2xl backdrop-blur">
 		<div class="flex justify-between">
-			<h1>Products</h1>
+			<h1 class="text-4xl font-s text-[#fe3d00]">Products</h1>
 			<a href="products/create">
 				<Button variant="outline">
-					<svg xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 24 24">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="15px"
+						height="15px"
+						viewBox="0 0 24 24"
+						style="stroke: #ff3c00; color: #ff3c00;"
+					>
 						<path
 							fill="currentColor"
 							d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5v2H5v14h14v-5z"
@@ -74,6 +80,7 @@
 												width="15px"
 												height="15px"
 												viewBox="0 0 1024 1024"
+												style="stroke: #ff3c00; color: #ff3c00;"
 											>
 												<path
 													fill="currentColor"
@@ -91,6 +98,7 @@
 												width="15px"
 												height="15px"
 												viewBox="0 0 24 24"
+												style="stroke: #ff3c00; color: #ff3c00;"
 											>
 												<path
 													fill="currentColor"

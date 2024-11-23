@@ -54,7 +54,7 @@
 		</form>
 
 		<div class="mt-4 flex justify-center text-sm">
-			<a href="/auth/login" class="text-blue-500 hover:underline">Se connecter</a>
+			<a href="/auth/login" class="text-orange-700 hover:underline">Se connecter</a>
 		</div>
 	</div>
 </div>

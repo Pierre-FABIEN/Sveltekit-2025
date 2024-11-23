@@ -23,7 +23,7 @@
 				<Button type="submit" variant="destructive" class="w-full">Se déconnecter</Button>
 			</form>
 			<div class="flex justify-between w-[100%]">
-				<a href="/auth/settings" class="text-blue-500 hover:underline">Paramètres</a>
+				<a href="/auth/settings" class="text-orange-700 hover:underline">Paramètres</a>
 			</div>
 		</CardFooter>
 	</Card>

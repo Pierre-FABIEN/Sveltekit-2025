@@ -56,6 +56,6 @@
 
 	<!-- Lien pour utiliser le code de récupération -->
 	<div class="mt-4 text-center">
-		<a href="/auth/2fa/reset" class="text-blue-500 hover:underline">Use recovery code instead</a>
+		<a href="/auth/2fa/reset" class="text-orange-700 hover:underline">Use recovery code instead</a>
 	</div>
 </div>

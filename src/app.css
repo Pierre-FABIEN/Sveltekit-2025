@@ -20,13 +20,13 @@
 		--accent-foreground: 14 5% 10%;
 		--destructive: 0 100% 30%;
 		--destructive-foreground: 14 5% 90%;
-		--border: 15 100% 52%;
-		--input: 15 100% 52%;
+		--border: 14 100% 50%;
+		--input: 14 100% 50%;
 		--ring: 14 100% 50.2%;
 		--radius: 0.5rem;
 	}
 	.dark {
-		--background: 260 86% 10%;
+		--background: 238 83% 13%;
 		--foreground: 14 5% 90%;
 		--card: 14 50% 0%;
 		--card-foreground: 14 5% 90%;
@@ -42,8 +42,8 @@
 		--accent-foreground: 14 5% 90%;
 		--destructive: 0 100% 30%;
 		--destructive-foreground: 14 5% 90%;
-		--border: 15 100% 52%;
-		--input: 15 100% 52%;
+		--border: 14 100% 50%;
+		--input: 14 100% 50%;
 		--ring: 14 100% 50.2%;
 		--radius: 0.5rem;
 	}

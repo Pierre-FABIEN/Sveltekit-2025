@@ -110,7 +110,7 @@
 	{#if data.user.registered2FA}
 		<section class="mb-8">
 			<h2 class="text-xl font-semibold mb-4">Authentification à deux facteurs</h2>
-			<a href="/auth/2fa/setup" class="text-blue-500 hover:underline">Mettre à jour</a>
+			<a href="/auth/2fa/setup" class="text-orange-700 hover:underline">Mettre à jour</a>
 		</section>
 	{/if}
 

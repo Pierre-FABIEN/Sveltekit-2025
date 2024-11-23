@@ -31,12 +31,12 @@ export const crudItems = [
 
 export const stateItems = [
 	{
-		title: 'Snippet',
+		title: 'Snippet svelte',
 		url: '/stateManager/snippet',
 		icon: SnippetIcon
 	},
 	{
-		title: 'State',
+		title: 'State svelte',
 		url: '/stateManager/state',
 		icon: StateIcon
 	},

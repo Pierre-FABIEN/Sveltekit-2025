@@ -43,38 +43,41 @@
 	<Loader />
 {/if}
 {#if $isClient}
-	<Sidebar.Provider>
-		<ModeWatcher />
+	<div class="wappper">
+		<Sidebar.Provider>
+			<ModeWatcher />
 
-		<SidebarMenu />
+			<SidebarMenu />
 
-		<div class="container">
-			<div class="iconeNav">
-				<Sidebar.Trigger>
-					{#if !sidebar.open}
-						<button
-							class="fixed z-50 p-2 rounded-md bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent"
-							onclick={() => sidebar.toggle()}
-						>
-							<AlignJustify class="h-6 w-6" />
-							<span class="sr-only">Ouvrir la sidebar</span>
-						</button>
-					{/if}
-				</Sidebar.Trigger>
+			<div class="container">
+				<div class="iconeNav">
+					<Sidebar.Trigger>
+						{#if !sidebar.open}
+							<button
+								class="fixed z-50 p-2 rounded-md bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent"
+								onclick={() => sidebar.toggle()}
+							>
+								<AlignJustify class="h-6 w-6" />
+								<span class="sr-only">Ouvrir la sidebar</span>
+							</button>
+						{/if}
+					</Sidebar.Trigger>
+				</div>
+				<SmoothScrollBar>
+					<main class="mainLayout">
+						{@render children()}
+					</main>
+				</SmoothScrollBar>
 			</div>
-			<SmoothScrollBar>
-				<main>
-					{@render children()}
-				</main>
-			</SmoothScrollBar>
-		</div>
-		<Toaster />
-	</Sidebar.Provider>
+			<Toaster />
+		</Sidebar.Provider>
+	</div>
 {/if}
 
 <style>
-	main {
-		overflow-x: hidden;
+	.mainLayout {
+		/* overflow-x: hidden;
+		min-height: 100%; */
 	}
 	.container {
 		width: 100%;
@@ -85,5 +88,9 @@
 	.iconeNav {
 		position: absolute;
 		z-index: 100;
+	}
+
+	.wappper {
+		background: linear-gradient(to bottom, #23064f07, #ff680a05) !important;
 	}
 </style>

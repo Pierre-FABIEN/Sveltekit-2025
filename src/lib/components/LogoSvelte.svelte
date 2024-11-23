@@ -6,9 +6,9 @@
 	x="0px"
 	y="0px"
 	viewBox="0 0 98.1 118"
-	style="enable-background:new 0 0 98.1 118;"
 	xml:space="preserve"
 	class="w-8 h-8"
+	style="enable-background:new 0 0 98.1 118;fill: #ff3c00;"
 >
 	<style type="text/css">
 		.st0 {

@@ -48,7 +48,7 @@
 </script>
 
 <div class="mx-auto mt-8 max-w-lg">
-	<h1 class="mb-4 text-2xl font-bold">Update Product</h1>
+	<h1 class="text-4xl font-s text-[#fe3d00]">Update Product</h1>
 
 	<form method="POST" action="?/update" use:updateProductEnhance>
 		<div class="mb-4">

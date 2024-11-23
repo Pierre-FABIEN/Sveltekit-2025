@@ -77,7 +77,7 @@
 </script>
 
 <div class="mx-auto mt-8 max-w-lg">
-	<h1 class="mb-4 text-2xl font-bold">Create a New Agence</h1>
+	<h1 class="text-4xl font-s text-[#fe3d00]">Create a New Agence</h1>
 
 	{#if agenceSuggestions}
 		<h2>Suggestions:</h2>
