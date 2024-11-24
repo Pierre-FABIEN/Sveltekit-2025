@@ -5,7 +5,7 @@
 	import { Button } from '$shadcn/button';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { loginSchema } from '$lib/schema/loginSchema';
+	import { loginSchema } from '$lib/schema/auth/loginSchema';
 	import { toast } from 'svelte-sonner';
 
 	let { data } = $props();

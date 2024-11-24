@@ -3,7 +3,7 @@
 	import * as Table from '$shadcn/table';
 	import { toast } from 'svelte-sonner';
 
-	import { deleteDirectorSchema } from '$lib/schema/directorsSchema.js';
+	import { deleteDirectorSchema } from '$lib/schema/crud/directorsSchema.js';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import AgenceBadge from '$components/AgenceBadge.svelte';

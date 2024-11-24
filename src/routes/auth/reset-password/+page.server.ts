@@ -17,7 +17,7 @@ import type { Actions, RequestEvent } from './$types';
 import type { SessionFlags } from '$lib/lucia/session';
 import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { resetPasswordSchema } from '$lib/schema/resetPasswordSchema';
+import { resetPasswordSchema } from '$lib/schema/auth/resetPasswordSchema';
 
 export const load = async (event: RequestEvent) => {
 	const { session, user } = await validatePasswordResetSessionRequest(event);

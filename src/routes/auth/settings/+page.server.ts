@@ -16,7 +16,7 @@ import {
 } from '$lib/lucia/session';
 import { ExpiringTokenBucket } from '$lib/lucia/rate-limit';
 import { message, superValidate } from 'sveltekit-superforms';
-import { emailSchema, passwordSchema } from '$lib/schema/settingsSchemas';
+import { emailSchema, passwordSchema } from '$lib/schema/auth/settingsSchemas';
 import { zod } from 'sveltekit-superforms/adapters';
 
 import type { Actions, RequestEvent } from './$types';

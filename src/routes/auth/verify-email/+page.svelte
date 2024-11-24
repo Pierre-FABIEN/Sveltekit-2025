@@ -5,7 +5,7 @@
 	import Input from '$shadcn/input/input.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { verifyCodeSchema } from '$lib/schema/verifyCodeSchema';
+	import { verifyCodeSchema } from '$lib/schema/auth/verifyCodeSchema';
 
 	let { data } = $props();
 

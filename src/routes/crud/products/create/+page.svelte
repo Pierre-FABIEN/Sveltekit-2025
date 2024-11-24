@@ -5,7 +5,7 @@
 	import * as Popover from '$shadcn/popover';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { createProductSchema } from '$lib/schema/productsSchema';
+	import { createProductSchema } from '$lib/schema/crud/productsSchema.js';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
 

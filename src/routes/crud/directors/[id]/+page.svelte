@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { updateDirectorSchema } from '$lib/schema/directorsSchema';
+	import { updateDirectorSchema } from '$lib/schema/crud/directorsSchema';
 	import * as Form from '$shadcn/form';
 	import { Input } from '$shadcn/input';
 	import { Button } from '$shadcn/button';

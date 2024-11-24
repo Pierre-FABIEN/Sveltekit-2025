@@ -1,6 +1,6 @@
 import { prisma } from '$lib/server';
 import { fail, message, superValidate } from 'sveltekit-superforms';
-import { deleteAgenceSchema } from '$lib/schema/agenciesSchema';
+import { deleteAgenceSchema } from '$lib/schema/crud/agenciesSchema';
 import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async () => {

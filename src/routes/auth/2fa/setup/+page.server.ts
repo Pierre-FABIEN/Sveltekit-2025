@@ -5,7 +5,7 @@ import { updateUserTOTPKey } from '$lib/lucia/user';
 import { setSessionAs2FAVerified } from '$lib/lucia/session';
 import { RefillingTokenBucket } from '$lib/lucia/rate-limit';
 import { message, superValidate } from 'sveltekit-superforms';
-import { totpSchema } from '$lib/schema/totpSchema';
+import { totpSchema } from '$lib/schema/auth/totpSchema';
 import { renderSVG } from 'uqr';
 
 import type { Actions, RequestEvent } from './$types';

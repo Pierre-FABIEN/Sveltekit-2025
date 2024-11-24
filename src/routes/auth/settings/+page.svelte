@@ -5,7 +5,7 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
-	import { emailSchema, passwordSchema } from '$lib/schema/settingsSchemas';
+	import { emailSchema, passwordSchema } from '$lib/schema/auth/settingsSchemas';
 
 	let { data } = $props();
 

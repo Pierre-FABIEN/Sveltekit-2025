@@ -12,7 +12,7 @@ import {
 import type { SessionFlags } from '$lib/lucia/session';
 import type { Actions, PageServerLoadEvent, RequestEvent } from './$types';
 import { superValidate } from 'sveltekit-superforms';
-import { signupSchema } from '$lib/schema/signupSchema';
+import { signupSchema } from '$lib/schema/auth/signupSchema';
 import { zod } from 'sveltekit-superforms/adapters';
 
 const ipBucket = new RefillingTokenBucket<string>(3, 10);

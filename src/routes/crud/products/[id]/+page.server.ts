@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms';
-import { updateProductSchema } from '$lib/schema/productsSchema';
+import { updateProductSchema } from '$lib/schema/crud/productsSchema';
 import { prisma } from '$lib/server';
 import { zod } from 'sveltekit-superforms/adapters';
 

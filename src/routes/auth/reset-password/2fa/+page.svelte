@@ -6,8 +6,8 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
-	import { totpCodeSchema } from '$lib/schema/totpCodeSchema';
-	import { recoveryCodeSchema } from '$lib/schema/recoveryCodeSchema';
+	import { totpCodeSchema } from '$lib/schema/auth/totpCodeSchema';
+	import { recoveryCodeSchema } from '$lib/schema/auth/recoveryCodeSchema';
 
 	let { data } = $props();
 

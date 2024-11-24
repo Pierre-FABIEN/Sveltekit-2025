@@ -7,7 +7,7 @@
 
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { updateAgenceSchema } from '$lib/schema/agenciesSchema';
+	import { updateAgenceSchema } from '$lib/schema/crud/agenciesSchema';
 
 	import { goto } from '$app/navigation';
 

@@ -5,7 +5,7 @@
 	import { toast } from 'svelte-sonner';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { forgotPasswordSchema } from '$lib/schema/forgotPasswordSchema';
+	import { forgotPasswordSchema } from '$lib/schema/auth/forgotPasswordSchema';
 
 	let { data } = $props();
 

@@ -16,6 +16,7 @@
 	} from '$lib/store/initialLoaderStore';
 	import Loader from '$lib/components/loader/Loader.svelte';
 	import { page } from '$app/stores';
+	import NavigationMenu from '$lib/components/NavigationMenu.svelte';
 
 	let { children } = $props();
 	const sidebar = useSidebar();
@@ -44,33 +45,34 @@
 {/if}
 {#if $isClient}
 	<div class="wappper">
-		<Sidebar.Provider>
-			<ModeWatcher />
+		<!-- <Sidebar.Provider> -->
+		<ModeWatcher />
 
-			<SidebarMenu />
+		<!-- <SidebarMenu /> -->
 
-			<div class="container">
-				<div class="iconeNav">
-					<Sidebar.Trigger>
-						{#if !sidebar.open}
-							<button
-								class="fixed z-50 p-2 rounded-md bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent"
-								onclick={() => sidebar.toggle()}
-							>
-								<AlignJustify class="h-6 w-6" />
-								<span class="sr-only">Ouvrir la sidebar</span>
-							</button>
-						{/if}
-					</Sidebar.Trigger>
-				</div>
-				<SmoothScrollBar>
-					<main class="mainLayout">
-						{@render children()}
-					</main>
-				</SmoothScrollBar>
+		<div class="container">
+			<div class="iconeNav">
+				<NavigationMenu />
+				<!-- <Sidebar.Trigger>
+					{#if !sidebar.open}
+						<button
+							class="fixed z-50 p-2 rounded-md bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent"
+							onclick={() => sidebar.toggle()}
+						>
+							<AlignJustify class="h-6 w-6" />
+							<span class="sr-only">Ouvrir la sidebar</span>
+						</button>
+					{/if}
+				</Sidebar.Trigger> -->
 			</div>
-			<Toaster />
-		</Sidebar.Provider>
+			<SmoothScrollBar>
+				<main class="mainLayout">
+					{@render children()}
+				</main>
+			</SmoothScrollBar>
+		</div>
+		<Toaster />
+		<!-- </Sidebar.Provider> -->
 	</div>
 {/if}
 
@@ -90,6 +92,8 @@
 	.iconeNav {
 		position: absolute;
 		z-index: 100;
+		bottom: 0;
+		left: 0;
 	}
 
 	.wappper {

@@ -3,7 +3,7 @@ import { fail, redirect } from '@sveltejs/kit';
 
 import type { Actions, RequestEvent } from './$types';
 import { message, superValidate } from 'sveltekit-superforms';
-import { verifyCodeSchema } from '$lib/schema/verifyCodeSchema';
+import { verifyCodeSchema } from '$lib/schema/auth/verifyCodeSchema';
 import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async (event: RequestEvent) => {

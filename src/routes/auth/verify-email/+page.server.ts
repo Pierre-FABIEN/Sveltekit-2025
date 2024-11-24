@@ -14,7 +14,7 @@ import { ExpiringTokenBucket } from '$lib/lucia/rate-limit';
 
 import type { Actions, RequestEvent } from './$types';
 
-import { verifyCodeSchema } from '$lib/schema/verifyCodeSchema';
+import { verifyCodeSchema } from '$lib/schema/auth/verifyCodeSchema';
 import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms';
 

@@ -7,7 +7,7 @@ import { setSessionAs2FAVerified } from '$lib/lucia/session';
 import type { Actions, RequestEvent } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
 import { message, superValidate } from 'sveltekit-superforms';
-import { totpCodeSchema } from '$lib/schema/totpCodeSchema';
+import { totpCodeSchema } from '$lib/schema/auth/totpCodeSchema';
 
 export const load = async (event: RequestEvent) => {
 	if (event.locals.session === null || event.locals.user === null) {

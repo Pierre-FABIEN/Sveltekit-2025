@@ -7,6 +7,15 @@ async function main() {
 	console.log('Début du peuplement de la base de données avec des données fictives...');
 
 	try {
+		// Suppression de toutes les données existantes
+		await prisma.product.deleteMany();
+		await prisma.agence.deleteMany();
+		await prisma.director.deleteMany();
+		await prisma.user.deleteMany();
+		await prisma.participant.deleteMany();
+
+		console.log('Toutes les données existantes ont été supprimées.');
+
 		// Création des directeurs fictifs
 		const directors = [];
 		for (let i = 0; i < 5; i++) {
@@ -26,7 +35,8 @@ async function main() {
 		// Création des agences fictives
 		const agencies = [];
 		for (const director of directors) {
-			for (let i = 0; i < 3; i++) {
+			for (let i = 0; i < 1; i++) {
+				// Réduction à 1 agence par directeur
 				agencies.push(
 					await prisma.agence.create({
 						data: {
@@ -46,7 +56,8 @@ async function main() {
 		// Création des produits fictifs
 		const products = [];
 		for (const agency of agencies) {
-			for (let i = 0; i < 5; i++) {
+			for (let i = 0; i < 1; i++) {
+				// Réduction à 1 produit par agence
 				products.push(
 					await prisma.product.create({
 						data: {
@@ -81,7 +92,7 @@ async function main() {
 
 		// Création des participants fictifs
 		const participants = [];
-		for (let i = 0; i < 20; i++) {
+		for (let i = 0; i < 3; i++) {
 			participants.push(
 				await prisma.participant.create({
 					data: {
@@ -95,6 +106,22 @@ async function main() {
 		}
 		console.log(`${participants.length} participants créés.`);
 
+		// Compter le total des enregistrements
+		const totalDirectors = await prisma.director.count();
+		const totalAgencies = await prisma.agence.count();
+		const totalProducts = await prisma.product.count();
+		const totalUsers = await prisma.user.count();
+		const totalParticipants = await prisma.participant.count();
+		const totalRecords =
+			totalDirectors + totalAgencies + totalProducts + totalUsers + totalParticipants;
+
+		console.log('--- Résumé ---');
+		console.log(`Directeurs : ${totalDirectors}`);
+		console.log(`Agences : ${totalAgencies}`);
+		console.log(`Produits : ${totalProducts}`);
+		console.log(`Utilisateurs : ${totalUsers}`);
+		console.log(`Participants : ${totalParticipants}`);
+		console.log(`Total des enregistrements : ${totalRecords}`);
 		console.log('Peuplement terminé avec succès !');
 	} catch (error) {
 		console.error('Erreur lors du peuplement :', error);

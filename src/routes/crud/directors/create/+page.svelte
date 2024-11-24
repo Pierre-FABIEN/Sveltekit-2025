@@ -6,7 +6,7 @@
 
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { createDirectorSchema } from '$lib/schema/directorsSchema';
+	import { createDirectorSchema } from '$lib/schema/crud/directorsSchema';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
 

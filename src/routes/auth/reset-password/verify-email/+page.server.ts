@@ -7,7 +7,7 @@ import { setUserAsEmailVerifiedIfEmailMatches } from '$lib/lucia/user';
 import { fail, redirect } from '@sveltejs/kit';
 
 import type { Actions, RequestEvent } from './$types';
-import { verifyCodeSchema } from '$lib/schema/verifyCodeSchema';
+import { verifyCodeSchema } from '$lib/schema/auth/verifyCodeSchema';
 import { zod } from 'sveltekit-superforms/adapters';
 import { message, superValidate } from 'sveltekit-superforms';
 

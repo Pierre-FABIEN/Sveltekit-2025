@@ -10,8 +10,8 @@ import { resetUser2FAWithRecoveryCode } from '$lib/lucia/2fa';
 import { recoveryCodeBucket } from '$lib/lucia/2fa';
 
 import type { Actions, RequestEvent } from './$types';
-import { recoveryCodeSchema } from '$lib/schema/recoveryCodeSchema';
-import { totpCodeSchema } from '$lib/schema/totpCodeSchema';
+import { recoveryCodeSchema } from '$lib/schema/auth/recoveryCodeSchema';
+import { totpCodeSchema } from '$lib/schema/auth/totpCodeSchema';
 import { zod } from 'sveltekit-superforms/adapters';
 import { message, superValidate } from 'sveltekit-superforms';
 

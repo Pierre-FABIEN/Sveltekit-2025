@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms';
-import { updateDirectorSchema } from '$lib/schema/directorsSchema';
+import { updateDirectorSchema } from '$lib/schema/crud/directorsSchema';
 import { prisma } from '$lib/server';
 import { zod } from 'sveltekit-superforms/adapters';
 

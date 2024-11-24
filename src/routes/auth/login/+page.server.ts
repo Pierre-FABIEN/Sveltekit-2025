@@ -6,7 +6,7 @@ import { createSession, generateSessionToken, setSessionTokenCookie } from '$lib
 
 import type { SessionFlags } from '$lib/lucia/session';
 import type { Actions, PageServerLoadEvent, RequestEvent } from './$types';
-import { loginSchema } from '$lib/schema/loginSchema';
+import { loginSchema } from '$lib/schema/auth/loginSchema';
 import { zod } from 'sveltekit-superforms/adapters';
 import { message, superValidate } from 'sveltekit-superforms';
 

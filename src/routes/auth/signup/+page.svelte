@@ -3,7 +3,7 @@
 	import { Input } from '$shadcn/input';
 	import { Button } from '$shadcn/button';
 	import { superForm } from 'sveltekit-superforms/client';
-	import { signupSchema } from '$lib/schema/signupSchema';
+	import { signupSchema } from '$lib/schema/auth/signupSchema';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
 	import { zodClient } from 'sveltekit-superforms/adapters';

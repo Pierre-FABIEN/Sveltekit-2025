@@ -40,11 +40,11 @@
 		--muted-foreground: 14 5% 60%;
 		--accent: -24 30% 15%;
 		--accent-foreground: 14 5% 90%;
-		--destructive: 0 100% 30%;
+		--destructive: 0 100% 60%;
 		--destructive-foreground: 14 5% 90%;
 		--border: 14 100% 50%;
 		--input: 14 100% 50%;
-		--ring: 14 100% 50.2%;
+		--ring: 0 100% 50.2%;
 		--radius: 0.5rem;
 	}
 }

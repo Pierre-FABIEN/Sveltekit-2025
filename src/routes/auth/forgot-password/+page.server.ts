@@ -11,7 +11,7 @@ import { fail, redirect } from '@sveltejs/kit';
 
 import type { Actions, RequestEvent } from './$types';
 import { message, superValidate } from 'sveltekit-superforms';
-import { forgotPasswordSchema } from '$lib/schema/forgotPasswordSchema';
+import { forgotPasswordSchema } from '$lib/schema/auth/forgotPasswordSchema';
 import { zod } from 'sveltekit-superforms/adapters';
 
 const ipBucket = new RefillingTokenBucket<string>(3, 60);
