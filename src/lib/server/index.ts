@@ -6,25 +6,26 @@ import { perMessageDeflate } from 'socio/dist/utils.js';
 
 // Initialisation de Prisma
 export const prisma = new PrismaClient();
+export let socio: SocioServer;
 
 // Fonction d'initialisation pour SocioServer
 export async function initializeSocioServer() {
 	const dbInterface = await SetUpDBInterface();
 
-	// Création du SocioServer
-	const socio = new SocioServer(
-		{
-			host: '127.0.0.1', // Utilisation explicite d'IPv4
-			port: 5000, // Nouveau port
-			family: 'IPv4', // Forcer l'utilisation d'IPv4
-			perMessageDeflate
-		},
-		{
-			db: dbInterface,
-			logging: { verbose: true, hard_crash: false },
-			send_sensitive_error_msgs_to_client: false // Désactiver en production
-		}
-	);
+	if (!socio) {
+		// Création du SocioServer
+		socio = new SocioServer(
+			{
+				port: 5000,
+				perMessageDeflate
+			},
+			{
+				db: dbInterface,
+				logging: { verbose: true, hard_crash: false },
+				send_sensitive_error_msgs_to_client: false // Désactiver en production
+			}
+		);
+	}
 
 	socio.raw_websocket_server.on('error', (err) => {
 		console.error('WebSocket Error:', err);
