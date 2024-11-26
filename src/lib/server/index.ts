@@ -1,6 +1,7 @@
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { PrismaClient } from '@prisma/client';
+import { PORTWEBSOCKET } from '$env/static/private';
 
 const prisma = new PrismaClient();
 const httpServer = createServer();
@@ -51,7 +52,7 @@ export function getIoInstance() {
 }
 
 // Lancer le serveur sur un port spécifique
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || PORTWEBSOCKET;
 if (!ioInstance) {
 	httpServer.listen(PORT, () => {
 		console.log(`Socket.io Server est actif sur http://localhost:${PORT}`);

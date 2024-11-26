@@ -11,6 +11,7 @@
 	import CardContent from '$lib/components/shadcn/ui/card/card-content.svelte';
 	import CardFooter from '$lib/components/shadcn/ui/card/card-footer.svelte';
 	import ScrollArea from '$lib/components/shadcn/ui/scroll-area/scroll-area.svelte';
+	import { HOSTNAME } from '$env/static/public';
 
 	let { data } = $props();
 
@@ -24,7 +25,7 @@
 	const client_id = crypto.randomUUID();
 
 	$effect(() => {
-		socket = io('http://localhost:5000'); // Initialize connection with the server
+		socket = io(HOSTNAME); // Initialize connection with the server
 
 		socket.on('connect', () => {
 			console.log('Connected to Socket.io server');
