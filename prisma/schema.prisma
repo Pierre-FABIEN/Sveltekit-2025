@@ -94,4 +94,5 @@ model Chat {
   color String
   message String
   avatar    String
+  createdAt DateTime @default(now())
 }

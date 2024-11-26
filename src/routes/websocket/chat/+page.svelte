@@ -57,6 +57,21 @@
 		return color;
 	}
 
+	/**
+	 * Formate une date au format 'DD/MM/YYYY HH:mm'.
+	 */
+	function formatDate(dateString: string): string {
+		const date = new Date(dateString);
+		const options: Intl.DateTimeFormatOptions = {
+			day: '2-digit',
+			month: '2-digit',
+			year: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit'
+		};
+		return date.toLocaleDateString('fr-FR', options);
+	}
+
 	function sendChat() {
 		if (message.trim() !== '') {
 			color = generateColor();
@@ -71,7 +86,7 @@
 
 <div class="flex flex-col items-center p-6 min-h-screen">
 	<Card class="w-full max-w-2xl shadow-lg flex flex-col">
-		<CardHeader class="bg-blue-500 text-white rounded-t-md">
+		<CardHeader class="text-white rounded-t-md">
 			<h1 class="text-2xl font-bold text-center">💬 Chat des Chats</h1>
 		</CardHeader>
 		<CardContent class="p-0 flex-1">
@@ -84,6 +99,9 @@
 								<div class="flex items-center space-x-2">
 									<span class="font-semibold text-blue-500">
 										{chat.client_id}
+									</span>
+									<span class="text-gray-400 text-sm">
+										{formatDate(chat.createdAt)}
 									</span>
 								</div>
 								<p class="bg-blue-100 text-blue-800 p-2 rounded-md">
@@ -107,6 +125,9 @@
 									<span class="font-semibold text-gray-500">
 										{chat.client_id}
 									</span>
+									<span class="text-gray-400 text-sm">
+										{formatDate(chat.createdAt)}
+									</span>
 								</div>
 								<p class="bg-gray-100 text-gray-800 p-2 rounded-md">
 									{chat.message}
@@ -118,7 +139,7 @@
 			</ScrollArea>
 		</CardContent>
 		<CardFooter class="rounded-b-md border-t  p-4">
-			<form class="flex items-center space-x-2 w-full" on:submit|preventDefault={sendChat}>
+			<form class="flex items-center space-x-2 w-full" onsubmit={sendChat}>
 				<Input
 					id="message"
 					bind:value={message}
