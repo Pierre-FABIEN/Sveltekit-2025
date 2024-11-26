@@ -11,7 +11,7 @@
 	import CardContent from '$lib/components/shadcn/ui/card/card-content.svelte';
 	import CardFooter from '$lib/components/shadcn/ui/card/card-footer.svelte';
 	import ScrollArea from '$lib/components/shadcn/ui/scroll-area/scroll-area.svelte';
-	import { PUBLIC_HOSTNAME } from '$env/static/public';
+	import PUBLIC_HOSTNAME from '$env/static/public';
 
 	let { data } = $props();
 
