@@ -1,13 +1,10 @@
 <script lang="ts">
-	import { initializeLayoutState, setupNavigationEffect, isClient } from './layout.svelte';
+	//import { initializeLayoutState, setupNavigationEffect, isClient } from './layout.svelte';
 
 	import { ModeWatcher } from 'mode-watcher';
 	import { Toaster } from '$shadcn/sonner';
 	import '../app.css';
 	import SmoothScrollBar from '$lib/components/smoothScrollBar/SmoothScrollBar.svelte';
-	import * as Sidebar from '$lib/components/shadcn/ui/sidebar';
-	import SidebarMenu from '$lib/components/SidebarMenu.svelte';
-	import AlignJustify from 'lucide-svelte/icons/align-justify';
 	import { useSidebar } from '$lib/components/shadcn/ui/sidebar/index.js';
 	import {
 		firstLoadComplete,
@@ -22,14 +19,14 @@
 	const sidebar = useSidebar();
 
 	$effect(() => {
-		const unsubscribe = page.subscribe((currentPage) => {
-			initializeLayoutState(currentPage);
-		});
-		setupNavigationEffect();
+		// const unsubscribe = page.subscribe((currentPage) => {
+		// 	initializeLayoutState(currentPage);
+		// });
+		// setupNavigationEffect();
 		setFirstOpen(true);
 		setRessourceToValide(true);
 
-		return unsubscribe;
+		//return unsubscribe;
 	});
 </script>
 
