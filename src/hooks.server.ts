@@ -6,6 +6,7 @@ import {
 } from '$lib/lucia/session';
 import { sequence } from '@sveltejs/kit/hooks';
 import type { Handle } from '@sveltejs/kit';
+import { getIoInstance } from '$lib/server/index'; // Importer l'instance Socket.io
 
 const bucket = new RefillingTokenBucket<string>(100, 1);
 
@@ -36,4 +37,13 @@ const authHandle: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-export const handle = sequence(rateLimitHandle, authHandle);
+const webSocketHandle: Handle = async ({ event, resolve }) => {
+	if (event.url.pathname.startsWith('/socket.io/')) {
+		getIoInstance(); // Assure que l'instance Socket.io est initialisée
+		return new Response(); // Socket.io gère cette requête
+	}
+
+	return resolve(event);
+};
+
+export const handle = sequence(rateLimitHandle, authHandle, webSocketHandle);

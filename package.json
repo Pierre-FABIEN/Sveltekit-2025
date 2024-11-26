@@ -95,6 +95,8 @@
 		"lucia-auth": "^1.8.0",
 		"sass": "^1.81.0",
 		"smooth-scrollbar": "^8.8.4",
+		"socket.io": "^4.8.1",
+		"socket.io-client": "^4.8.1",
 		"stripe": "latest",
 		"three": "^0.170.0",
 		"uqr": "^0.1.2",
