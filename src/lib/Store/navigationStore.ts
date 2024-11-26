@@ -45,4 +45,5 @@ function createNavigationStore(enableLogging: boolean) {
 	};
 }
 
-export const navigationStore = createNavigationStore(enableLogging);
+const navigationStore = createNavigationStore(enableLogging);
+export default navigationStore;
