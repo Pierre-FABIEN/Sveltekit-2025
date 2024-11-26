@@ -1,24 +1,33 @@
 <script lang="ts">
 	import { io } from 'socket.io-client';
 
+	import Button from '$lib/components/shadcn/ui/button/button.svelte';
+	import Input from '$lib/components/shadcn/ui/input/input.svelte';
+	import Avatar from '$lib/components/shadcn/ui/avatar/avatar.svelte';
+	import AvatarImage from '$lib/components/shadcn/ui/avatar/avatar-image.svelte';
+	import AvatarFallback from '$lib/components/shadcn/ui/avatar/avatar-fallback.svelte';
+	import Card from '$lib/components/shadcn/ui/card/card.svelte';
+	import CardHeader from '$lib/components/shadcn/ui/card/card-header.svelte';
+	import CardContent from '$lib/components/shadcn/ui/card/card-content.svelte';
+	import CardFooter from '$lib/components/shadcn/ui/card/card-footer.svelte';
+	import ScrollArea from '$lib/components/shadcn/ui/scroll-area/scroll-area.svelte';
+
 	let { data } = $props();
 
-	let participants = $state(data.participants);
+	let participants = $state(data.participants || []);
 	let message = $state('');
 	let avatar = $state('https://via.placeholder.com/50'); // Default avatar URL
 	let color = $state('#000000'); // Default participant color
 
 	// Socket.io instance (initialized only once)
 	let socket: any;
-	// Générer un ID client unique
 	const client_id = crypto.randomUUID();
 
 	$effect(() => {
-		// Initialiser la connexion avec le serveur
-		socket = io('http://localhost:5000'); // Ne redéclarez pas `socket`
+		socket = io('http://localhost:5000'); // Initialize connection with the server
 
 		socket.on('connect', () => {
-			console.log('Connecté au serveur Socket.io');
+			console.log('Connected to Socket.io server');
 		});
 
 		socket.on('newParticipant', (participant) => {
@@ -26,47 +35,78 @@
 		});
 	});
 
+	/**
+	 * Generates a random avatar URL using the RoboHash service.
+	 */
+	function generateAvatar(): string {
+		return `https://robohash.org/${client_id}?size=50x50`;
+	}
+
+	/**
+	 * Generates a random hex color.
+	 */
+	function generateColor(): string {
+		// Hash the client_id into a numeric value
+		let hash = 0;
+		for (let i = 0; i < client_id.length; i++) {
+			hash = client_id.charCodeAt(i) + ((hash << 5) - hash);
+		}
+
+		// Convert the hash to a hex color
+		const color = `#${((hash >> 0) & 0xffffff).toString(16).padStart(6, '0')}`;
+		return color;
+	}
+
 	function sendParticipant() {
 		if (message.trim() !== '') {
+			color = generateColor();
+			avatar = generateAvatar();
 			const data = { client_id, color, message, avatar };
-			socket.emit('participant', data); // Utilise la variable globale `socket`
-			message = ''; // Réinitialiser le message après envoi
+
+			socket.emit('participant', data);
+			message = ''; // Reset message after sending
 		}
 	}
 </script>
 
-<div>
-	<h1>Chat des participants</h1>
-	<ul>
-		{#each participants as participant}
-			<li>
-				<img src={participant.avatar} alt="Avatar" />
-				<span style="color: {participant.color}">{participant.message}</span>
-			</li>
-		{/each}
-	</ul>
-	<div>
-		<input bind:value={message} placeholder="Votre message" />
-		<input type="color" bind:value={color} title="Choisir une couleur" />
-		<input type="url" bind:value={avatar} placeholder="Lien vers l'avatar" />
-		<button onclick={sendParticipant}>Envoyer</button>
-	</div>
+<div class="flex flex-col items-center p-6 space-y-6 min-h-screen">
+	<Card class="w-full max-w-2xl shadow-lg">
+		<CardHeader class="text-white rounded-t-md">
+			<h1 class="text-2xl font-bold text-center">💬 Chat des Participants</h1>
+		</CardHeader>
+		<CardContent class="p-0">
+			<ScrollArea id="chat-content" class="h-96 p-4 space-y-4 overflow-y-auto">
+				{#each participants as participant (participant.id)}
+					<div class="flex items-start space-x-4 animate-fade-in">
+						<Avatar class="flex-shrink-0">
+							<AvatarImage src={participant.avatar} alt="Avatar" />
+							<AvatarFallback>{participant.client_id.charAt(0)}</AvatarFallback>
+						</Avatar>
+						<div class="flex flex-col">
+							<div class="flex items-center space-x-2">
+								<span class="font-semibold" style="color: {participant.color}">
+									{participant.client_id}
+								</span>
+							</div>
+							<p class="text-gray-700 p-2 rounded-md">
+								{participant.message}
+							</p>
+						</div>
+					</div>
+				{/each}
+			</ScrollArea>
+		</CardContent>
+		<CardFooter class=" rounded-b-md">
+			<div class="flex items-center space-x-4">
+				<Input
+					id="message"
+					bind:value={message}
+					placeholder="Tapez votre message..."
+					class="flex-grow"
+					onkeydown={(e) => e.key === 'Enter' && sendParticipant()}
+				/>
+				<Button onclick={sendParticipant}>Envoyer</Button>
+			</div>
+		</CardFooter>
+	</Card>
 </div>
-
-<style>
-	ul {
-		list-style: none;
-		padding: 0;
-	}
-	li {
-		display: flex;
-		align-items: center;
-		margin-bottom: 10px;
-	}
-	img {
-		width: 50px;
-		height: 50px;
-		border-radius: 50%;
-		margin-right: 10px;
-	}
-</style>
