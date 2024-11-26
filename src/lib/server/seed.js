@@ -12,7 +12,7 @@ async function main() {
 		await prisma.agence.deleteMany();
 		await prisma.director.deleteMany();
 		await prisma.user.deleteMany();
-		await prisma.participant.deleteMany();
+		await prisma.chat.deleteMany();
 
 		console.log('Toutes les données existantes ont été supprimées.');
 
@@ -90,11 +90,11 @@ async function main() {
 		}
 		console.log(`${users.length} utilisateurs créés.`);
 
-		// Création des participants fictifs
-		const participants = [];
+		// Création des chats fictifs
+		const chats = [];
 		for (let i = 0; i < 3; i++) {
-			participants.push(
-				await prisma.participant.create({
+			chats.push(
+				await prisma.chat.create({
 					data: {
 						client_id: faker.string.uuid(),
 						color: faker.color.rgb(),
@@ -104,23 +104,23 @@ async function main() {
 				})
 			);
 		}
-		console.log(`${participants.length} participants créés.`);
+		console.log(`${chats.length} chats créés.`);
 
 		// Compter le total des enregistrements
 		const totalDirectors = await prisma.director.count();
 		const totalAgencies = await prisma.agence.count();
 		const totalProducts = await prisma.product.count();
 		const totalUsers = await prisma.user.count();
-		const totalParticipants = await prisma.participant.count();
+		const totalChats = await prisma.chat.count();
 		const totalRecords =
-			totalDirectors + totalAgencies + totalProducts + totalUsers + totalParticipants;
+			totalDirectors + totalAgencies + totalProducts + totalUsers + totalChats;
 
 		console.log('--- Résumé ---');
 		console.log(`Directeurs : ${totalDirectors}`);
 		console.log(`Agences : ${totalAgencies}`);
 		console.log(`Produits : ${totalProducts}`);
 		console.log(`Utilisateurs : ${totalUsers}`);
-		console.log(`Participants : ${totalParticipants}`);
+		console.log(`Chats : ${totalChats}`);
 		console.log(`Total des enregistrements : ${totalRecords}`);
 		console.log('Peuplement terminé avec succès !');
 	} catch (error) {

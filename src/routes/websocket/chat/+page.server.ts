@@ -2,6 +2,6 @@ import { prisma } from '$lib/server';
 import type { PageServerLoad } from './$types';
 
 export const load = (async () => {
-	const participants = await prisma.participant.findMany();
-	return { participants };
+	const chats = await prisma.chat.findMany();
+	return { chats };
 }) satisfies PageServerLoad;

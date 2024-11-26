@@ -88,7 +88,7 @@ model PasswordResetSession {
   user              User     @relation("UserPasswordResetSessions", fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Participant {
+model Chat {
   id   Int    @id @default(autoincrement())
   client_id String
   color String

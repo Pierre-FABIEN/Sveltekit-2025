@@ -16,7 +16,7 @@ const io = new Server(httpServer, {
 io.on('connection', (socket) => {
 	console.log('Nouvelle connexion :', socket.id);
 
-	socket.on('participant', async (data) => {
+	socket.on('chat', async (data) => {
 		try {
 			const { client_id, color, message, avatar } = data;
 
@@ -25,13 +25,13 @@ io.on('connection', (socket) => {
 				return;
 			}
 
-			const participant = await prisma.participant.create({
+			const chat = await prisma.chat.create({
 				data: { client_id, color, message, avatar }
 			});
 
-			io.emit('newParticipant', participant);
+			io.emit('newChat', chat);
 		} catch (error) {
-			console.error('Erreur lors de la création du participant :', error);
+			console.error('Erreur lors de la création du chat :', error);
 		}
 	});
 
