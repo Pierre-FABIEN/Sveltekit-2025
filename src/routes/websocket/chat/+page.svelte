@@ -146,7 +146,7 @@
 					placeholder="Tapez votre message..."
 					class="flex-grow rounded-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
 				/>
-				<Button type="submit" variant="primary" class="rounded-full p-2">
+				<Button type="submit" variant="default" class="rounded-full p-2">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						class="h-5 w-5 text-white"
