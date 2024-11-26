@@ -40,7 +40,7 @@
 {#if !$firstLoadComplete}
 	<Loader />
 {/if}
-{#if $isClient}
+
 	<div class="wappper">
 		<!-- <Sidebar.Provider> -->
 		<ModeWatcher />
@@ -71,7 +71,6 @@
 		<Toaster />
 		<!-- </Sidebar.Provider> -->
 	</div>
-{/if}
 
 <style>
 	.mainLayout {
