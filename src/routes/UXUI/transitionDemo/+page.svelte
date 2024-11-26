@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from '$shadcn/button';
-	import { navigationStore } from '$store/navigationStore';
+	import { navigationStore } from '$lib/store/navigationStore';
 	import { enter, exit } from './TransitionPage';
 </script>
 

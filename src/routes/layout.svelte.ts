@@ -1,7 +1,7 @@
 // src/lib/store/layoutState.ts
 
 import { writable } from 'svelte/store';
-import { navigationStore } from '$store/navigationStore';
+import { navigationStore } from '$lib/store/navigationStore';
 import { onNavigate } from '$app/navigation';
 
 export const isClient = writable(false);
