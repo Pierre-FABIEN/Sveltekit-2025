@@ -52,9 +52,11 @@ export function getIoInstance() {
 
 // Lancer le serveur sur un port spécifique
 const PORT = process.env.PORT || 5000;
-httpServer.listen(PORT, () => {
-	console.log(`Socket.io Server est actif sur http://localhost:${PORT}`);
-});
+if (!ioInstance) {
+	httpServer.listen(PORT, () => {
+		console.log(`Socket.io Server est actif sur http://localhost:${PORT}`);
+	});
+}
 
 // Assurer une fermeture propre de Prisma
 process.on('SIGINT', async () => {
