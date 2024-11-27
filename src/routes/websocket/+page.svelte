@@ -11,9 +11,8 @@
 
 	const establishWebSocket = () => {
 		if (webSocketEstablished) return;
-		console.log(PUBLIC_ENV);
 
-		const protocol = PUBLIC_ENV === 'dev' ? 'http:' : 'https:';
+		const protocol = process.env.PUBLIC_ENV === 'dev' ? 'http:' : 'https:';
 		console.log(`${protocol}//${window.location.host}/WebsocketSignal`);
 
 		ws = new WebSocket(`${protocol}//${window.location.host}/WebsocketSignal`);
