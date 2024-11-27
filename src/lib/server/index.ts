@@ -1,72 +1,86 @@
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { PrismaClient } from '@prisma/client';
+import net from 'net';
 
 const prisma = new PrismaClient();
-const PORT = parseInt(process.env.PORT || '3000', 10); // Utilise le port fourni ou 3000 par défaut
+const PORT = parseInt(process.env.PORT || '3000', 10); // Par défaut, utilise 3000
 
-// Singleton pour éviter de démarrer plusieurs serveurs
+// Vérifie si le port est déjà utilisé
+function checkPort(port: number): Promise<boolean> {
+	return new Promise((resolve, reject) => {
+		const tester = net
+			.createServer()
+			.once('error', (err: NodeJS.ErrnoException) => {
+				if (err.code === 'EADDRINUSE') {
+					resolve(false); // Le port est occupé
+				} else {
+					reject(err); // Autre erreur
+				}
+			})
+			.once('listening', () => {
+				tester.close(() => resolve(true)); // Le port est libre
+			})
+			.listen(port);
+	});
+}
+
+// Singleton pour éviter plusieurs instances de serveur
 let ioInstance: Server | null = null;
 
-const httpServer = createServer();
+async function startServer() {
+	const portAvailable = await checkPort(PORT);
+	if (!portAvailable) {
+		console.error(`Le port ${PORT} est déjà utilisé. Veuillez vérifier.`);
+		process.exit(1); // Termine proprement le processus
+	}
 
-if (!ioInstance) {
-	// Initialise le serveur HTTP et Socket.io
-	const io = new Server(httpServer, {
-		cors: {
-			origin: '*', // Modifiez '*' pour des domaines spécifiques en production
-			methods: ['GET', 'POST']
-		}
-	});
+	const httpServer = createServer();
 
-	io.on('connection', (socket) => {
-		console.log('Nouvelle connexion :', socket.id);
-
-		socket.on('chat', async (data) => {
-			try {
-				const { client_id, color, message, avatar } = data;
-
-				if (!client_id || !message) {
-					console.error('Données invalides reçues :', data);
-					return;
-				}
-
-				// Enregistre le chat dans la base de données
-				const chat = await prisma.chat.create({
-					data: { client_id, color, message, avatar }
-				});
-
-				// Diffuse le nouveau chat à tous les clients
-				io.emit('newChat', chat);
-			} catch (error) {
-				console.error('Erreur lors de la création du chat :', error);
+	if (!ioInstance) {
+		const io = new Server(httpServer, {
+			cors: {
+				origin: '*', // Changez pour des domaines spécifiques en production
+				methods: ['GET', 'POST']
 			}
 		});
 
-		socket.on('disconnect', () => {
-			console.log('Déconnexion :', socket.id);
+		io.on('connection', (socket) => {
+			console.log('Nouvelle connexion :', socket.id);
+
+			socket.on('chat', async (data) => {
+				try {
+					const { client_id, color, message, avatar } = data;
+
+					if (!client_id || !message) {
+						console.error('Données invalides reçues :', data);
+						return;
+					}
+
+					const chat = await prisma.chat.create({
+						data: { client_id, color, message, avatar }
+					});
+
+					io.emit('newChat', chat);
+				} catch (error) {
+					console.error('Erreur lors de la création du chat :', error);
+				}
+			});
+
+			socket.on('disconnect', () => {
+				console.log('Déconnexion :', socket.id);
+			});
 		});
-	});
 
-	// Gestion des erreurs pour éviter un crash
-	httpServer.on('error', (error: NodeJS.ErrnoException) => {
-		if (error.code === 'EADDRINUSE') {
-			console.error(`Le port ${PORT} est déjà utilisé. Veuillez vérifier les conflits.`);
-			process.exit(1); // Terminez proprement le processus
-		} else {
-			console.error('Erreur serveur :', error);
-		}
-	});
+		httpServer.listen(PORT, '0.0.0.0', () => {
+			console.log(`Serveur actif sur http://localhost:${PORT}`);
+		});
 
-	// Démarre le serveur HTTP
-	httpServer.listen(PORT, '0.0.0.0', () => {
-		console.log(`Serveur actif sur http://localhost:${PORT}`);
-	});
-
-	ioInstance = io; // Stocke l'instance de Socket.io
+		ioInstance = io;
+	}
 }
 
-// Fonction pour récupérer l'instance Socket.io
+// Expose l'instance Socket.io
 export function getIoInstance(): Server {
 	if (!ioInstance) {
 		throw new Error("Socket.io n'a pas été initialisé.");
@@ -74,7 +88,13 @@ export function getIoInstance(): Server {
 	return ioInstance;
 }
 
-// Assurer une fermeture propre de Prisma
+// Démarre le serveur
+startServer().catch((err) => {
+	console.error('Erreur au démarrage du serveur :', err);
+	process.exit(1);
+});
+
+// Assure une fermeture propre de Prisma
 process.on('SIGINT', async () => {
 	await prisma.$disconnect();
 	console.log('Prisma déconnecté proprement.');
