@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "concurrently \"vite dev\" \"npm run prettier:watch\"",
+		"dev": "concurrently \"vite dev --port 2000\" \"npm run prettier:watch\" ",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -18,10 +18,11 @@
 		"test:e2e": "playwright test",
 		"model-pipeline:run": "node scripts/model-pipeline.js",
 		"seed": "node src/lib/server/seed.js",
-		"render": "node build/index.js"
+		"render": "PORT=10000 tsm ./prodServer.ts"
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.5.6",
+		"@types/ws": "^8.5.5",
 		"@playwright/test": "^1.45.3",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
@@ -65,7 +66,9 @@
 		"vite": "^5.0.3",
 		"vite-plugin-mkcert": "^1.17.6",
 		"vitest": "^2.0.4",
-		"zod": "^3.23.8"
+		"zod": "^3.23.8",
+		"tsm": "^2.3.0",
+		"tslib": "^2.6.0"
 	},
 	"dependencies": {
 		"@dimforge/rapier3d-compat": "^0.11.2",
@@ -92,17 +95,16 @@
 		"arctic": "^2.2.2",
 		"embla-carousel-auto-scroll": "^8.3.1",
 		"embla-carousel-autoplay": "^8.3.1",
-		"express": "^4.21.1",
 		"gsap": "^3.12.5",
 		"lucia": "^3.2.2",
 		"lucia-auth": "^1.8.0",
 		"sass": "^1.81.0",
 		"smooth-scrollbar": "^8.8.4",
-		"socket.io": "^4.8.1",
-		"socket.io-client": "^4.8.1",
 		"stripe": "latest",
 		"three": "^0.170.0",
 		"uqr": "^0.1.2",
-		"vite-plugin-pwa": "^0.21.0"
+		"vite-plugin-pwa": "^0.21.0",
+		"nanoid": "^4.0.2",
+		"ws": "^8.13.0"
 	}
 }

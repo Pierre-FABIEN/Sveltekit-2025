@@ -55,8 +55,8 @@ export const stateItems = [
 ];
 export const socketItems = [
 	{
-		title: 'Chat Session',
-		url: '/websocket/chat',
+		title: 'Test',
+		url: '/websocket',
 		icon: MessageCircle
 	}
 ];
