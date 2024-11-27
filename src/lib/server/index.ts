@@ -1,14 +1,16 @@
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { PrismaClient } from '@prisma/client';
-import { PUBLIC_PORTWEBSOCKET, PUBLIC_HOSTNAME } from '$env/static/public';
 
 const prisma = new PrismaClient();
 const httpServer = createServer();
 
+const PORT  = process.env.PORT
+const HOSTNAME  = process.env.HOSTNAME
+
 const io = new Server(httpServer, {
 	cors: {
-		origin: PUBLIC_HOSTNAME || window.location.origin,
+		origin: HOSTNAME || window.location.origin,
 		methods: ['GET', 'POST']
 	}
 });
@@ -50,11 +52,11 @@ export function getIoInstance() {
 	}
 	return ioInstance;
 }
-const portWebSocket = PUBLIC_PORTWEBSOCKET || 3001;
+
 
 if (!ioInstance) {
-	httpServer.listen(portWebSocket, () => {
-		console.log(`Socket.io Server est actif sur http://localhost:${portWebSocket}`);
+	httpServer.listen(PORT, () => {
+		console.log(`Socket.io Server est actif sur http://localhost:${PORT}`);
 	});
 }
 
