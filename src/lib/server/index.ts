@@ -1,14 +1,14 @@
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { PrismaClient } from '@prisma/client';
-import { PUBLIC_PORTWEBSOCKET } from '$env/static/public';
+import { PUBLIC_PORTWEBSOCKET, PUBLIC_HOSTNAME } from '$env/static/public';
 
 const prisma = new PrismaClient();
 const httpServer = createServer();
 
 const io = new Server(httpServer, {
 	cors: {
-		origin: '*', // Changez '*' pour des domaines spécifiques en production
+		origin: PUBLIC_HOSTNAME || window.location.origin,
 		methods: ['GET', 'POST']
 	}
 });
