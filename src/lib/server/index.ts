@@ -4,7 +4,8 @@ import { PrismaClient } from '@prisma/client';
 import net from 'net';
 
 const prisma = new PrismaClient();
-const PORT = parseInt(process.env.PORT || '3000', 10); // Par défaut, utilise 3000
+
+const PORT = process.env.PORT !== undefined ? parseInt(process.env.PORT, 10) : 3000; // default port
 
 // Vérifie si le port est déjà utilisé
 function checkPort(port: number): Promise<boolean> {
