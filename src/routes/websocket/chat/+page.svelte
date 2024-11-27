@@ -102,7 +102,7 @@
 										{chat.client_id}
 									</span>
 									<span class="text-gray-400 text-sm">
-										{formatDate(chat.createdAt.toISOString())}
+										{formatDate(chat.createdAt)}
 									</span>
 								</div>
 								<p class="bg-blue-100 text-blue-800 p-2 rounded-md">
@@ -127,7 +127,7 @@
 										{chat.client_id}
 									</span>
 									<span class="text-gray-400 text-sm">
-										{formatDate(chat.createdAt.toISOString())}
+										{formatDate(chat.createdAt)}
 									</span>
 								</div>
 								<p class="bg-gray-100 text-gray-800 p-2 rounded-md">
