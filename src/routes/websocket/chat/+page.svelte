@@ -25,7 +25,10 @@
 	const client_id = crypto.randomUUID();
 
 	$effect(() => {
-		socket = io(PUBLIC_HOSTNAME);
+		socket = io(PUBLIC_HOSTNAME, {
+			transports: ['websocket'], // Force l'utilisation de WebSocket
+			reconnection: true
+		});
 
 		socket.on('connect', () => {
 			console.log('Connected to Socket.io server');
