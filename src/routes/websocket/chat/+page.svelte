@@ -11,7 +11,7 @@
 	import CardContent from '$lib/components/shadcn/ui/card/card-content.svelte';
 	import CardFooter from '$lib/components/shadcn/ui/card/card-footer.svelte';
 	import ScrollArea from '$lib/components/shadcn/ui/scroll-area/scroll-area.svelte';
-	const HOSTNAME  = process.env.HOSTNAME
+	import { PUBLIC_HOSTNAME } from '$env/static/public';
 
 	let { data } = $props();
 
@@ -25,7 +25,7 @@
 	const client_id = crypto.randomUUID();
 
 	$effect(() => {
-		socket = io(HOSTNAME); // Initialize connection with the server
+		socket = io(PUBLIC_HOSTNAME);
 
 		socket.on('connect', () => {
 			console.log('Connected to Socket.io server');
@@ -102,7 +102,7 @@
 										{chat.client_id}
 									</span>
 									<span class="text-gray-400 text-sm">
-										{formatDate(chat.createdAt)}
+										{formatDate(chat.createdAt.toISOString())}
 									</span>
 								</div>
 								<p class="bg-blue-100 text-blue-800 p-2 rounded-md">
@@ -127,7 +127,7 @@
 										{chat.client_id}
 									</span>
 									<span class="text-gray-400 text-sm">
-										{formatDate(chat.createdAt)}
+										{formatDate(chat.createdAt.toISOString())}
 									</span>
 								</div>
 								<p class="bg-gray-100 text-gray-800 p-2 rounded-md">
