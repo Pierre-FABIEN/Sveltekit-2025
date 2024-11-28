@@ -26,7 +26,7 @@
 <Drawer.Root open={drawerOpen} onOpenChange={(state) => (drawerOpen = state)}>
 	<!-- Drawer Trigger -->
 	<Drawer.Trigger
-		class={buttonVariants({ variant: 'outline' }) + ' px-4 py-2'}
+		class={buttonVariants({ variant: 'outline' }) + 'buttonMenu'}
 		onclick={() => (drawerOpen = true)}
 	>
 		<Waves />

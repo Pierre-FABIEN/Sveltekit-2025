@@ -58,6 +58,11 @@ export const socketItems = [
 		title: 'WebSocket Integration without database and protections',
 		url: '/websocket',
 		icon: MessageCircle
+	},
+	{
+		title: 'Chat with database and protections',
+		url: '/websocket/chat',
+		icon: MessageCircle
 	}
 ];
 export const stripeItems = [

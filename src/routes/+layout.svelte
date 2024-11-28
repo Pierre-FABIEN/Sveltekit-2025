@@ -67,8 +67,9 @@
 	.iconeNav {
 		position: absolute;
 		z-index: 100;
-		bottom: 0;
-		left: 0;
+		transform: translate(-50%, -50%);
+		left: 50%;
+		bottom: 0px;
 	}
 
 	.wappper {

@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { Button } from '$lib/components/shadcn/ui/button';
+	import { Input } from '$lib/components/shadcn/ui/input';
+	import { Label } from '$lib/components/shadcn/ui/label';
 	import { toast } from 'svelte-sonner';
 
 	let webSocketEstablished = $state(false);
@@ -70,16 +72,8 @@
 				<p class="text-red-500">{error}</p>
 			{/if}
 			<form class="space-y-4" onsubmit={(event) => handleSubmit(event, '?/sendMessage')}>
-				<label for="message" class="block font-medium">
-					Send a message to WebSocket clients:
-				</label>
-				<input
-					id="message"
-					name="message"
-					type="text"
-					class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-300"
-					bind:value={message}
-				/>
+				<Label for="message" class="block font-medium">Send a message to WebSocket clients:</Label>
+				<Input id="message" name="message" type="text" bind:value={message} />
 				<Button type="submit" class="w-full my-2">Send Message</Button>
 			</form>
 
