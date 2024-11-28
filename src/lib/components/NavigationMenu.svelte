@@ -14,11 +14,21 @@
 		{ title: 'UI/UX', items: UIUXItems },
 		{ title: 'Authentication', items: AuthItems }
 	];
+
+	let drawerOpen = false;
+
+	// Handler to close the drawer
+	function closeDrawer() {
+		drawerOpen = false;
+	}
 </script>
 
-<Drawer.Root>
+<Drawer.Root open={drawerOpen} onOpenChange={(state) => (drawerOpen = state)}>
 	<!-- Drawer Trigger -->
-	<Drawer.Trigger class={buttonVariants({ variant: 'outline' }) + ' px-4 py-2'}>
+	<Drawer.Trigger
+		class={buttonVariants({ variant: 'outline' }) + ' px-4 py-2'}
+		onclick={() => (drawerOpen = true)}
+	>
 		<Waves />
 	</Drawer.Trigger>
 
@@ -51,7 +61,6 @@
 
 						<!-- Disabling the overlay -->
 						<Sheet.Portal>
-							<!-- Overlay is hidden -->
 							<Sheet.Overlay class="hidden" />
 							<Sheet.Content
 								side="bottom"
@@ -73,6 +82,7 @@
 												<a
 													href={item.url}
 													class="flex items-center gap-3 px-4 py-2 text-gray-800 dark:text-gray-100 hover:bg-gray-200/70 dark:hover:bg-gray-700/70 rounded-md transition-all"
+													onclick={closeDrawer}
 												>
 													<svelte:component
 														this={item.icon}

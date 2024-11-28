@@ -41,44 +41,23 @@
 	<Loader />
 {/if}
 
-	<div class="wappper">
-		<!-- <Sidebar.Provider> -->
-		<ModeWatcher />
+<div class="wappper">
+	<ModeWatcher />
 
-		<!-- <SidebarMenu /> -->
-
-		<div class="container">
-			<div class="iconeNav">
-				<NavigationMenu />
-				<!-- <Sidebar.Trigger>
-					{#if !sidebar.open}
-						<button
-							class="fixed z-50 p-2 rounded-md bg-sidebar-background text-sidebar-foreground hover:bg-sidebar-accent"
-							onclick={() => sidebar.toggle()}
-						>
-							<AlignJustify class="h-6 w-6" />
-							<span class="sr-only">Ouvrir la sidebar</span>
-						</button>
-					{/if}
-				</Sidebar.Trigger> -->
-			</div>
-			<SmoothScrollBar>
-				<main class="mainLayout">
-					{@render children()}
-				</main>
-			</SmoothScrollBar>
+	<div class="container">
+		<div class="iconeNav">
+			<NavigationMenu />
 		</div>
-		<Toaster />
-		<!-- </Sidebar.Provider> -->
+		<SmoothScrollBar>
+			<main class="mainLayout">
+				{@render children()}
+			</main>
+		</SmoothScrollBar>
 	</div>
+	<Toaster />
+</div>
 
 <style>
-	.mainLayout {
-		/* overflow-x: hidden;
-		min-height: 100%; */
-		/* padding-top: 5vh;
-		padding-bottom: 5vh; */
-	}
 	.container {
 		width: 100%;
 		padding: 0;

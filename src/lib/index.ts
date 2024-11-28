@@ -55,7 +55,7 @@ export const stateItems = [
 ];
 export const socketItems = [
 	{
-		title: 'Test',
+		title: 'WebSocket Integration without database and protections',
 		url: '/websocket',
 		icon: MessageCircle
 	}
