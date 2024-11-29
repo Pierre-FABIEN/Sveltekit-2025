@@ -2,11 +2,22 @@
 	import * as Drawer from '$shadcn/drawer';
 	import * as Sheet from '$shadcn/sheet';
 	import { Button, buttonVariants } from '$shadcn/button';
-	import { crudItems, stateItems, socketItems, stripeItems, UIUXItems, AuthItems } from '$lib';
+	import {
+		PresentationItems,
+		crudItems,
+		stateItems,
+		socketItems,
+		stripeItems,
+		UIUXItems,
+		AuthItems
+	} from '$lib';
 	import { Waves } from 'lucide-svelte';
+	import LogoSvelte from '../LogoSvelte.svelte';
+	import Options from './Options.svelte';
 
 	// Navigation groups
 	const navGroups = [
+		{ title: 'Presentation', items: PresentationItems },
 		{ title: 'CRUD', items: crudItems },
 		{ title: 'State Management', items: stateItems },
 		{ title: 'WebSocket', items: socketItems },
@@ -39,13 +50,31 @@
 	>
 		<div class="flex flex-col h-full">
 			<!-- Header -->
-			<Drawer.Header class="border-b border-gray-300 dark:border-gray-700 px-4 py-3">
-				<Drawer.Title class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-					Navigation
-				</Drawer.Title>
-				<Drawer.Description class="text-sm text-gray-600 dark:text-gray-400">
-					Quick access to all sections
-				</Drawer.Description>
+			<Drawer.Header
+				class="flex justify-between border-b border-gray-300 dark:border-gray-700 px-4 py-3"
+			>
+				<div class="col-6">
+					<Drawer.Title class="text-xl font-semibold text-gray-900 dark:text-gray-100">
+						<a href="/" class="flex items-center">
+							<div
+								class="text-sidebar-primary-foreground flex items-center justify-center rounded-lg w-8 h-8"
+							>
+								<LogoSvelte />
+							</div>
+
+							<div class="ml-2 flex flex-col">
+								<span class="truncate text-xl font-semibold leading-4">BoilerPlate</span>
+								<span class="truncate text-lg text-gray-500 leading-4">SvelteKit</span>
+							</div>
+						</a>
+					</Drawer.Title>
+					<Drawer.Description class="text-sm text-gray-600 dark:text-gray-400 mt-5">
+						Navigation
+					</Drawer.Description>
+				</div>
+				<div class="col-6">
+					<Options />
+				</div>
 			</Drawer.Header>
 
 			<div class="flex justify-start">
@@ -63,7 +92,7 @@
 						<Sheet.Portal>
 							<Sheet.Overlay class="hidden" />
 							<Sheet.Content
-								side="bottom"
+								side="left"
 								style="background: rgba(7, 10, 71, 0.6); backdrop-filter: blur(15px);"
 								class="bg-gradient-to-bl from-white/70 to-gray-200/40 dark:from-gray-900/70 dark:to-gray-800/40 backdrop-blur-3xl border border-gray-300/50 dark:border-gray-700/50 rounded-lg shadow-lg transition-all duration-500 ease-in-out data-[state=open]:opacity-100 data-[state=closed]:opacity-0"
 							>

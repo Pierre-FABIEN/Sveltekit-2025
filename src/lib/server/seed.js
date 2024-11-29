@@ -4,23 +4,23 @@ import { faker } from '@faker-js/faker';
 const prisma = new PrismaClient();
 
 async function main() {
-	console.log('Début du peuplement de la base de données avec des données fictives...');
+	console.log('Début du peuplement de la base de données...');
 
 	try {
-		// Suppression de toutes les données existantes
-		await prisma.product.deleteMany();
-		await prisma.agence.deleteMany();
-		await prisma.director.deleteMany();
-		await prisma.user.deleteMany();
-		await prisma.chat.deleteMany();
-
+		// Supprimer les données existantes
+		await prisma.$transaction([
+			prisma.product.deleteMany(),
+			prisma.agence.deleteMany(),
+			prisma.director.deleteMany(),
+			prisma.user.deleteMany(),
+			prisma.chat.deleteMany()
+		]);
 		console.log('Toutes les données existantes ont été supprimées.');
 
-		// Création des directeurs fictifs
-		const directors = [];
-		for (let i = 0; i < 5; i++) {
-			directors.push(
-				await prisma.director.create({
+		// Création des directeurs
+		const directors = await Promise.all(
+			Array.from({ length: 5 }).map(() =>
+				prisma.director.create({
 					data: {
 						name: faker.person.fullName(),
 						email: faker.internet.email(),
@@ -28,55 +28,46 @@ async function main() {
 						isActive: faker.datatype.boolean()
 					}
 				})
-			);
-		}
+			)
+		);
 		console.log(`${directors.length} directeurs créés.`);
 
-		// Création des agences fictives
-		const agencies = [];
-		for (const director of directors) {
-			for (let i = 0; i < 1; i++) {
-				// Réduction à 1 agence par directeur
-				agencies.push(
-					await prisma.agence.create({
-						data: {
-							street: faker.location.streetAddress(),
-							city: faker.location.city(),
-							state: faker.location.state(),
-							zip: faker.location.zipCode(),
-							country: faker.location.country(),
-							directorId: director.id
-						}
-					})
-				);
-			}
-		}
+		// Création des agences
+		const agencies = await Promise.all(
+			directors.map((director) =>
+				prisma.agence.create({
+					data: {
+						street: faker.location.streetAddress(),
+						city: faker.location.city(),
+						state: faker.location.state(),
+						zip: faker.location.zipCode(),
+						country: faker.location.country(),
+						directorId: director.id
+					}
+				})
+			)
+		);
 		console.log(`${agencies.length} agences créées.`);
 
-		// Création des produits fictifs
-		const products = [];
-		for (const agency of agencies) {
-			for (let i = 0; i < 1; i++) {
-				// Réduction à 1 produit par agence
-				products.push(
-					await prisma.product.create({
-						data: {
-							name: faker.commerce.productName(),
-							stock: faker.number.int({ min: 10, max: 500 }),
-							price: parseFloat(faker.commerce.price({ min: 10, max: 1000, dec: 2 })),
-							agenceId: agency.id
-						}
-					})
-				);
-			}
-		}
+		// Création des produits
+		const products = await Promise.all(
+			agencies.map((agency) =>
+				prisma.product.create({
+					data: {
+						name: faker.commerce.productName(),
+						stock: faker.number.int({ min: 10, max: 500 }),
+						price: parseFloat(faker.commerce.price({ min: 10, max: 1000, dec: 2 })),
+						agenceId: agency.id
+					}
+				})
+			)
+		);
 		console.log(`${products.length} produits créés.`);
 
-		// Création des utilisateurs fictifs
-		const users = [];
-		for (let i = 0; i < 10; i++) {
-			users.push(
-				await prisma.user.create({
+		// Création des utilisateurs
+		const users = await Promise.all(
+			Array.from({ length: 10 }).map(() =>
+				prisma.user.create({
 					data: {
 						email: faker.internet.email(),
 						username: faker.internet.userName(),
@@ -86,15 +77,14 @@ async function main() {
 						emailVerified: faker.datatype.boolean()
 					}
 				})
-			);
-		}
+			)
+		);
 		console.log(`${users.length} utilisateurs créés.`);
 
-		// Création des chats fictifs
-		const chats = [];
-		for (let i = 0; i < 3; i++) {
-			chats.push(
-				await prisma.chat.create({
+		// Création des chats
+		const chats = await Promise.all(
+			Array.from({ length: 3 }).map(() =>
+				prisma.chat.create({
 					data: {
 						client_id: faker.string.uuid(),
 						color: faker.color.rgb(),
@@ -102,26 +92,30 @@ async function main() {
 						avatar: faker.image.avatar()
 					}
 				})
-			);
-		}
+			)
+		);
 		console.log(`${chats.length} chats créés.`);
 
-		// Compter le total des enregistrements
-		const totalDirectors = await prisma.director.count();
-		const totalAgencies = await prisma.agence.count();
-		const totalProducts = await prisma.product.count();
-		const totalUsers = await prisma.user.count();
-		const totalChats = await prisma.chat.count();
-		const totalRecords =
-			totalDirectors + totalAgencies + totalProducts + totalUsers + totalChats;
+		// Afficher le résumé
+		const counts = {
+			directors: await prisma.director.count(),
+			agencies: await prisma.agence.count(),
+			products: await prisma.product.count(),
+			users: await prisma.user.count(),
+			chats: await prisma.chat.count()
+		};
 
-		console.log('--- Résumé ---');
-		console.log(`Directeurs : ${totalDirectors}`);
-		console.log(`Agences : ${totalAgencies}`);
-		console.log(`Produits : ${totalProducts}`);
-		console.log(`Utilisateurs : ${totalUsers}`);
-		console.log(`Chats : ${totalChats}`);
-		console.log(`Total des enregistrements : ${totalRecords}`);
+		console.log('--- Résumé des enregistrements ---');
+		console.log(`Directeurs : ${counts.directors}`);
+		console.log(`Agences : ${counts.agencies}`);
+		console.log(`Produits : ${counts.products}`);
+		console.log(`Utilisateurs : ${counts.users}`);
+		console.log(`Chats : ${counts.chats}`);
+		console.log(
+			`Total des enregistrements : ${
+				counts.directors + counts.agencies + counts.products + counts.users + counts.chats
+			}`
+		);
 		console.log('Peuplement terminé avec succès !');
 	} catch (error) {
 		console.error('Erreur lors du peuplement :', error);

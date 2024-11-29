@@ -18,7 +18,30 @@ import {
 	CreditCard
 } from 'lucide-svelte';
 
+export const PresentationItems = [
+	{
+		title: 'Accueil',
+		url: '/',
+		icon: DirectorsIcon
+	},
+	{
+		title: 'Présentation',
+		url: '/home/presentation',
+		icon: DirectorsIcon
+	},
+	{
+		title: 'Installation',
+		url: '/home/installation',
+		icon: DirectorsIcon
+	}
+];
+
 export const crudItems = [
+	{
+		title: 'Documentation',
+		url: '/crud',
+		icon: DirectorsIcon
+	},
 	{
 		title: 'Directors',
 		url: '/crud/directors',
@@ -53,6 +76,7 @@ export const stateItems = [
 		icon: StateIcon
 	}
 ];
+
 export const socketItems = [
 	{
 		title: 'WebSocket Integration without database and protections',
@@ -65,6 +89,7 @@ export const socketItems = [
 		icon: MessageCircle
 	}
 ];
+
 export const stripeItems = [
 	{
 		title: 'Stripe',
@@ -72,6 +97,7 @@ export const stripeItems = [
 		icon: CreditCard
 	}
 ];
+
 export const UIUXItems = [
 	{
 		title: 'Transition Demo',

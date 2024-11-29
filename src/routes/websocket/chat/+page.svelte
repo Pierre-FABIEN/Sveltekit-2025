@@ -157,7 +157,7 @@
 	</ScrollArea.Root>
 </div>
 
-<div class="bg-gray-100 p-6 rounded-lg shadow-lg max-w-3xl mx-auto mt-10">
+<div class="bg-gray-100 p-6 rounded-lg shadow-lg max-w-3xl mx-auto mt-10 mb-10">
 	<h2 class="text-2xl font-bold text-gray-800 mb-4">
 		💡 Mémo : Gestion des données dynamiques avec WebSocket
 	</h2>

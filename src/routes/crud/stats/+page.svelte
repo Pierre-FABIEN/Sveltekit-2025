@@ -51,7 +51,7 @@
 	});
 </script>
 
-<div class="">
+<div class="h-screen w-screen flex justify-center place-content-center">
 	<div bind:this={chartElement} class="lplp"></div>
 </div>
 

@@ -13,7 +13,7 @@
 	} from '$lib/store/initialLoaderStore';
 	import Loader from '$lib/components/loader/Loader.svelte';
 	import { page } from '$app/stores';
-	import NavigationMenu from '$lib/components/NavigationMenu.svelte';
+	import NavigationMenu from '$lib/components/navigation/NavigationMenu.svelte';
 
 	let { children } = $props();
 	const sidebar = useSidebar();
