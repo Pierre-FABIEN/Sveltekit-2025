@@ -91,3 +91,78 @@
 		</div>
 	</div>
 </div>
+
+<div class="container mx-auto p-6 bg-gray-50 rounded-lg shadow-md mb-10">
+	<h1 class="text-2xl font-bold text-gray-800 mb-4">Memo : Gestion de WebSocket</h1>
+
+	<section class="mb-6">
+		<h2 class="text-xl font-semibold text-gray-700 mb-2">
+			1. Rôle de <code>createWSSGlobalInstance</code>
+		</h2>
+		<ul class="list-disc pl-6 space-y-2 text-gray-600">
+			<li>
+				Elle crée une instance globale de <code>WebSocketServer</code>, qui est stockée dans une
+				variable globale (dans
+				<code>globalThis</code>).
+			</li>
+			<li>
+				Cette instance globale est préparée avec le comportement adéquat pour gérer chaque nouveau
+				client :
+				<ul class="list-circle pl-6 space-y-2">
+					<li>
+						À chaque connexion (<code>wss.on('connection')</code>), elle génère un
+						<code>socketId</code>, logue la connexion, et peut gérer d’autres événements comme
+						<code>message</code> ou <code>close</code>.
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</section>
+
+	<section class="mb-6">
+		<h2 class="text-xl font-semibold text-gray-700 mb-2">2. Rôle du hook</h2>
+		<ul class="list-disc pl-6 space-y-2 text-gray-600">
+			<li>
+				Le hook utilise l’instance globale créée par <code>createWSSGlobalInstance</code>.
+			</li>
+			<li>
+				Son but est de s’assurer que cette instance WebSocket est disponible pour l’application (en
+				la mettant dans
+				<code>event.locals.wss</code>).
+			</li>
+			<li>Il ne recrée pas le serveur WebSocket ni ne définit son comportement.</li>
+		</ul>
+	</section>
+
+	<section class="mb-6">
+		<h2 class="text-xl font-semibold text-gray-700 mb-2">Résumé clair</h2>
+		<div class="space-y-4">
+			<div>
+				<h3 class="text-lg font-medium text-gray-700">createWSSGlobalInstance :</h3>
+				<ul class="list-disc pl-6 space-y-2 text-gray-600">
+					<li>
+						Configure le serveur global WebSocket et définit comment gérer chaque nouveau client.
+					</li>
+					<li>
+						Met cette instance en global pour qu’elle soit réutilisable partout dans l’application.
+					</li>
+				</ul>
+			</div>
+
+			<div>
+				<h3 class="text-lg font-medium text-gray-700">Le hook :</h3>
+				<ul class="list-disc pl-6 space-y-2 text-gray-600">
+					<li>Utilise cette instance globale.</li>
+					<li>
+						Assure qu’elle est prête à être utilisée dans les différentes requêtes HTTP ou SSR.
+					</li>
+				</ul>
+			</div>
+
+			<p class="text-gray-600">
+				En gros, <code>createWSSGlobalInstance</code> pose les fondations pour le serveur WebSocket,
+				et le hook permet à l’app de travailler avec ces fondations sans tout recréer. 👌
+			</p>
+		</div>
+	</section>
+</div>

@@ -11,6 +11,8 @@
 
 	let { data } = $props();
 
+	console.log(data, 'data');
+
 	let webSocketEstablished = $state(false);
 	let ws: WebSocket | null = null;
 	let messages = $state(data.messages || []);
@@ -43,12 +45,6 @@
 		ws.addEventListener('message', (event) => {
 			try {
 				const newMessage = JSON.parse(event.data);
-
-				// Si le message est un socketId, l'associer à l'utilisateur
-				if (newMessage.type === 'socketId') {
-					userSocketId = newMessage.socketId;
-					return;
-				}
 
 				// Ajouter les messages valides
 				messages = [...messages, newMessage];

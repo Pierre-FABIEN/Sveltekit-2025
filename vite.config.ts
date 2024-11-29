@@ -27,7 +27,7 @@ const config = {
 	},
 
 	server: {
-		port: 2000
+		port: 1000
 	}
 };
 
