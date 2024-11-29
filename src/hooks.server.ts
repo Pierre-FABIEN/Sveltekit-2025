@@ -23,6 +23,7 @@ const startupWebsocketServer = () => {
 			// if (!session) ws.close(1008, 'User not authenticated');
 			// ws.userId = session.userId;
 			console.log(`[wss:kit] client connected (${ws.socketId})`);
+
 			// ws.send(
 			// 	`Hello from SvelteKit ${new Date().toLocaleString()} (${ws.socketId})]`
 			// );

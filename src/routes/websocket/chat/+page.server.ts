@@ -27,36 +27,30 @@ export const actions: Actions = {
 			message: '',
 			client_id: '',
 			color: '',
-			avatar: ''
-		}; // Initialisation pour stocker les données à envoyer
+			avatar: '',
+			createdAt: ''
+		};
 
-		let clientId = null; // Initialisation pour le client WebSocket
-		let color = null; // Initialisation pour la couleur générée
-		let avatar = null; // Initialisation pour l'avatar généré
+		console.log(form);
 
 		// Diffuser le message via WebSocket
 		locals.wss.clients.forEach((client) => {
 			// Vérifier si le client est connecté et prêt
 			if (client.readyState === 1) {
 				// Récupérer ou générer les informations du client
-				clientId = client.socketId;
-				color = generateColor(clientId);
-				avatar = generateAvatar(clientId);
+				const senderId = form.data.client_id;
 
 				// Préparer les données à envoyer
-				const payload = {
-					client_id: clientId,
+				dataSend = {
+					client_id: senderId,
 					message: form.data.message,
-					color,
-					avatar,
+					color: form.data.color,
+					avatar: form.data.avatar,
 					createdAt: new Date().toISOString()
 				};
 
 				// Envoyer le message au client
-				client.send(JSON.stringify(payload));
-
-				// Sauvegarder les données pour la base de données
-				dataSend = payload;
+				client.send(JSON.stringify({ type: 'Chat', value: dataSend }));
 			}
 		});
 
@@ -71,33 +65,12 @@ export const actions: Actions = {
 				message: dataSend.message,
 				client_id: dataSend.client_id,
 				color: dataSend.color,
-				avatar: dataSend.avatar
+				avatar: dataSend.avatar,
+				createdAt: dataSend.createdAt
 			}
 		});
 
 		// Retourner un message de succès
 		message(form, 'Message sent successfully');
 	}
-};
-
-// Génération de couleur à partir d'une chaîne
-const generateColor = (clientId: string): string => {
-	let hash = 0;
-	for (let i = 0; i < clientId.length; i++) {
-		hash = clientId.charCodeAt(i) + ((hash << 5) - hash);
-	}
-
-	let color = '#';
-	for (let i = 0; i < 3; i++) {
-		// Limiter les composantes RGB pour générer une couleur sombre
-		const value = (hash >> (i * 8)) & 0xff;
-		const darkValue = Math.floor(value / 2); // Réduire la valeur pour rester dans une plage sombre
-		color += ('00' + darkValue.toString(16)).slice(-2);
-	}
-	return color;
-};
-
-// Génération d'URL d'avatar
-const generateAvatar = (clientId: string): string => {
-	return `https://robohash.org/${encodeURIComponent(clientId)}?size=50x50`;
 };

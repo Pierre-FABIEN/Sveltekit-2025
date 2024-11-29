@@ -42,6 +42,8 @@ export const createWSSGlobalInstance = () => {
 		ws.socketId = nanoid();
 		console.log(`[wss:global] client connected (${ws.socketId})`);
 
+		ws.send(JSON.stringify({ type: 'socketId', value: ws.socketId }));
+
 		ws.on('close', () => {
 			console.log(`[wss:global] client disconnected (${ws.socketId})`);
 		});
