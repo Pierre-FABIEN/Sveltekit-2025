@@ -1,7 +1,7 @@
 // src/lib/store/layoutState.ts
 
 import { writable } from 'svelte/store';
-import navigationStore from '$lib/store/navigationStore';
+import pageTransitionStore from '$lib/store/pageTransition';
 import { onNavigate } from '$app/navigation';
 import SmoothScrollBarStore from '$lib/store/SmoothScrollBarStore';
 
@@ -15,7 +15,7 @@ export function initializeLayoutState(currentPage) {
 		routeId: currentPage.route.id
 	};
 
-	navigationStore.set({
+	pageTransitionStore.set({
 		from: null,
 		to: currentData
 	});
@@ -48,7 +48,7 @@ export function setupNavigationEffect() {
 		const toData = navigation.to ? { routeId: navigation.to.route.id } : null;
 
 		if (fromData && toData && fromData.routeId !== toData.routeId) {
-			navigationStore.set({
+			pageTransitionStore.set({
 				from: fromData,
 				to: toData
 			});

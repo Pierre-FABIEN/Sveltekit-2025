@@ -16,12 +16,12 @@ const initialState: NavigationState = {
 	to: null
 };
 
-function createNavigationStore(enableLogging: boolean) {
+function createpageTransitionStore(enableLogging: boolean) {
 	const { subscribe, set, update } = writable<NavigationState>(initialState);
 
 	if (enableLogging) {
 		subscribe((value) => {
-			console.log('%c[navigationStore] value changed:', 'color: purple;', value);
+			console.log('%c[pageTransitionStore] value changed:', 'color: purple;', value);
 		});
 	}
 
@@ -29,7 +29,7 @@ function createNavigationStore(enableLogging: boolean) {
 		subscribe,
 		set(value: NavigationState) {
 			if (enableLogging) {
-				console.log('%c[navigationStore] set:', 'color: green;', value);
+				console.log('%c[pageTransitionStore] set:', 'color: green;', value);
 			}
 			set(value);
 		},
@@ -37,7 +37,7 @@ function createNavigationStore(enableLogging: boolean) {
 			update((state) => {
 				const newState = updater(state);
 				if (enableLogging) {
-					console.log('%c[navigationStore] update:', 'color: blue;', newState);
+					console.log('%c[pageTransitionStore] update:', 'color: blue;', newState);
 				}
 				return newState;
 			});
@@ -45,5 +45,5 @@ function createNavigationStore(enableLogging: boolean) {
 	};
 }
 
-const navigationStore = createNavigationStore(enableLogging);
-export default navigationStore;
+const pageTransitionStore = createpageTransitionStore(enableLogging);
+export default pageTransitionStore;

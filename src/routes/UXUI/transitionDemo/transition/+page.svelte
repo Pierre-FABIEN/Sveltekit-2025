@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { Button } from '$shadcn/button';
-	import navigationStore from '$lib/store/navigationStore';
+	import pageTransitionStore from '$lib/store/pageTransition';
 	import { enter, exit } from './TransitionPage';
 </script>
 
 <div
 	class="transitionDemo flex justify-center"
-	in:enter={{ fromPath: $navigationStore.from?.routeId }}
-	out:exit={{ toPath: $navigationStore.to?.routeId }}
+	in:enter={{ fromPath: $pageTransitionStore.from?.routeId }}
+	out:exit={{ toPath: $pageTransitionStore.to?.routeId }}
 >
 	<Button href="/UXUI/transitionDemo">Transition</Button>
 </div>
