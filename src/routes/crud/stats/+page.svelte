@@ -52,14 +52,11 @@
 </script>
 
 <div class="h-screen w-screen flex justify-center place-content-center">
-	<div bind:this={chartElement} class="lplp"></div>
+	<div bind:this={chartElement} class="chartCSS"></div>
 </div>
 
 <style>
-	.lplp {
-		/* position: absolute;
-		top: 0;
-		left: 0; */
+	.chartCSS {
 		height: 80vh;
 		width: 80vw;
 	}

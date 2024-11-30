@@ -40,6 +40,13 @@ You can preview the production build with `npm run preview`.
 A installer:
 test playwright sur les auth
 mettre une option pour la f2a
+Rendre la doc sur le read me
+Rendre la doc pour render
+optimiser la doc pour socket 'exemple pour auth'
+optimiser la doc pour threlte 'exemple de fonction'
+optimiser la doc pour Stripe avec les Hooks
+Ajouter le multilang
+
 
 Ne peut être :
 multiLang

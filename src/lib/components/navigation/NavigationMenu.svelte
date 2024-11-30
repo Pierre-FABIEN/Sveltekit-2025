@@ -9,11 +9,13 @@
 		socketItems,
 		stripeItems,
 		UIUXItems,
-		AuthItems
+		AuthItems,
+		renderProduction
 	} from '$lib';
 	import { Waves } from 'lucide-svelte';
 	import LogoSvelte from '../LogoSvelte.svelte';
 	import Options from './Options.svelte';
+	import Input from '../shadcn/ui/input/input.svelte';
 
 	// Navigation groups
 	const navGroups = [
@@ -23,7 +25,8 @@
 		{ title: 'WebSocket', items: socketItems },
 		{ title: 'Stripe', items: stripeItems },
 		{ title: 'UI/UX', items: UIUXItems },
-		{ title: 'Authentication', items: AuthItems }
+		{ title: 'Authentication', items: AuthItems },
+		{ title: 'On Production', items: renderProduction }
 	];
 
 	let drawerOpen = false;
@@ -53,8 +56,8 @@
 			<Drawer.Header
 				class="flex justify-between border-b border-gray-300 dark:border-gray-700 px-4 py-3"
 			>
-				<div class="col-6">
-					<Drawer.Title class="text-xl font-semibold text-gray-900 dark:text-gray-100">
+				<div class="w-[20%]">
+					<Drawer.Title class="text-xl font-semibold  ">
 						<a href="/" class="flex items-center">
 							<div
 								class="text-sidebar-primary-foreground flex items-center justify-center rounded-lg w-8 h-8"
@@ -64,16 +67,20 @@
 
 							<div class="ml-2 flex flex-col">
 								<span class="truncate text-xl font-semibold leading-4">BoilerPlate</span>
-								<span class="truncate text-lg text-gray-500 leading-4">SvelteKit</span>
+								<span class="truncate text-lg leading-4">SvelteKit</span>
 							</div>
 						</a>
 					</Drawer.Title>
-					<Drawer.Description class="text-sm text-gray-600 dark:text-gray-400 mt-5">
-						Navigation
-					</Drawer.Description>
+
+					<Drawer.Description class="text-sm   mt-5">Navigation</Drawer.Description>
 				</div>
-				<div class="col-6">
-					<Options />
+				<div class="search w-[60%]">
+					<Input class="mt-5" placeholder="Search..." />
+				</div>
+				<div class="w-[20%]">
+					<div class="flex justify-center place-content-center place-items-center">
+						<Options />
+					</div>
 				</div>
 			</Drawer.Header>
 
@@ -82,7 +89,7 @@
 					<Sheet.Root>
 						<Sheet.Trigger class="flex m-3">
 							<Button
-								class="flex items-center justify-between px-4 py-3 text-gray-800 dark:text-gray-100 bg-gray-100/50 dark:bg-gray-800/50 hover:bg-gray-200/70 dark:hover:bg-gray-700/70 rounded-lg shadow-md transition-all"
+								class="flex items-center justify-between px-4 py-3   bg-gray-100/50 dark:bg-gray-800/50 hover:bg-gray-200/70 dark:hover:bg-gray-700/70 rounded-lg shadow-md transition-all"
 							>
 								<span class="font-medium">{group.title}</span>
 							</Button>
@@ -97,10 +104,10 @@
 								class="bg-gradient-to-bl from-white/70 to-gray-200/40 dark:from-gray-900/70 dark:to-gray-800/40 backdrop-blur-3xl border border-gray-300/50 dark:border-gray-700/50 rounded-lg shadow-lg transition-all duration-500 ease-in-out data-[state=open]:opacity-100 data-[state=closed]:opacity-0"
 							>
 								<Sheet.Header class="px-4 py-3 border rounded">
-									<Sheet.Title class="text-lg font-semibold text-gray-800 dark:text-gray-100">
+									<Sheet.Title class="text-lg font-semibold  ">
 										{group.title}
 									</Sheet.Title>
-									<Sheet.Description class="text-sm text-gray-600 dark:text-gray-400">
+									<Sheet.Description class="text-sm  ">
 										Explore all items under {group.title}.
 									</Sheet.Description>
 								</Sheet.Header>
@@ -110,13 +117,10 @@
 											<li>
 												<a
 													href={item.url}
-													class="flex items-center gap-3 px-4 py-2 text-gray-800 dark:text-gray-100 hover:bg-gray-200/70 dark:hover:bg-gray-700/70 rounded-md transition-all"
+													class="flex items-center gap-3 px-4 py-2 hover:bg-gray-200/70 dark:hover:bg-gray-700/70 rounded-md transition-all"
 													onclick={closeDrawer}
 												>
-													<svelte:component
-														this={item.icon}
-														class="w-5 h-5 text-gray-500 dark:text-gray-400"
-													/>
+													<svelte:component this={item.icon} class="w-5 h-5  " />
 													<span>{item.title}</span>
 												</a>
 											</li>

@@ -1,7 +1,3 @@
-<script>
-	import { Button } from '$lib/components/shadcn/ui/button';
-</script>
-
 <section class="bg-gray-900 text-white py-12">
 	<div class="container mx-auto px-6 space-y-12">
 		<!-- Header -->
@@ -21,8 +17,8 @@
 				Installez les dépendances nécessaires au projet avec la commande suivante :
 			</p>
 			<pre class="bg-gray-700 p-4 rounded text-sm text-green-300">
-  npm install
-		</pre>
+				npm install
+			</pre>
 		</div>
 
 		<!-- Étape 2 : Configurer les variables d'environnement -->
@@ -33,7 +29,7 @@
 				:
 			</p>
 			<pre class="bg-gray-700 p-4 rounded text-sm text-green-300">
-				DATABASE_URL=mongodb+srv://*:*@nextboilerplate.kf0vibb.mongodb.net/*?retryWrites=true&w=majority&appName=*
+				DATABASE_URL=mongodb+srv://*:*@*.*.mongodb.net/*?retryWrites=true&w=majority&appName=*
 				SECRET_OPENCAGEDATA_KEY=*
 				ENCRYPTION_KEY=*
 				PUBLIC_ENV='dev'
@@ -102,6 +98,114 @@
 					class="text-blue-500 underline">http://localhost:1000</a
 				>.
 			</p>
+		</div>
+	</div>
+</section>
+
+<section class="bg-gray-900 text-white py-12">
+	<div class="container mx-auto px-6 space-y-12">
+		<!-- Header -->
+		<div class="text-center">
+			<h1 class="text-4xl font-bold">Scripts npm pour le Boilerplate</h1>
+			<p class="mt-4 text-gray-300">
+				Une explication détaillée des scripts npm inclus dans le projet, leur objectif et leur
+				usage.
+			</p>
+		</div>
+
+		<!-- Liste des scripts -->
+		<div class="space-y-6">
+			<!-- Script dev -->
+			<div class="p-6 bg-gray-800 rounded-lg shadow-md">
+				<h2 class="text-2xl font-semibold mb-2">1. <code>npm run dev</code></h2>
+				<p class="text-gray-400">
+					Lance le serveur de développement sur le port <strong>1000</strong>. Il exécute également
+					un watcher pour Prettier afin de formater automatiquement le code pendant que vous
+					travaillez.
+				</p>
+				<pre class="bg-gray-700 p-4 rounded text-sm text-green-300">
+					concurrently "vite dev --port 1000" "npm run prettier:watch"
+				</pre>
+			</div>
+
+			<!-- Script build -->
+			<div class="p-6 bg-gray-800 rounded-lg shadow-md">
+				<h2 class="text-2xl font-semibold mb-2">2. <code>npm run build</code></h2>
+				<p class="text-gray-400">
+					Compile le projet pour la production. Génère des fichiers optimisés pour le déploiement.
+				</p>
+				<pre class="bg-gray-700 p-4 rounded text-sm text-green-300">
+					vite build
+				</pre>
+			</div>
+
+			<!-- Script preview -->
+			<div class="p-6 bg-gray-800 rounded-lg shadow-md">
+				<h2 class="text-2xl font-semibold mb-2">3. <code>npm run preview</code></h2>
+				<p class="text-gray-400">
+					Lance une prévisualisation de la version de production sur un serveur local.
+				</p>
+				<pre class="bg-gray-700 p-4 rounded text-sm text-green-300">
+					vite preview
+				</pre>
+			</div>
+
+			<!-- Script check -->
+			<div class="p-6 bg-gray-800 rounded-lg shadow-md">
+				<h2 class="text-2xl font-semibold mb-2">4. <code>npm run check</code></h2>
+				<p class="text-gray-400">
+					Synchronise les fichiers SvelteKit et effectue une vérification TypeScript pour détecter
+					les erreurs dans le projet.
+				</p>
+				<pre class="bg-gray-700 p-4 rounded text-sm text-green-300">
+					svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+				</pre>
+			</div>
+
+			<!-- Script lint -->
+			<div class="p-6 bg-gray-800 rounded-lg shadow-md">
+				<h2 class="text-2xl font-semibold mb-2">5. <code>npm run lint</code></h2>
+				<p class="text-gray-400">
+					Vérifie la qualité du code avec Prettier et ESLint. Ce script s'assure que le code
+					respecte les normes définies.
+				</p>
+				<pre class="bg-gray-700 p-4 rounded text-sm text-green-300">
+					prettier --check . && eslint .
+				</pre>
+			</div>
+
+			<!-- Script test -->
+			<div class="p-6 bg-gray-800 rounded-lg shadow-md">
+				<h2 class="text-2xl font-semibold mb-2">6. <code>npm run test</code></h2>
+				<p class="text-gray-400">
+					Exécute les tests unitaires avec Vitest et les tests E2E avec Playwright.
+				</p>
+				<pre class="bg-gray-700 p-4 rounded text-sm text-green-300">
+					npm run test:unit -- --run && npm run test:e2e
+				</pre>
+			</div>
+
+			<!-- Script seed -->
+			<div class="p-6 bg-gray-800 rounded-lg shadow-md">
+				<h2 class="text-2xl font-semibold mb-2">7. <code>npm run seed</code></h2>
+				<p class="text-gray-400">
+					Insère des données fictives dans la base de données pour tester le projet.
+				</p>
+				<pre class="bg-gray-700 p-4 rounded text-sm text-green-300">
+					node src/lib/server/seed.js
+				</pre>
+			</div>
+
+			<!-- Script render -->
+			<div class="p-6 bg-gray-800 rounded-lg shadow-md">
+				<h2 class="text-2xl font-semibold mb-2">8. <code>npm run render</code></h2>
+				<p class="text-gray-400">
+					Lance le serveur en mode production sur le port <strong>10000</strong>.
+				</p>
+				<pre class="bg-gray-700 p-4 rounded text-sm text-green-300">
+					PORT=10000 tsm ./prodServer.ts
+				</pre>
+			</div>
 		</div>
 	</div>
 </section>

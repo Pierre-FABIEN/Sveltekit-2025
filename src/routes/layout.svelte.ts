@@ -1,8 +1,9 @@
 // src/lib/store/layoutState.ts
 
 import { writable } from 'svelte/store';
-import { navigationStore } from '$lib/store/navigationStore';
+import navigationStore from '$lib/store/navigationStore';
 import { onNavigate } from '$app/navigation';
+import SmoothScrollBarStore from '$lib/store/SmoothScrollBarStore';
 
 export const isClient = writable(false);
 export const loading = writable(true);
@@ -30,6 +31,15 @@ export function initializeLayoutState(currentPage) {
 			loading.set(false);
 		}
 	}, 10);
+
+	SmoothScrollBarStore.update((state) => {
+		if (state.smoothScroll) {
+			state.smoothScroll.scrollTo(0, 0, 500); // Scroller en haut avec une animation
+		} else {
+			window.scrollTo(0, 0); // Fallback si smoothScroll n'est pas initialisé
+		}
+		return state;
+	});
 }
 
 export function setupNavigationEffect() {

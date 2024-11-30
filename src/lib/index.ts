@@ -148,3 +148,11 @@ export const AuthItems = [
 		icon: Settings2
 	}
 ];
+
+export const renderProduction = [
+	{
+		title: 'On server / production',
+		url: '/render',
+		icon: KeyRound
+	}
+];
