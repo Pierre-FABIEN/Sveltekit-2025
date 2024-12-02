@@ -3,7 +3,7 @@ import { hashPassword } from './password';
 import { encryptString } from './encryption';
 import { generateRandomRecoveryCode } from './utils';
 import { ObjectId } from 'mongodb';
-import { decryptToString } from './encryption';
+import { decryptToString, decrypt, encrypt } from './encryption';
 
 // Interface utilisateur unifiée
 export interface User {
@@ -171,10 +171,11 @@ export async function handleGoogleOAuth(
 }
 
 export async function updateUserTOTPKey(userId: string, key: Uint8Array): Promise<void> {
-	// Implémentez la logique de mise à jour
+	const encryptedKey = encrypt(key);
+	console.log('Encrypted TOTP Key:', encryptedKey); // Ajoutez un log
 	await prisma.user.update({
 		where: { id: userId },
-		data: { totpKey: key }
+		data: { totpKey: encryptedKey }
 	});
 }
 
@@ -194,6 +195,8 @@ export async function getUserTOTPKey(userId: number): Promise<Uint8Array | null>
 		where: { id: userId },
 		select: { totpKey: true }
 	});
+	console.log(user);
+
 	return user && user.totpKey ? decrypt(user.totpKey) : null;
 }
 
