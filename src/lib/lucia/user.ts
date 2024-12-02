@@ -2,7 +2,8 @@ import { prisma } from '$lib/server';
 import { hashPassword } from './password';
 import { encryptString } from './encryption';
 import { generateRandomRecoveryCode } from './utils';
-import { ObjectId } from 'mongodb'; // Import de ObjectId
+import { ObjectId } from 'mongodb';
+import { decryptToString } from './encryption';
 
 // Interface utilisateur unifiée
 export interface User {
@@ -175,4 +176,34 @@ export async function updateUserTOTPKey(userId: string, key: Uint8Array): Promis
 		where: { id: userId },
 		data: { totpKey: key }
 	});
+}
+
+export async function getUserRecoverCode(userId: number): Promise<string> {
+	const user = await prisma.user.findUnique({
+		where: { id: userId },
+		select: { recoveryCode: true, googleId: true }
+	});
+	if (!user || user.googleId || !user.recoveryCode) {
+		throw new Error('Recovery code not available for this user.');
+	}
+	return decryptToString(user.recoveryCode);
+}
+
+export async function getUserTOTPKey(userId: number): Promise<Uint8Array | null> {
+	const user = await prisma.user.findUnique({
+		where: { id: userId },
+		select: { totpKey: true }
+	});
+	return user && user.totpKey ? decrypt(user.totpKey) : null;
+}
+
+export async function getUserPasswordHash(userId?: number, email?: string): Promise<string | null> {
+	if (!userId && !email) throw new Error('Missing user identifier: userId or email is required.');
+	const whereClause = userId ? { id: userId } : { email };
+	const user = await prisma.user.findUnique({
+		where: whereClause,
+		select: { passwordHash: true }
+	});
+	if (!user) throw new Error('User not found.');
+	return user.passwordHash;
 }

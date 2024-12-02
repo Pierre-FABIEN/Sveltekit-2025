@@ -6,7 +6,7 @@ import {
 } from '$lib/lucia/email-verification';
 import { fail, redirect } from '@sveltejs/kit';
 import { checkEmailAvailability } from '$lib/lucia/email';
-import { verifyPasswordHash, verifyPasswordStrength } from '$lib/lucia/password';
+import { verifyPasswordHash } from '$lib/lucia/password';
 import { getUserPasswordHash, getUserRecoverCode, updateUserPassword } from '$lib/lucia/user';
 import {
 	createSession,
