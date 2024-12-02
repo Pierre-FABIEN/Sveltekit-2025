@@ -1,6 +1,5 @@
 import { prisma } from '$lib/server';
-import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
-import { sha256 } from '@oslojs/crypto/sha2';
+import { ObjectId } from 'mongodb'; // Import ObjectId pour MongoDB
 import type { RequestEvent } from '@sveltejs/kit';
 import type { User } from './user';
 
@@ -11,34 +10,36 @@ export interface SessionFlags {
 export interface Session extends SessionFlags {
 	id: string;
 	expiresAt: Date;
-	userId: number;
+	userId: string;
 	oauthProvider?: string;
 }
 
 type SessionValidationResult = { session: Session; user: User } | { session: null; user: null };
 
-// Génère un token de session
+// Génère un token de session (identifiant MongoDB valide)
 export function generateSessionToken(): string {
-	const tokenBytes = new Uint8Array(20);
-	crypto.getRandomValues(tokenBytes);
-	return encodeBase32LowerCaseNoPadding(tokenBytes).toLowerCase();
+	return new ObjectId().toString(); // Génère un ObjectId valide
 }
 
 // Crée une nouvelle session
 export async function createSession(
 	token: string,
-	userId: number,
+	userId: string,
 	flags: SessionFlags,
 	oauthProvider?: string
 ): Promise<Session> {
-	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	// Vérifie que userId est un ObjectId valide
+	if (!ObjectId.isValid(userId)) {
+		throw new Error('Invalid user ID format');
+	}
+
 	const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30); // Expiration dans 30 jours
 
 	try {
 		const session = await prisma.session.create({
 			data: {
-				id: sessionId,
-				userId,
+				id: token,
+				userId, // MongoDB ObjectId
 				expiresAt,
 				twoFactorVerified: flags.twoFactorVerified,
 				oauthProvider
@@ -53,10 +54,9 @@ export async function createSession(
 
 // Valide le token de session
 export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
-	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 	try {
 		const result = await prisma.session.findUnique({
-			where: { id: sessionId },
+			where: { id: token },
 			include: { user: true }
 		});
 
@@ -66,7 +66,7 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 
 		// Vérifie l'expiration de la session
 		if (Date.now() >= result.expiresAt.getTime()) {
-			await prisma.session.delete({ where: { id: sessionId } });
+			await prisma.session.delete({ where: { id: token } });
 			return { session: null, user: null };
 		}
 
@@ -74,7 +74,7 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 		if (Date.now() >= result.expiresAt.getTime() - 1000 * 60 * 60 * 24 * 15) {
 			const newExpiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
 			await prisma.session.update({
-				where: { id: sessionId },
+				where: { id: token },
 				data: { expiresAt: newExpiresAt }
 			});
 			result.expiresAt = newExpiresAt;
@@ -116,7 +116,11 @@ export async function invalidateSession(sessionId: string): Promise<void> {
 }
 
 // Invalide toutes les sessions d'un utilisateur
-export async function invalidateUserSessions(userId: number): Promise<void> {
+export async function invalidateUserSessions(userId: string): Promise<void> {
+	if (!ObjectId.isValid(userId)) {
+		throw new Error('Invalid user ID format');
+	}
+
 	try {
 		await prisma.session.deleteMany({ where: { userId } });
 	} catch (error) {
@@ -148,15 +152,10 @@ export function deleteSessionTokenCookie(event: RequestEvent): void {
 
 // Marque la session comme vérifiée pour la 2FA
 export async function setSessionAs2FAVerified(sessionId: string): Promise<void> {
-	try {
-		await prisma.session.update({
-			where: { id: sessionId },
-			data: { twoFactorVerified: true }
-		});
-	} catch (error) {
-		console.error('Erreur lors de la mise à jour de la session pour la 2FA :', error);
-		throw new Error('Erreur lors de la mise à jour de la session pour la 2FA.');
-	}
+	await prisma.session.update({
+		where: { id: sessionId },
+		data: { twoFactorVerified: true }
+	});
 }
 
 // Gestion des sessions OAuth pour Google

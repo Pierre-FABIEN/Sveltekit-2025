@@ -1,12 +1,12 @@
 import { prisma } from '$lib/server';
 import { generateRandomOTP } from './utils';
 import { ExpiringTokenBucket } from './rate-limit';
-import { encodeBase32 } from '@oslojs/encoding';
+import { ObjectId } from 'mongodb'; // Import de ObjectId
 import type { RequestEvent } from '@sveltejs/kit';
 
 export interface EmailVerificationRequest {
 	id: string;
-	userId: number;
+	userId: string;
 	code: string;
 	email: string;
 	expiresAt: Date;
@@ -14,9 +14,14 @@ export interface EmailVerificationRequest {
 
 // Récupère une requête de vérification d'email pour un utilisateur
 export async function getUserEmailVerificationRequest(
-	userId: number,
+	userId: string,
 	id: string
 ): Promise<EmailVerificationRequest | null> {
+	// Validation de l'identifiant
+	if (!ObjectId.isValid(id)) {
+		throw new Error('Invalid email verification request ID');
+	}
+
 	const request = await prisma.emailVerificationRequest.findUnique({
 		where: {
 			id,
@@ -39,16 +44,16 @@ export async function getUserEmailVerificationRequest(
 
 // Crée une nouvelle requête de vérification d'email
 export async function createEmailVerificationRequest(
-	userId: number,
+	userId: string,
 	email: string
 ): Promise<EmailVerificationRequest> {
+	// Supprime les requêtes existantes pour éviter les doublons
 	await deleteUserEmailVerificationRequest(userId);
 
-	const idBytes = new Uint8Array(20);
-	crypto.getRandomValues(idBytes);
-	const id = encodeBase32(idBytes).toLowerCase();
+	// Génération d'un nouvel identifiant
+	const id = new ObjectId().toString(); // Utilisation d'un ObjectId valide
 	const code = generateRandomOTP();
-	const expiresAt = new Date(Date.now() + 1000 * 60 * 10); // Expire dans 10 minutes
+	const expiresAt = new Date(Date.now() + 1000 * 60 * 10); // Expiration dans 10 minutes
 
 	const request = await prisma.emailVerificationRequest.create({
 		data: {
@@ -70,7 +75,7 @@ export async function createEmailVerificationRequest(
 }
 
 // Supprime toutes les requêtes de vérification d'email pour un utilisateur
-export async function deleteUserEmailVerificationRequest(userId: number): Promise<void> {
+export async function deleteUserEmailVerificationRequest(userId: string): Promise<void> {
 	await prisma.emailVerificationRequest.deleteMany({
 		where: { userId }
 	});
@@ -115,7 +120,7 @@ export async function getUserEmailVerificationRequestFromRequest(
 	}
 
 	const id = event.cookies.get('email_verification') ?? null;
-	if (!id) {
+	if (!id || !ObjectId.isValid(id)) {
 		return null;
 	}
 
@@ -128,4 +133,4 @@ export async function getUserEmailVerificationRequestFromRequest(
 }
 
 // Limiteur de taux pour l'envoi des emails de vérification
-export const sendVerificationEmailBucket = new ExpiringTokenBucket<number>(3, 60 * 10);
+export const sendVerificationEmailBucket = new ExpiringTokenBucket<string>(3, 60 * 10);

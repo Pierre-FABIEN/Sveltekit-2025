@@ -1,13 +1,12 @@
 import { prisma } from '$lib/server';
-import { encodeHexLowerCase } from '@oslojs/encoding';
 import { generateRandomOTP } from './utils';
-import { sha256 } from '@oslojs/crypto/sha2';
+import { ObjectId } from 'mongodb'; // Import ObjectId pour les identifiants MongoDB
 import type { RequestEvent } from '@sveltejs/kit';
 import type { User } from './user';
 
 export interface PasswordResetSession {
 	id: string;
-	userId: number;
+	userId: string;
 	email: string;
 	expiresAt: Date;
 	code: string;
@@ -21,11 +20,13 @@ export type PasswordResetSessionValidationResult =
 
 // Crée une session de réinitialisation de mot de passe
 export async function createPasswordResetSession(
-	token: string,
-	userId: number,
+	userId: string,
 	email: string
 ): Promise<PasswordResetSession> {
-	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	// Génère un nouvel identifiant MongoDB pour la session
+	const sessionId = new ObjectId().toString();
+
+	// Crée une nouvelle session
 	const session: PasswordResetSession = {
 		id: sessionId,
 		userId,
@@ -36,7 +37,7 @@ export async function createPasswordResetSession(
 		twoFactorVerified: false
 	};
 
-	// Ajoutez les champs `emailVerified` et `twoFactorVerified` dans la requête Prisma
+	// Ajoutez les champs dans la requête Prisma
 	await prisma.passwordResetSession.create({
 		data: {
 			id: session.id,
@@ -56,7 +57,11 @@ export async function createPasswordResetSession(
 export async function validatePasswordResetSessionToken(
 	token: string
 ): Promise<PasswordResetSessionValidationResult> {
-	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	if (!ObjectId.isValid(token)) {
+		throw new Error('Invalid session token format');
+	}
+
+	const sessionId = token; // L'identifiant est déjà valide en tant qu'ObjectId
 	const result = await prisma.passwordResetSession.findUnique({
 		where: { id: sessionId },
 		include: { user: true }
@@ -105,7 +110,7 @@ export async function setPasswordResetSessionAs2FAVerified(sessionId: string): P
 }
 
 // Invalide toutes les sessions de réinitialisation de mot de passe pour un utilisateur
-export async function invalidateUserPasswordResetSessions(userId: number): Promise<void> {
+export async function invalidateUserPasswordResetSessions(userId: string): Promise<void> {
 	await prisma.passwordResetSession.deleteMany({
 		where: { userId }
 	});
@@ -116,7 +121,7 @@ export async function validatePasswordResetSessionRequest(
 	event: RequestEvent
 ): Promise<PasswordResetSessionValidationResult> {
 	const token = event.cookies.get('password_reset_session') ?? null;
-	if (token === null) {
+	if (!token || !ObjectId.isValid(token)) {
 		return { session: null, user: null };
 	}
 	const result = await validatePasswordResetSessionToken(token);
