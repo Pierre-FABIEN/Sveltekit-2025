@@ -23,6 +23,9 @@
 				Voir sur GitHub
 			</Button>
 		</div>
+		<pre class="bg-gray-700 p-4 rounded text-sm text-green-300">
+			npm clone https://github.com/Pierre-FABIEN/Sveltekit-2025.git
+		</pre>
 	</div>
 </section>
 
