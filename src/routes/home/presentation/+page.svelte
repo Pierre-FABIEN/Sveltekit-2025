@@ -13,14 +13,6 @@
 					>PRs welcome</span
 				>
 			</p>
-
-			<h2 class="mb-3 text-2xl font-semibold">Description</h2>
-			<p class="mb-6 text-lg leading-relaxed">
-				<strong>Boilerplate SvelteKit 2025</strong> est un projet web full-stack moderne qui vise à accélérer
-				le développement d'applications performantes, sécurisées et évolutives. Il combine des technologies
-				de pointe pour gérer à la fois le front-end, le back-end et les services connexes.
-			</p>
-
 			<h2 class="mb-3 text-2xl font-semibold">Ce boilerplate offre :</h2>
 			<ul class="list-disc pl-6 space-y-2 text-lg leading-relaxed">
 				<li>
@@ -73,6 +65,15 @@
 						target="_blank"
 						rel="noopener noreferrer">Embla Carousel</a
 					>: Un carousel léger et personnalisable pour des interfaces utilisateur interactives.
+				</li>
+
+				<li class="text-lg">
+					<a
+						href="https://gsap.com/"
+						class="text-blue-600 hover:underline"
+						target="_blank"
+						rel="noopener noreferrer">GSAP</a
+					>: Pour des animations interactives et avancées.
 				</li>
 
 				<li class="text-lg">Sitemap: Génération automatique de sitemap pour améliorer le SEO.</li>

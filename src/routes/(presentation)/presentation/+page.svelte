@@ -43,68 +43,26 @@
 	</svg>
 	<div class="container text-center space-y-6 rounded backdrop-blur-sm">
 		<!-- Header -->
-		<h1 class="text-5xl font-light leading-tight sm:text-6xl">
-			Bienvenue sur <br />
-			<span>l'ultime Boilerplate SvelteKit</span>
-		</h1>
+		<h1 class="text-5xl font-light leading-tight sm:text-6xl">Présentation</h1>
 
 		<p class="description">
-			Toutes les solutions <strong>mise en place</strong> pour vous aider a créer une
-			<strong>application SvelteKit</strong>
+			Marre de passer des heures à assembler des solutions, à configurer les grandes lignes pour
+			obtenir un site complet ? Ce boilerplate est là pour simplifier votre vie ! Avec ce modèle
+			prêt à l’emploi, démarrez vos projets en un éclair. Temps réel avec <strong>WebSocket</strong>
+			?
+			<strong>CRUD</strong>, <strong>Formulaires</strong> et <strong>validations</strong> ?
+			<strong>Sitemap</strong>, <strong>authentification sécurisée</strong> en béton, gestion des
+			<strong>paiements</strong> ? La <strong>3D</strong> à disposition,
+			<strong>transition de pages</strong>,
+			<strong>Mise en production</strong> et plus. Tout est déjà là. Fini les casses-têtes, place à
+			la
+			<strong>créativité</strong>. Lancez-vous et créez des sites modernes sans perdre une seconde
+			sur les détails techniques. Vous avez tous les <strong>exemples</strong> et une
+			<strong>documentation</strong>. Oui, ce n'est pas un rêve : c'est ce boilerplate.
 		</p>
-
-		<div class="flex justify-center items-center mt-5">
-			<pre id="copy-text" bind:this={clone} class="preStyle">
-				<span>clone the project with npm</span>
-
-				<button class="copyButton" type="button" onclick={copyToClipboard} aria-label="Copy to clipboard">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="lucide lucide-book-copy svgStyle">
-					  <path d="M2 16V4a2 2 0 0 1 2-2h11" />
-					  <path
-							d="M22 18H11a2 2 0 1 0 0 4h10.5a.5.5 0 0 0 .5-.5v-15a.5.5 0 0 0-.5-.5H11a2 2 0 0 0-2 2v12"
-						/>
-					  <path d="M5 14H4a2 2 0 1 0 0 4h1" />
-					</svg>
-				</button>
-				<a
-					href="http://https://github.com/Pierre-FABIEN/Sveltekit-2025"
-					target="_blank"
-					rel="noopener noreferrer"
-					class="copyButton">
-				<span style="font-size: 0px;">Visit the GitHub repository</span>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="lucide lucide-github svgStyle">
-						<path
-							d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"
-						/>
-						<path d="M9 18c-4.51 2-5-2-7-2" />
-					</svg>
-				</a>
-			</pre>
-		</div>
-
 		<!-- Action Buttons -->
 		<div class="mt-8 flex justify-center space-x-4">
-			<a href="/presentation" class="presentationButton"> Présentation </a>
+			<a href="/home" class="presentationButton"> La stack </a>
 		</div>
 	</div>
 </section>
@@ -122,6 +80,7 @@
 	.presentationButton {
 		padding: 5px 20px;
 		border-radius: 5px;
+
 		border: 1px solid #fd4000;
 		box-shadow: 0px 0px 10px 2px #000000;
 		display: flex;
@@ -139,42 +98,11 @@
 	}
 
 	.description {
+		text-align: justify;
+		line-height: 175%;
+		padding: 5px 20px;
 		strong {
 			color: #fd4000;
-		}
-	}
-
-	.preStyle {
-		background-color: rgba(0, 0, 0, 0.1);
-		border: 1px solid #fd4000;
-		//filter: drop-shadow(5px 5px 5px #000000);
-		box-shadow: 0px 0px 10px 2px #000000;
-		width: min-content;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 10px;
-		border-radius: 5px;
-
-		.copyButton {
-			width: 30px;
-			height: 30px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			cursor: pointer;
-			border: 1px solid #fd4000;
-			margin-left: 10px;
-			padding: 5px;
-			border-radius: 5px;
-		}
-
-		.svgStyle {
-			stroke: white;
-			transition: all 0.15s ease-in-out;
-			&:hover {
-				stroke: #fd4000;
-			}
 		}
 	}
 

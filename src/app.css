@@ -5,12 +5,12 @@
 @layer base {
 	:root {
 		--background: #faf4f0;
-		--foreground: #0e0b0b;
+		--foreground: #04031d;
 		--card: #f0e3d8;
 		--card-foreground: #291a15;
 		--popover: #faf4f0;
 		--popover-foreground: #faf4f0;
-		--primary: #ffcc80;
+		--primary: #fd4000;
 		--primary-foreground: #ffffff;
 		--secondary: #d8c2b8;
 		--secondary-foreground: #000000;
@@ -18,21 +18,21 @@
 		--muted-foreground: #806e59;
 		--accent: #e8dbcc;
 		--accent-foreground: #291a15;
-		--destructive: #ff4d4d;
+		--destructive: #fd4000;
 		--destructive-foreground: #e8e3e6;
-		--border: #ffa500;
-		--input: #ffa500;
-		--ring: #ffa500;
+		--border: #fd4000;
+		--input: #fd4000;
+		--ring: #fd4000;
 		--radius: 0.5rem;
 	}
 	.dark {
-		--background: #1d0d30;
+		--background: #04031d;
 		--foreground: #e0d7cc;
-		--card: #140a0a;
+		--card: #04031d;
 		--card-foreground: #e0d7cc;
 		--popover: #1f1a35;
 		--popover-foreground: #e0d7cc;
-		--primary: #ffcc80;
+		--primary: #fd4000;
 		--primary-foreground: #ffffff;
 		--secondary: #271b0b;
 		--secondary-foreground: #ffffff;
@@ -40,10 +40,10 @@
 		--muted-foreground: #ccbbaa;
 		--accent: #332019;
 		--accent-foreground: #e0d7cc;
-		--destructive: #ff4d4d;
+		--destructive: #fd4000;
 		--destructive-foreground: #e0d7cc;
-		--border: #ffa500;
-		--input: #ffa500;
+		--border: #fd4000;
+		--input: #fd4000;
 		--ring: #ff8080;
 		--radius: 0.5rem;
 	}
