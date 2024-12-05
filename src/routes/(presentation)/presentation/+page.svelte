@@ -37,7 +37,7 @@
 			la
 			<strong>créativité</strong>. Lancez-vous et créez des sites modernes sans perdre une seconde
 			sur les détails techniques. Vous avez tous les <strong>exemples</strong> et une
-			<strong>documentation</strong>. Oui, ce n'est pas un rêve : c'est ce boilerplate.
+			<strong>documentation</strong>. Non, ce n'est pas un rêve : c'est ce boilerplate.
 		</p>
 		<!-- Action Buttons -->
 		<div class="mt-8 flex justify-center space-x-4">
@@ -49,9 +49,36 @@
 <style lang="scss">
 	.container {
 		position: absolute;
-		box-shadow: 0px 0px 15px 5px #00000030;
-		background: rgba(0, 0, 0, 0.103);
-		border: 1px solid black;
+
+		box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25); /* Ombre douce pour donner de la profondeur */
+		border: 1px solid rgba(255, 255, 255, 0.2); /* Bordure subtile et légère */
+		background: linear-gradient(
+			145deg,
+			rgba(255, 255, 255, 0.2),
+			rgba(255, 255, 255, 0.1) 30%,
+			rgba(240, 240, 240, 0.05) 70%,
+			rgba(220, 220, 220, 0.02)
+		); /* Dégradé multi-nuances avec des arrêts */
+		backdrop-filter: blur(15px) saturate(150%); /* Flou avec saturation pour intensifier les couleurs de fond */
+		-webkit-backdrop-filter: blur(15px) saturate(150%); /* Compatibilité Safari */
+		border-radius: 16px; /* Coins arrondis pour un look moderne */
+		padding: 20px; /* Espacement interne */
+		transition:
+			transform 0.3s ease,
+			box-shadow 0.3s ease;
+
+		&:hover {
+			transform: translateY(-5px); /* Soulève légèrement la carte */
+			box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.3); /* Ombre plus intense au survol */
+			background: linear-gradient(
+				145deg,
+				rgba(255, 255, 255, 0.3),
+				rgba(255, 255, 255, 0.15) 30%,
+				rgba(240, 240, 240, 0.1) 70%,
+				rgba(220, 220, 220, 0.05)
+			); /* Accentuation du gradient au survol */
+		}
+
 		width: 800px;
 		max-width: 80vw;
 		padding: 40px 20px;

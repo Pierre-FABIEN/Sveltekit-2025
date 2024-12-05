@@ -2,9 +2,11 @@
 	import { Separator } from '$lib/components/shadcn/ui/separator';
 	import * as Avatar from '$lib/components/shadcn/ui/avatar';
 
-	const technologies = {
+	const Frontend = {
 		Engine: [
 			{
+				image:
+					'https://camo.githubusercontent.com/8f29217b4fff79bc263e9d9878d6008cf12eff6ed6cddc830f7b9165a0a88042/68747470733a2f2f617574686a732e6465762f696d672f6574632f7376656c74656b69742e737667',
 				name: 'SvelteKit',
 				description:
 					'Un framework moderne pour construire des applications web dynamiques et réactives avec une optimisation du rendu côté serveur (SSR).',
@@ -13,57 +15,79 @@
 		],
 		'Formulaire et Validation': [
 			{
+				image: 'https://superforms.rocks/og.png',
 				name: 'Superforms',
 				description:
 					'Une solution pour gérer les formulaires dans SvelteKit, offrant des fonctionnalités avancées comme la validation côté client et serveur, en synergie avec Zod.',
 				link: 'https://github.com/codediodeio/superforms'
 			},
 			{
+				image: 'https://api-prod.strapi.io/uploads/001_zod_2b7c405de4.png',
 				name: 'Zod',
 				description:
 					'Une bibliothèque TypeScript-first pour la validation de schémas, assurant la sécurité et la cohérence des données manipulées.',
 				link: 'https://zod.dev/'
 			}
 		],
-		'Style et Animation': [
+		'UX et UI': [
 			{
-				name: 'Threlte',
-				description:
-					'Une intégration Three.js avec Svelte pour des expériences 3D performantes et réactives.',
-				link: 'https://threlte.xyz/'
-			},
-			{
-				name: 'Embla Carousel',
-				description:
-					'Un carousel léger et personnalisable pour des interfaces utilisateur interactives.',
-				link: 'https://www.embla-carousel.com/get-started/svelte/'
-			},
-			{
-				name: 'GSAP',
-				description: 'Pour des animations interactives et avancées.',
-				link: 'https://gsap.com/'
-			},
-			{
+				image:
+					'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tailwind_CSS_Logo.svg/1024px-Tailwind_CSS_Logo.svg.png',
 				name: 'Tailwind CSS',
 				description:
 					'Un framework CSS utilitaire qui permet de construire des interfaces utilisateur rapidement avec une grande flexibilité dans le style.',
 				link: 'https://tailwindcss.com/'
 			},
 			{
+				image:
+					'https://images.seeklogo.com/logo-png/51/1/shadcn-ui-logo-png_seeklogo-519786.png?v=638686923200000000',
 				name: 'Shadcn UI',
 				description:
 					'Une collection de composants préconçus construits avec Tailwind CSS et Radix, qui permet de rapidement intégrer des composants accessibles et stylisés dans vos projets.',
 				link: 'https://shadcn.dev/'
 			},
 			{
+				image:
+					'https://raw.githubusercontent.com/idiotWu/smooth-scrollbar/HEAD/docs/assets/logo.svg',
 				name: 'smooth-scrollbar',
 				description:
 					'De quoi faire la gestion de la barre de scroll, mais aussi le petit bonus qui la rend smooth et fluide.',
 				link: 'https://idiotwu.github.io/smooth-scrollbar/'
+			},
+			{
+				image:
+					'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR01L6Jq6BvPIjmhTliTvigg2nAADj_Z-cfPw&s',
+				name: 'SCSS',
+				description: 'Avec un on peut utiliser le scss.',
+				link: 'https://idiotwu.github.io/smooth-scrollbar/'
+			}
+		],
+		'Style et Animation': [
+			{
+				image: 'https://threlte.xyz/_astro/threlte-logo-only.y-jizbo__Z1eWuA0.webp',
+				name: 'Threlte',
+				description:
+					'Une intégration Three.js avec Svelte pour des expériences 3D performantes et réactives.',
+				link: 'https://threlte.xyz/'
+			},
+			{
+				image:
+					'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcSxuy1RLtsDD33Mj0CH04tfKJ_yLwQrjRrA&s',
+				name: 'Embla Carousel',
+				description:
+					'Un carousel léger et personnalisable pour des interfaces utilisateur interactives.',
+				link: 'https://www.embla-carousel.com/get-started/svelte/'
+			},
+			{
+				image: 'https://cdn.worldvectorlogo.com/logos/gsap-greensock.svg',
+				name: 'GSAP',
+				description: 'Pour des animations interactives et avancées.',
+				link: 'https://gsap.com/'
 			}
 		],
 		Authentification: [
 			{
+				image: 'https://avatars.githubusercontent.com/u/124423533?s=200&v=4',
 				name: 'Lucia',
 				description:
 					"Solution d'authentification légère avec prise en charge de l'authentification multi-facteurs (M2FA).",
@@ -72,12 +96,25 @@
 		],
 		Paiement: [
 			{
+				image:
+					'https://media2.dev.to/dynamic/image/width=320,height=320,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Forganization%2Fprofile_image%2F1963%2F8edb6241-abf3-463c-83a2-2d8a7d381d75.png',
+				name: 'Stripe',
+				description: 'Une plateforme de paiement sécurisée intégrée dans le projet.',
+				link: 'https://stripe.com/'
+			}
+		],
+		Websocket: [
+			{
+				image:
+					'https://media2.dev.to/dynamic/image/width=320,height=320,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Forganization%2Fprofile_image%2F1963%2F8edb6241-abf3-463c-83a2-2d8a7d381d75.png',
 				name: 'Stripe',
 				description: 'Une plateforme de paiement sécurisée intégrée dans le projet.',
 				link: 'https://stripe.com/'
 			}
 		]
 	};
+
+	const Backend = {};
 </script>
 
 <section class="overlay flex min-h-screen items-center justify-center relative w-full px-4">
@@ -114,18 +151,23 @@
 	</svg>
 
 	<div class="flex flex-col absolute top-0 items-center justify-center mt-20 w-full max-w-5xl">
-		<h1 class="text-5xl font-light leading-tight sm:text-6xl mb-8">La stack</h1>
-
+		<h1 class="w-[100%] text-left text-9xl font-light leading-tight mb-8 text-[#fd4000]">
+			La stack
+		</h1>
+		<h2 class="w-[100%] text-5xl mt-5 text-left font-light leading-tight sm:text-6xl mb-8">
+			Front End
+		</h2>
 		<!-- Disposition en colonnes (masonry) -->
 		<div class="columns-3 gap-4 w-full">
-			{#each Object.entries(technologies) as [group, techs]}
+			{#each Object.entries(Frontend) as [group, techs]}
 				<!-- Chaque "carte" -->
-				<div class="break-inside-avoid bg-white rounded-lg shadow-md mb-4 p-4">
+				<div class="cards break-inside-avoid rounded-lg shadow-md mb-4 p-4 backdrop-blur-sm">
 					<h2 class="text-lg font-semibold mb-2">{group}</h2>
 					<Separator class="my-2" />
 					{#each techs as tech}
 						<div class="mb-4 flex items-start space-x-3">
 							<Avatar.Root>
+								<Avatar.Image src={tech.image} alt="{tech.name} icon" class="w-10 h-10" />
 								<Avatar.Fallback>{tech.name[0]}</Avatar.Fallback>
 							</Avatar.Root>
 							<div>
@@ -137,13 +179,17 @@
 								>
 									<h3 class="font-medium">{tech.name}</h3>
 								</a>
-								<p class="text-sm text-gray-700">{tech.description}</p>
+								<p class="text-sm">{tech.description}</p>
 							</div>
 						</div>
 					{/each}
 				</div>
 			{/each}
 		</div>
+
+		<h2 class="w-[100%] text-5xl mt-5 text-left font-light leading-tight sm:text-6xl mb-8">
+			Backend
+		</h2>
 	</div>
 </section>
 
@@ -164,6 +210,36 @@
 		}
 		.st1 {
 			fill: #04031d;
+		}
+	}
+
+	.cards {
+		box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25); /* Ombre douce pour donner de la profondeur */
+		border: 1px solid rgba(255, 255, 255, 0.2); /* Bordure subtile et légère */
+		background: linear-gradient(
+			145deg,
+			rgba(255, 255, 255, 0.2),
+			rgba(255, 255, 255, 0.1) 30%,
+			rgba(240, 240, 240, 0.05) 70%,
+			rgba(220, 220, 220, 0.02)
+		); /* Dégradé multi-nuances avec des arrêts */
+		backdrop-filter: blur(15px) saturate(150%); /* Flou avec saturation pour intensifier les couleurs de fond */
+		-webkit-backdrop-filter: blur(15px) saturate(150%); /* Compatibilité Safari */
+		border-radius: 16px; /* Coins arrondis pour un look moderne */
+		padding: 20px; /* Espacement interne */
+		transition:
+			transform 0.3s ease,
+			box-shadow 0.3s ease;
+		&:hover {
+			transform: translateY(-5px); /* Soulève légèrement la carte */
+			box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.3); /* Ombre plus intense au survol */
+			background: linear-gradient(
+				145deg,
+				rgba(255, 255, 255, 0.3),
+				rgba(255, 255, 255, 0.15) 30%,
+				rgba(240, 240, 240, 0.1) 70%,
+				rgba(220, 220, 220, 0.05)
+			); /* Accentuation du gradient au survol */
 		}
 	}
 
