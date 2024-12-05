@@ -113,6 +113,7 @@
 	.container {
 		position: absolute;
 		box-shadow: 0px 0px 15px 5px #00000030;
+		border: 1px solid black;
 		background: rgba(0, 0, 0, 0.103);
 		width: 800px;
 		max-width: 80vw;

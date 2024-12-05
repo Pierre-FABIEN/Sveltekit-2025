@@ -51,6 +51,7 @@
 		position: absolute;
 		box-shadow: 0px 0px 15px 5px #00000030;
 		background: rgba(0, 0, 0, 0.103);
+		border: 1px solid black;
 		width: 800px;
 		max-width: 80vw;
 		padding: 40px 20px;
