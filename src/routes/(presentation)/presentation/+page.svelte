@@ -1,24 +1,3 @@
-<script lang="ts">
-	import { toast } from 'svelte-sonner';
-
-	let clone: HTMLElement | null;
-
-	// Function to copy text content to clipboard
-	const copyToClipboard = () => {
-		const textToCopy = 'npm clone https://github.com/Pierre-FABIEN/Sveltekit-2025.git';
-		if (textToCopy) {
-			navigator.clipboard
-				.writeText(textToCopy)
-				.then(() => {
-					toast('copied to clipboard!');
-				})
-				.catch(() => {
-					toast.error('Failed to copy text to clipboard.');
-				});
-		}
-	};
-</script>
-
 <section class="overlay flex min-h-screen items-center justify-center">
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +41,7 @@
 		</p>
 		<!-- Action Buttons -->
 		<div class="mt-8 flex justify-center space-x-4">
-			<a href="/home" class="presentationButton"> La stack </a>
+			<a href="/stack" class="presentationButton"> La stack </a>
 		</div>
 	</div>
 </section>
