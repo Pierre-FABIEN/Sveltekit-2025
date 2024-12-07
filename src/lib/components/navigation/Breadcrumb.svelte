@@ -22,7 +22,7 @@
 	});
 </script>
 
-<div class="breadcrumb mr-5">
+<div class="breadcrumb m-5">
 	<Breadcrumb.Root>
 		<Breadcrumb.List>
 			<!-- Afficher les breadcrumbs dynamiquement -->

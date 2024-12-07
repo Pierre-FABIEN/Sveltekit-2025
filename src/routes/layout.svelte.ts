@@ -4,13 +4,14 @@ import { writable } from 'svelte/store';
 import pageTransitionStore from '$lib/store/pageTransition';
 import { onNavigate } from '$app/navigation';
 import SmoothScrollBarStore from '$lib/store/SmoothScrollBarStore';
+import type { Page } from '@sveltejs/kit';
 
 export const isClient = writable(false);
 export const loading = writable(true);
 export const progressValue = writable(0);
 export const previousRouteId = writable(null);
 
-export function initializeLayoutState(currentPage) {
+export function initializeLayoutState(currentPage: Page) {
 	const currentData = {
 		routeId: currentPage.route.id
 	};
@@ -33,7 +34,9 @@ export function initializeLayoutState(currentPage) {
 	}, 10);
 
 	SmoothScrollBarStore.update((state) => {
+		console.log('SmoothScrollBarStore');
 		if (state.smoothScroll) {
+			console.log(state, 'SmoothScrollBarStore scrollTo');
 			state.smoothScroll.scrollTo(0, 0, 500); // Scroller en haut avec une animation
 		} else {
 			window.scrollTo(0, 0); // Fallback si smoothScroll n'est pas initialisé

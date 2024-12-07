@@ -46,8 +46,8 @@
 
 		<div class="container">
 			<div class="iconeNav flex justify-end place-items-center px-5 py-2">
-				<Breadcrumb />
 				<NavigationMenu />
+				<Breadcrumb />
 			</div>
 			<SmoothScrollBar>
 				<main class="mainLayout">
@@ -72,7 +72,7 @@
 		z-index: 100;
 		background-color: rgba(0, 0, 0, 0.75);
 		border-top-left-radius: 5px;
-		right: 0%;
+		left: 0%;
 		bottom: 0px;
 	}
 

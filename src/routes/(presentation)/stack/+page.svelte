@@ -1,250 +1,118 @@
-<script>
+<script lang="ts">
+	// English comments inside the code
 	import { Separator } from '$lib/components/shadcn/ui/separator';
 	import * as Avatar from '$lib/components/shadcn/ui/avatar';
 
-	const Frontend = {
-		Engine: [
-			{
-				image:
-					'https://camo.githubusercontent.com/8f29217b4fff79bc263e9d9878d6008cf12eff6ed6cddc830f7b9165a0a88042/68747470733a2f2f617574686a732e6465762f696d672f6574632f7376656c74656b69742e737667',
-				name: 'SvelteKit',
-				description:
-					'Un framework moderne pour construire des applications web dynamiques et réactives avec une optimisation du rendu côté serveur (SSR).',
-				link: 'https://kit.svelte.dev/'
-			}
-		],
-		'Formulaire et Validation': [
-			{
-				image: 'https://superforms.rocks/og.png',
-				name: 'Superforms',
-				description:
-					'Une solution pour gérer les formulaires dans SvelteKit, offrant des fonctionnalités avancées comme la validation côté client et serveur, en synergie avec Zod.',
-				link: 'https://github.com/codediodeio/superforms'
-			},
-			{
-				image: 'https://api-prod.strapi.io/uploads/001_zod_2b7c405de4.png',
-				name: 'Zod',
-				description:
-					'Une bibliothèque TypeScript-first pour la validation de schémas, assurant la sécurité et la cohérence des données manipulées.',
-				link: 'https://zod.dev/'
-			}
-		],
-		'UX et UI': [
-			{
-				image:
-					'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tailwind_CSS_Logo.svg/1024px-Tailwind_CSS_Logo.svg.png',
-				name: 'Tailwind CSS',
-				description:
-					'Un framework CSS utilitaire qui permet de construire des interfaces utilisateur rapidement avec une grande flexibilité dans le style.',
-				link: 'https://tailwindcss.com/'
-			},
-			{
-				image:
-					'https://images.seeklogo.com/logo-png/51/1/shadcn-ui-logo-png_seeklogo-519786.png?v=638686923200000000',
-				name: 'Shadcn UI',
-				description:
-					'Une collection de composants préconçus construits avec Tailwind CSS et Radix, qui permet de rapidement intégrer des composants accessibles et stylisés dans vos projets.',
-				link: 'https://shadcn.dev/'
-			},
-			{
-				image:
-					'https://raw.githubusercontent.com/idiotWu/smooth-scrollbar/HEAD/docs/assets/logo.svg',
-				name: 'smooth-scrollbar',
-				description:
-					'De quoi faire la gestion de la barre de scroll, mais aussi le petit bonus qui la rend smooth et fluide.',
-				link: 'https://idiotwu.github.io/smooth-scrollbar/'
-			},
-			{
-				image:
-					'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR01L6Jq6BvPIjmhTliTvigg2nAADj_Z-cfPw&s',
-				name: 'SCSS',
-				description: 'Avec un on peut utiliser le scss.',
-				link: 'https://idiotwu.github.io/smooth-scrollbar/'
-			}
-		],
-		'Style et Animation': [
-			{
-				image: 'https://threlte.xyz/_astro/threlte-logo-only.y-jizbo__Z1eWuA0.webp',
-				name: 'Threlte',
-				description:
-					'Une intégration Three.js avec Svelte pour des expériences 3D performantes et réactives.',
-				link: 'https://threlte.xyz/'
-			},
-			{
-				image:
-					'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcSxuy1RLtsDD33Mj0CH04tfKJ_yLwQrjRrA&s',
-				name: 'Embla Carousel',
-				description:
-					'Un carousel léger et personnalisable pour des interfaces utilisateur interactives.',
-				link: 'https://www.embla-carousel.com/get-started/svelte/'
-			},
-			{
-				image: 'https://cdn.worldvectorlogo.com/logos/gsap-greensock.svg',
-				name: 'GSAP',
-				description: 'Pour des animations interactives et avancées.',
-				link: 'https://gsap.com/'
-			}
-		],
-		Authentification: [
-			{
-				image: 'https://avatars.githubusercontent.com/u/124423533?s=200&v=4',
-				name: 'Lucia',
-				description:
-					"Solution d'authentification légère avec prise en charge de l'authentification multi-facteurs (M2FA).",
-				link: 'https://lucia-auth.com/'
-			}
-		],
-		Paiement: [
-			{
-				image:
-					'https://media2.dev.to/dynamic/image/width=320,height=320,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Forganization%2Fprofile_image%2F1963%2F8edb6241-abf3-463c-83a2-2d8a7d381d75.png',
-				name: 'Stripe',
-				description: 'Une plateforme de paiement sécurisée intégrée dans le projet.',
-				link: 'https://stripe.com/'
-			}
-		],
-		Websocket: [
-			{
-				image:
-					'https://media2.dev.to/dynamic/image/width=320,height=320,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Forganization%2Fprofile_image%2F1963%2F8edb6241-abf3-463c-83a2-2d8a7d381d75.png',
-				name: 'Stripe',
-				description: 'Une plateforme de paiement sécurisée intégrée dans le projet.',
-				link: 'https://stripe.com/'
-			}
-		]
-	};
+	// Import data
+	import { Production, Frontend, Backend, Test } from './data';
+	import { fly } from 'svelte/transition';
 
-	const Backend = {};
+	// Create an array of sections to render
+	const sections = [Frontend, Backend, Production, Test];
 </script>
 
-<section class="overlay flex min-h-screen items-center justify-center relative w-full px-4">
-	<!-- SVG Logo -->
-	<svg
-		xmlns="http://www.w3.org/2000/svg"
-		xmlns:xlink="http://www.w3.org/1999/xlink"
-		version="1.1"
-		id="Layer_1"
-		x="0px"
-		y="0px"
-		viewBox="0 0 98.1 118"
-		style="enable-background:new 0 0 98.1 118;"
-		xml:space="preserve"
-		class="logoSvelte"
-	>
-		<path
-			class="st0"
-			d="M91.8,15.6C80.9-0.1,59.2-4.7,43.6,5.2L16.1,22.8C8.6,27.5,3.4,35.2,1.9,43.9c-1.3,7.3-0.2,14.8,3.3,21.3
-		c-2.4,3.6-4,7.6-4.7,11.8c-1.6,8.9,0.5,18.1,5.7,25.4c11,15.7,32.6,20.3,48.2,10.4l27.5-17.5c7.5-4.7,12.7-12.4,14.2-21.1
-		c1.3-7.3,0.2-14.8-3.3-21.3c2.4-3.6,4-7.6,4.7-11.8C99.2,32.1,97.1,22.9,91.8,15.6"
-		/>
-		<path
-			class="st1"
-			d="M40.9,103.9c-8.9,2.3-18.2-1.2-23.4-8.7c-3.2-4.4-4.4-9.9-3.5-15.3c0.2-0.9,0.4-1.7,0.6-2.6l0.5-1.6l1.4,1
-		c3.3,2.4,6.9,4.2,10.8,5.4l1,0.3l-0.1,1c-0.1,1.4,0.3,2.9,1.1,4.1c1.6,2.3,4.4,3.4,7.1,2.7c0.6-0.2,1.2-0.4,1.7-0.7L65.5,72
-		c1.4-0.9,2.3-2.2,2.6-3.8c0.3-1.6-0.1-3.3-1-4.6c-1.6-2.3-4.4-3.3-7.1-2.6c-0.6,0.2-1.2,0.4-1.7,0.7l-10.5,6.7
-		c-1.7,1.1-3.6,1.9-5.6,2.4c-8.9,2.3-18.2-1.2-23.4-8.7c-3.1-4.4-4.4-9.9-3.4-15.3c0.9-5.2,4.1-9.9,8.6-12.7l27.5-17.5
-		c1.7-1.1,3.6-1.9,5.6-2.5c8.9-2.3,18.2,1.2,23.4,8.7c3.2,4.4,4.4,9.9,3.5,15.3c-0.2,0.9-0.4,1.7-0.7,2.6l-0.5,1.6l-1.4-1
-		c-3.3-2.4-6.9-4.2-10.8-5.4l-1-0.3l0.1-1c0.1-1.4-0.3-2.9-1.1-4.1c-1.6-2.3-4.4-3.3-7.1-2.6c-0.6,0.2-1.2,0.4-1.7,0.7L32.4,46.1
-		c-1.4,0.9-2.3,2.2-2.6,3.8s0.1,3.3,1,4.6c1.6,2.3,4.4,3.3,7.1,2.6c0.6-0.2,1.2-0.4,1.7-0.7l10.5-6.7c1.7-1.1,3.6-1.9,5.6-2.5
-		c8.9-2.3,18.2,1.2,23.4,8.7c3.2,4.4,4.4,9.9,3.5,15.3c-0.9,5.2-4.1,9.9-8.6,12.7l-27.5,17.5C44.8,102.5,42.9,103.3,40.9,103.9"
-		/>
-	</svg>
+<div class="flex flex-col absolute top-0 items-center justify-center mt-20 w-full max-w-5xl">
+	<h1 class="w-[100%] text-left text-9xl font-light leading-tight mb-8 text-[#fd4000]">La stack</h1>
 
-	<div class="flex flex-col absolute top-0 items-center justify-center mt-20 w-full max-w-5xl">
-		<h1 class="w-[100%] text-left text-9xl font-light leading-tight mb-8 text-[#fd4000]">
-			La stack
-		</h1>
-		<h2 class="w-[100%] text-5xl mt-5 text-left font-light leading-tight sm:text-6xl mb-8">
-			Front End
-		</h2>
-		<!-- Disposition en colonnes (masonry) -->
-		<div class="columns-3 gap-4 w-full">
-			{#each Object.entries(Frontend) as [group, techs]}
-				<!-- Chaque "carte" -->
-				<div class="cards break-inside-avoid rounded-lg shadow-md mb-4 p-4 backdrop-blur-sm">
-					<h2 class="text-lg font-semibold mb-2">{group}</h2>
-					<Separator class="my-2" />
-					{#each techs as tech}
-						<div class="mb-4 flex items-start space-x-3">
-							<Avatar.Root>
-								<Avatar.Image src={tech.image} alt="{tech.name} icon" class="w-10 h-10" />
-								<Avatar.Fallback>{tech.name[0]}</Avatar.Fallback>
-							</Avatar.Root>
-							<div>
-								<a
-									href={tech.link}
-									class="text-blue-600 hover:underline"
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									<h3 class="font-medium">{tech.name}</h3>
-								</a>
-								<p class="text-sm">{tech.description}</p>
-							</div>
+	<!-- Loop through all sections -->
+	{#each sections as section}
+		<div class="w-full mb-10">
+			<h2 class="w-full text-5xl mt-5 text-left font-light leading-tight sm:text-6xl mb-4">
+				{section.title}
+			</h2>
+			<p class="text-left mb-6 text-lg text-gray-600">{section.description}</p>
+
+			<!-- Render groups of technologies -->
+			<div class="columns-3 gap-4 w-full">
+				{#each Object.entries(section) as [group, techs]}
+					<!-- Skip title and description keys -->
+					{#if group !== 'title' && group !== 'description'}
+						<div class="cards break-inside-avoid rounded-lg shadow-md mb-4 p-4 backdrop-blur-sm">
+							<h2 class="text-xl font-semibold mb-2">{group}</h2>
+							<Separator class="my-2" />
+
+							<!-- List each technology -->
+							{#each techs as tech}
+								<div class="mb-4 flex items-start space-x-3">
+									<Avatar.Root>
+										<Avatar.Image src={tech.image} alt="{tech.name} icon" class="w-10 h-10" />
+										<Avatar.Fallback>{tech.name[0]}</Avatar.Fallback>
+									</Avatar.Root>
+									<div>
+										<a
+											href={tech.link}
+											class="text-blue-600 hover:underline"
+											target="_blank"
+											rel="noopener noreferrer"
+										>
+											<h3 class="font-medium">{tech.name}</h3>
+										</a>
+										<p class="text-sm">{tech.description}</p>
+									</div>
+								</div>
+							{/each}
 						</div>
-					{/each}
-				</div>
-			{/each}
+					{/if}
+				{/each}
+			</div>
 		</div>
+	{/each}
 
-		<h2 class="w-[100%] text-5xl mt-5 text-left font-light leading-tight sm:text-6xl mb-8">
-			Backend
-		</h2>
+	<div class="m-8 flex justify-center space-x-4">
+		<a href="/installation" class="presentationButton">Installer le projet</a>
 	</div>
-</section>
+</div>
 
 <style lang="scss">
 	a {
 		color: #fd4000;
 	}
 
-	.logoSvelte {
-		position: absolute;
-		top: -10vh;
-		left: -10vw;
-		height: 100vh;
-		z-index: 0;
-
-		.st0 {
-			fill: #0f0e2e88;
-		}
-		.st1 {
-			fill: #04031d;
-		}
-	}
-
 	.cards {
-		box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25); /* Ombre douce pour donner de la profondeur */
-		border: 1px solid rgba(255, 255, 255, 0.2); /* Bordure subtile et légère */
+		box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+		border: 1px solid rgba(255, 255, 255, 0.2);
 		background: linear-gradient(
 			145deg,
 			rgba(255, 255, 255, 0.2),
 			rgba(255, 255, 255, 0.1) 30%,
 			rgba(240, 240, 240, 0.05) 70%,
 			rgba(220, 220, 220, 0.02)
-		); /* Dégradé multi-nuances avec des arrêts */
-		backdrop-filter: blur(15px) saturate(150%); /* Flou avec saturation pour intensifier les couleurs de fond */
-		-webkit-backdrop-filter: blur(15px) saturate(150%); /* Compatibilité Safari */
-		border-radius: 16px; /* Coins arrondis pour un look moderne */
-		padding: 20px; /* Espacement interne */
+		);
+		backdrop-filter: blur(15px) saturate(150%);
+		-webkit-backdrop-filter: blur(15px) saturate(150%);
+		border-radius: 16px;
+		padding: 20px;
 		transition:
 			transform 0.3s ease,
 			box-shadow 0.3s ease;
+
 		&:hover {
-			transform: translateY(-5px); /* Soulève légèrement la carte */
-			box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.3); /* Ombre plus intense au survol */
+			transform: translateY(-5px);
+			box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.3);
 			background: linear-gradient(
 				145deg,
 				rgba(255, 255, 255, 0.3),
 				rgba(255, 255, 255, 0.15) 30%,
 				rgba(240, 240, 240, 0.1) 70%,
-				rgba(220, 220, 220, 0.05)
-			); /* Accentuation du gradient au survol */
+				rgba(220, 220, 220, 0.007)
+			);
 		}
 	}
 
-	.overlay {
-		position: relative;
-		padding: 20px;
+	.presentationButton {
+		padding: 5px 20px;
+		border-radius: 5px;
+		border: 1px solid #fd4000;
+		box-shadow: 0px 0px 5px 2px #82828260;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: lighter;
+		cursor: pointer;
+		transition: all 0.15s ease-in-out;
+
+		&:hover {
+			background-color: #fd4000;
+		}
 	}
 </style>

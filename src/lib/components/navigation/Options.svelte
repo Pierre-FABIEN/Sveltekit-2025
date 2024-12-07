@@ -4,8 +4,24 @@
 	import { Switch } from '$lib/components/shadcn/ui/switch/index.js';
 
 	const DARK_MODE_KEY = 'mode-watcher-mode';
+
+	// Déterminer dès le départ si on est en mode sombre ou clair
 	let darkMod = $state(false);
 	let isFullscreen = $state(false);
+
+	const darkModeLocal = localStorage.getItem(DARK_MODE_KEY);
+	darkMod = darkModeLocal
+		? darkModeLocal === 'dark'
+		: window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+	// Appliquer immédiatement les classes sur <html>
+	if (darkMod) {
+		document.documentElement.classList.add('dark');
+		document.documentElement.classList.remove('light');
+	} else {
+		document.documentElement.classList.remove('dark');
+		document.documentElement.classList.add('light');
+	}
 
 	function updateFullscreenStatus() {
 		isFullscreen = !!document.fullscreenElement;
@@ -24,12 +40,8 @@
 	}
 
 	$effect(() => {
-		const darkModeLocal = localStorage.getItem(DARK_MODE_KEY);
-		darkMod = darkModeLocal
-			? darkModeLocal === 'dark'
-			: window.matchMedia('(prefers-color-scheme: dark)').matches;
+		// Ici, on ne fait plus la détection du thème, on gère juste les events.
 		isFullscreen = !!document.fullscreenElement;
-
 		document.addEventListener('fullscreenchange', updateFullscreenStatus);
 
 		const keydownHandler = (e) => {

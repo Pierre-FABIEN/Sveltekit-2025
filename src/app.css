@@ -57,3 +57,12 @@
 		@apply bg-background text-foreground;
 	}
 }
+
+
+.scrollbar-thumb {
+	background: #fd4000 !important;
+}
+
+.scrollbar-track {
+	background: transparent !important;
+}

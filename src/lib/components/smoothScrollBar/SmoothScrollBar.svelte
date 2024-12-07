@@ -75,7 +75,7 @@
 	{@render children()}
 </div>
 
-<style>
+<style global>
 	.smoothScoller {
 		height: 100vh;
 		overflow: hidden;
