@@ -11,12 +11,7 @@
 
 	// Initialisation du formulaire
 	const createPostForm = superForm(data.form);
-
-	const {
-		form: createPostData,
-		enhance: createPostEnhance,
-		message: createPostMessage
-	} = createPostForm;
+	const { form: createPostData, enhance: createPostEnhance } = createPostForm;
 
 	// États réactifs pour les catégories et tags
 	let categoriesArray = $state(
@@ -25,48 +20,47 @@
 
 	let tagsArray = $state(data.tags.map((tag) => ({ id: tag.id, name: tag.name, checked: false })));
 
-	// Variables pour les nouvelles catégories et tags
-	let newCategory = $state('');
-	let newTag = $state('');
-	let isCategorySheetOpen = $state(false);
-	let isTagSheetOpen = $state(false);
+	// Variables pour les nouvelles entrées et états des modaux
+	let newEntry = $state('');
+	let isSheetOpen = $state({ category: false, tag: false });
 
-	// Actions pour ajouter une nouvelle catégorie
-	const saveCategory = () => {
-		if (newCategory.trim()) {
-			// Vérification des doublons
-			const exists = categoriesArray.some(
-				(category) => category.name.toLowerCase() === newCategory.toLowerCase()
-			);
-			if (!exists) {
-				categoriesArray.push({ id: null, name: newCategory, checked: true });
-				console.log('Nouvelle catégorie ajoutée :', newCategory, categoriesArray);
-				newCategory = ''; // Réinitialisation
-				isCategorySheetOpen = false; // Fermer la sheet
-			} else {
-				console.warn(`La catégorie "${newCategory}" existe déjà.`);
-			}
-		}
-	};
+	// FormData dérivé combinant toutes les valeurs
+	let formData = $derived.by(() => ({
+		...$createPostData,
+		categories: categoriesArray.filter((cat) => cat.checked),
+		tags: tagsArray.filter((tag) => tag.checked)
+	}));
 
-	// Actions pour ajouter un nouveau tag
-	const saveTag = () => {
-		if (newTag.trim()) {
-			// Vérification des doublons
-			const exists = tagsArray.some((tag) => tag.name.toLowerCase() === newTag.toLowerCase());
+	$effect(() => console.log('FormData:', formData));
+
+	// Fonction générique pour ajouter une nouvelle catégorie ou tag
+	const saveEntry = (type: 'category' | 'tag') => {
+		// Sélectionne le bon tableau (categoriesArray ou tagsArray)
+		const array = type === 'category' ? categoriesArray : tagsArray;
+		const newValue = newEntry.trim(); // Pas besoin de $ ici
+
+		if (newValue) {
+			// Vérifie si l'entrée existe déjà
+			const exists = array.some((item) => item.name.toLowerCase() === newValue.toLowerCase());
 			if (!exists) {
-				tagsArray.push({ id: null, name: newTag, checked: true });
-				console.log('Nouveau tag ajouté :', newTag, tagsArray);
-				newTag = ''; // Réinitialisation
-				isTagSheetOpen = false; // Fermer la sheet
+				// Ajoute une nouvelle entrée
+				array.push({ id: null, name: newValue, checked: true });
+
+				console.log(`Nouvelle ${type} ajoutée :`, newValue, array);
+
+				// Réinitialise les champs
+				newEntry = ''; // Réinitialise le champ d'entrée
+				isSheetOpen[type] = false; // Ferme la modal correspondante
 			} else {
-				console.warn(`Le tag "${newTag}" existe déjà.`);
+				console.warn(`La ${type} "${newValue}" existe déjà.`);
 			}
+		} else {
+			console.warn(`Le champ ${type} est vide.`);
 		}
 	};
 </script>
 
-<div class="mx-auto mt-8 p-8 max-w-10xl">
+<div class="mx-auto mt-8 p-8 max-w-6xl">
 	<form
 		method="POST"
 		action="?/create"
@@ -102,82 +96,64 @@
 
 		<!-- Colonne droite -->
 		<div class="space-y-6">
-			<!-- Titre -->
-			<div>
-				<Form.Field name="author" form={createPostForm}>
-					<Form.Control>
-						<Form.Label class="text-lg font-semibold">Author</Form.Label>
-						<Input type="text" name="author" bind:value={$createPostData.author} required />
-					</Form.Control>
-					<Form.FieldErrors />
-				</Form.Field>
-			</div>
+			<!-- Auteur -->
+			<Form.Field name="author" form={createPostForm}>
+				<Form.Control>
+					<Form.Label class="text-lg font-semibold">Auteur</Form.Label>
+					<Input type="text" name="author" bind:value={$createPostData.author} required />
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
 
+			<!-- Accordion pour Catégories et Tags -->
 			<Accordion.Root type="multiple">
-				<Accordion.Item>
-					<Accordion.Trigger>
-						<span class="text-lg font-semibold">Catégories</span>
-					</Accordion.Trigger>
-					<Accordion.Content>
-						<div class="flex flex-wrap gap-2">
-							{#each categoriesArray as category (category.name)}
-								<label class="flex items-center gap-2">
-									<Checkbox bind:checked={category.checked} />
-									{category.name}
-								</label>
-							{/each}
-						</div>
-						<Sheet.Root bind:open={isCategorySheetOpen}>
-							<Sheet.Trigger>
-								<Button variant="outline" size="sm" class="mt-4">+</Button>
-							</Sheet.Trigger>
-							<Sheet.Content>
-								<Sheet.Header>
-									<Sheet.Title>Ajouter une Catégorie</Sheet.Title>
-								</Sheet.Header>
-								<div class="p-4 space-y-4">
-									<Input type="text" bind:value={newCategory} placeholder="Nom de la catégorie" />
-									<Button onclick={saveCategory}>Enregistrer</Button>
-								</div>
-							</Sheet.Content>
-						</Sheet.Root>
-					</Accordion.Content>
-				</Accordion.Item>
-
-				<Accordion.Item>
-					<Accordion.Trigger>
-						<span class="text-lg font-semibold">Tags</span>
-					</Accordion.Trigger>
-					<Accordion.Content>
-						<div class="flex flex-wrap gap-2">
-							{#each tagsArray as tag (tag.name)}
-								<label class="flex items-center gap-2">
-									<Checkbox bind:checked={tag.checked} />
-									{tag.name}
-								</label>
-							{/each}
-						</div>
-						<Sheet.Root bind:open={isTagSheetOpen}>
-							<Sheet.Trigger>
-								<Button variant="outline" size="sm" class="mt-4">+</Button>
-							</Sheet.Trigger>
-							<Sheet.Content>
-								<Sheet.Header>
-									<Sheet.Title>Ajouter un Tag</Sheet.Title>
-								</Sheet.Header>
-								<div class="p-4 space-y-4">
-									<Input type="text" bind:value={newTag} placeholder="Nom du tag" />
-									<Button onclick={saveTag}>Enregistrer</Button>
-								</div>
-							</Sheet.Content>
-						</Sheet.Root>
-					</Accordion.Content>
-				</Accordion.Item>
+				{#each ['category', 'tag'] as type}
+					<Accordion.Item>
+						<Accordion.Trigger>
+							<span class="text-lg font-semibold">
+								{type === 'category' ? 'Catégories' : 'Tags'}
+							</span>
+						</Accordion.Trigger>
+						<Accordion.Content>
+							<div class="flex flex-wrap gap-2">
+								{#each type === 'category' ? categoriesArray : tagsArray as item (item.name)}
+									<label class="flex items-center gap-2">
+										<Checkbox bind:checked={item.checked} />
+										{item.name}
+									</label>
+								{/each}
+							</div>
+							<Sheet.Root bind:open={isSheetOpen[type]}>
+								<Sheet.Trigger>
+									<Button variant="outline" size="sm" class="mt-4">+</Button>
+								</Sheet.Trigger>
+								<Sheet.Content>
+									<Sheet.Header>
+										<Sheet.Title>
+											Ajouter {type === 'category' ? 'une Catégorie' : 'un Tag'}
+										</Sheet.Title>
+									</Sheet.Header>
+									<div class="p-4 space-y-4">
+										<Input
+											type="text"
+											bind:value={newEntry}
+											placeholder={`Nom ${type === 'category' ? 'de la catégorie' : 'du tag'}`}
+										/>
+										<Button onclick={(e) => (e.preventDefault(), saveEntry(type))}>
+											Enregistrer
+										</Button>
+									</div>
+								</Sheet.Content>
+							</Sheet.Root>
+						</Accordion.Content>
+					</Accordion.Item>
+				{/each}
 			</Accordion.Root>
 
+			<!-- Boutons d'action -->
 			<div class="flex justify-between">
 				<Button type="submit" variant="default" class="px-6 py-2">Créer l'Article</Button>
-				<Button class="px-6 py-2" href="/blog">Retour a la liste</Button>
+				<Button variant="secondary" class="px-6 py-2" href="/blog">Retour à la Liste</Button>
 			</div>
 		</div>
 	</form>
