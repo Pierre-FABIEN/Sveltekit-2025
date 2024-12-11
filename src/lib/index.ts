@@ -156,3 +156,16 @@ export const renderProduction = [
 		icon: KeyRound
 	}
 ];
+
+export const BlogItems = [
+	{
+		title: 'Blog',
+		url: '/blog',
+		icon: CreditCard
+	},
+	{
+		title: 'create Article',
+		url: '/blog/create',
+		icon: CreditCard
+	}
+];

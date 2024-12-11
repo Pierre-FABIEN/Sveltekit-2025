@@ -65,6 +65,12 @@
 		padding: 0;
 		margin: 0;
 		max-width: none;
+		overflow: hidden;
+	}
+
+	.mainLayout {
+		max-width: 100vw;
+		overflow: hidden;
 	}
 
 	.iconeNav {

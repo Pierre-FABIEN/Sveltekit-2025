@@ -7,121 +7,161 @@ async function main() {
 	console.log('Début du peuplement de la base de données...');
 
 	try {
-		// Supprimer les données existantes
+		// Supprimer les données existantes dans le bon ordre
 		await prisma.$transaction([
+			prisma.postTag.deleteMany(),
+			prisma.comment.deleteMany(),
+			prisma.post.deleteMany(),
+			prisma.author.deleteMany(),
+			prisma.category.deleteMany(),
+			prisma.tag.deleteMany(),
+			prisma.chat.deleteMany(),
+			prisma.user.deleteMany(),
+			prisma.session.deleteMany(),
 			prisma.product.deleteMany(),
 			prisma.agence.deleteMany(),
-			prisma.director.deleteMany(),
-			prisma.user.deleteMany(),
-			prisma.chat.deleteMany()
+			prisma.director.deleteMany()
 		]);
 		console.log('Toutes les données existantes ont été supprimées.');
 
 		// Création des directeurs
-		const directors = await Promise.all(
-			Array.from({ length: 5 }).map(() =>
-				prisma.director.create({
-					data: {
-						name: faker.person.fullName(),
-						email: faker.internet.email(),
-						age: faker.number.int({ min: 30, max: 60 }),
-						isActive: faker.datatype.boolean()
-					}
-				})
-			)
+		const directors = await createEntities(5, () =>
+			prisma.director.create({
+				data: {
+					name: faker.person.fullName(),
+					email: faker.internet.email(),
+					age: faker.number.int({ min: 30, max: 60 }),
+					isActive: faker.datatype.boolean()
+				}
+			})
 		);
 		console.log(`${directors.length} directeurs créés.`);
 
 		// Création des agences
-		const agencies = await Promise.all(
-			directors.map((director) =>
-				prisma.agence.create({
-					data: {
-						street: faker.location.streetAddress(),
-						city: faker.location.city(),
-						state: faker.location.state(),
-						zip: faker.location.zipCode(),
-						country: faker.location.country(),
-						directorId: director.id
-					}
-				})
-			)
+		const agencies = await createEntities(directors.length, (i) =>
+			prisma.agence.create({
+				data: {
+					street: faker.location.streetAddress(),
+					city: faker.location.city(),
+					state: faker.location.state(),
+					zip: faker.location.zipCode(),
+					country: faker.location.country(),
+					directorId: directors[i].id
+				}
+			})
 		);
 		console.log(`${agencies.length} agences créées.`);
 
 		// Création des produits
-		const products = await Promise.all(
-			agencies.map((agency) =>
-				prisma.product.create({
-					data: {
-						name: faker.commerce.productName(),
-						stock: faker.number.int({ min: 10, max: 500 }),
-						price: parseFloat(faker.commerce.price({ min: 10, max: 1000, dec: 2 })),
-						agenceId: agency.id
-					}
-				})
-			)
+		const products = await createEntities(agencies.length, (i) =>
+			prisma.product.create({
+				data: {
+					name: faker.commerce.productName(),
+					stock: faker.number.int({ min: 10, max: 500 }),
+					price: parseFloat(faker.commerce.price({ min: 10, max: 1000, dec: 2 })),
+					agenceId: agencies[i].id
+				}
+			})
 		);
 		console.log(`${products.length} produits créés.`);
 
-		// Création des utilisateurs
-		const users = await Promise.all(
-			Array.from({ length: 10 }).map(() =>
-				prisma.user.create({
-					data: {
-						email: faker.internet.email(),
-						username: faker.internet.userName(),
-						passwordHash: faker.internet.password(),
-						name: faker.person.fullName(),
-						picture: faker.image.avatar(),
-						emailVerified: faker.datatype.boolean()
-					}
-				})
-			)
-		);
-		console.log(`${users.length} utilisateurs créés.`);
-
 		// Création des chats
-		const chats = await Promise.all(
-			Array.from({ length: 3 }).map(() =>
-				prisma.chat.create({
-					data: {
-						client_id: faker.string.uuid(),
-						color: faker.color.rgb(),
-						message: faker.lorem.sentence(),
-						avatar: faker.image.avatar()
-					}
-				})
-			)
+		const chats = await createEntities(3, () =>
+			prisma.chat.create({
+				data: {
+					client_id: faker.string.uuid(),
+					color: faker.color.rgb(),
+					message: faker.lorem.sentence(),
+					avatar: faker.image.avatar()
+				}
+			})
 		);
 		console.log(`${chats.length} chats créés.`);
 
-		// Afficher le résumé
-		const counts = {
-			directors: await prisma.director.count(),
-			agencies: await prisma.agence.count(),
-			products: await prisma.product.count(),
-			users: await prisma.user.count(),
-			chats: await prisma.chat.count()
-		};
-
-		console.log('--- Résumé des enregistrements ---');
-		console.log(`Directeurs : ${counts.directors}`);
-		console.log(`Agences : ${counts.agencies}`);
-		console.log(`Produits : ${counts.products}`);
-		console.log(`Utilisateurs : ${counts.users}`);
-		console.log(`Chats : ${counts.chats}`);
-		console.log(
-			`Total des enregistrements : ${
-				counts.directors + counts.agencies + counts.products + counts.users + counts.chats
-			}`
+		// Création des catégories
+		const categories = await createEntities(5, () =>
+			prisma.category.create({
+				data: {
+					name: faker.lorem.word(),
+					description: faker.lorem.sentence()
+				}
+			})
 		);
+		console.log(`${categories.length} catégories créées.`);
+
+		// Création des tags
+		const tags = await createEntities(10, () =>
+			prisma.tag.create({
+				data: {
+					name: faker.lorem.word()
+				}
+			})
+		);
+		console.log(`${tags.length} tags créés.`);
+
+		// Création des auteurs
+		const authors = await createEntities(5, () =>
+			prisma.author.create({
+				data: {
+					name: faker.person.fullName()
+				}
+			})
+		);
+		console.log(`${authors.length} auteurs créés.`);
+
+		// Création des articles
+		const posts = await createEntities(10, () =>
+			prisma.post.create({
+				data: {
+					title: faker.lorem.sentence(),
+					content: faker.lorem.paragraphs(3),
+					slug: faker.lorem.slug(),
+					published: faker.datatype.boolean(),
+					authorId: authors[faker.number.int({ min: 0, max: authors.length - 1 })].id,
+					categoryId: categories[faker.number.int({ min: 0, max: categories.length - 1 })].id
+				}
+			})
+		);
+		console.log(`${posts.length} articles créés.`);
+
+		// Création des commentaires
+		const comments = await createEntities(posts.length * 3, (i) =>
+			prisma.comment.create({
+				data: {
+					content: faker.lorem.sentence(),
+					author: faker.person.fullName(),
+					postId: posts[Math.floor(i / 3)].id
+				}
+			})
+		);
+		console.log(`${comments.length} commentaires créés.`);
+
+		// Création des relations Post <-> Tag via PostTag
+		const postTags = await createEntities(posts.length * 2, (i) =>
+			prisma.postTag.create({
+				data: {
+					postId: posts[Math.floor(i / 2)].id,
+					tagId: tags[faker.number.int({ min: 0, max: tags.length - 1 })].id
+				}
+			})
+		);
+		console.log(`${postTags.length} relations Post-Tag créées.`);
+
 		console.log('Peuplement terminé avec succès !');
 	} catch (error) {
 		console.error('Erreur lors du peuplement :', error);
 	} finally {
 		await prisma.$disconnect();
 	}
+}
+
+// Fonction utilitaire pour créer des entités
+async function createEntities(count, createFn) {
+	const results = [];
+	for (let i = 0; i < count; i++) {
+		results.push(await createFn(i));
+	}
+	return results;
 }
 
 main();

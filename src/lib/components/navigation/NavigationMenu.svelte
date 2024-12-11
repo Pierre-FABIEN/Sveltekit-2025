@@ -10,7 +10,8 @@
 		stripeItems,
 		UIUXItems,
 		AuthItems,
-		renderProduction
+		renderProduction,
+		BlogItems
 	} from '$lib';
 	import { Waves } from 'lucide-svelte';
 	import LogoSvelte from '../LogoSvelte.svelte';
@@ -26,7 +27,8 @@
 		{ title: 'Stripe', items: stripeItems },
 		{ title: 'UI/UX', items: UIUXItems },
 		{ title: 'Authentication', items: AuthItems },
-		{ title: 'On Production', items: renderProduction }
+		{ title: 'On Production', items: renderProduction },
+		{ title: 'Blog', items: BlogItems }
 	];
 
 	let drawerOpen = false;
