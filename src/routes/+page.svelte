@@ -46,7 +46,7 @@
 			Bienvenue sur <br />
 			<span>l'ultime Boilerplate SvelteKit</span>
 		</h1>
-		<div class="container text-center space-y-6 rounded backdrop-blur-sm">
+		<div class="container cardEffect text-center space-y-6 rounded backdrop-blur-sm">
 			<p class="description">
 				Toutes les solutions <strong>mise en place</strong> pour vous aider a créer une
 				<strong>application SvelteKit</strong>
@@ -111,35 +111,6 @@
 
 <style lang="scss">
 	.container {
-		box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25); /* Ombre douce pour donner de la profondeur */
-		border: 1px solid rgba(255, 255, 255, 0.2); /* Bordure subtile et légère */
-		background: linear-gradient(
-			145deg,
-			rgba(255, 255, 255, 0.2),
-			rgba(255, 255, 255, 0.1) 30%,
-			rgba(240, 240, 240, 0.05) 70%,
-			rgba(220, 220, 220, 0.02)
-		); /* Dégradé multi-nuances avec des arrêts */
-		backdrop-filter: blur(15px) saturate(150%); /* Flou avec saturation pour intensifier les couleurs de fond */
-		-webkit-backdrop-filter: blur(15px) saturate(150%); /* Compatibilité Safari */
-		border-radius: 16px; /* Coins arrondis pour un look moderne */
-		padding: 20px; /* Espacement interne */
-		transition:
-			transform 0.5s ease,
-			box-shadow 0.5s ease;
-
-		&:hover {
-			transform: translateY(-5px); /* Soulève légèrement la carte */
-			box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.3); /* Ombre plus intense au survol */
-			background: linear-gradient(
-				145deg,
-				rgba(255, 255, 255, 0.3),
-				rgba(255, 255, 255, 0.15) 30%,
-				rgba(240, 240, 240, 0.1) 70%,
-				rgba(220, 220, 220, 0.007)
-			); /* Accentuation du gradient au survol */
-		}
-
 		width: 800px;
 		max-width: 80vw;
 		padding: 40px 20px;

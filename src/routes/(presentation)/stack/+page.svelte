@@ -31,7 +31,9 @@
 				{#each Object.entries(section) as [group, techs]}
 					<!-- Skip title and description keys -->
 					{#if group !== 'title' && group !== 'description'}
-						<div class="cards break-inside-avoid rounded-lg shadow-md mb-4 p-4 backdrop-blur-sm">
+						<div
+							class="cardEffect break-inside-avoid rounded-lg shadow-md mb-4 p-4 backdrop-blur-sm"
+						>
 							<h2 class="text-xl font-semibold mb-2">{group}</h2>
 							<Separator class="my-2" />
 
@@ -70,37 +72,6 @@
 <style lang="scss">
 	a {
 		color: #fd4000;
-	}
-
-	.cards {
-		box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
-		border: 1px solid rgba(255, 255, 255, 0.2);
-		background: linear-gradient(
-			145deg,
-			rgba(255, 255, 255, 0.2),
-			rgba(255, 255, 255, 0.1) 30%,
-			rgba(240, 240, 240, 0.05) 70%,
-			rgba(220, 220, 220, 0.02)
-		);
-		backdrop-filter: blur(15px) saturate(150%);
-		-webkit-backdrop-filter: blur(15px) saturate(150%);
-		border-radius: 16px;
-		padding: 20px;
-		transition:
-			transform 0.3s ease,
-			box-shadow 0.3s ease;
-
-		&:hover {
-			transform: translateY(-5px);
-			box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.3);
-			background: linear-gradient(
-				145deg,
-				rgba(255, 255, 255, 0.3),
-				rgba(255, 255, 255, 0.15) 30%,
-				rgba(240, 240, 240, 0.1) 70%,
-				rgba(220, 220, 220, 0.007)
-			);
-		}
 	}
 
 	.presentationButton {

@@ -1,10 +1,9 @@
 <script lang="ts">
-	import type { PageData } from './$types';
 	import * as Pagination from '$shadcn/pagination';
 	import { Button } from '$shadcn/button';
 	import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '$shadcn/card';
 
-	let { data }: { data: PageData } = $props();
+	let { data } = $props();
 </script>
 
 <main class="container mx-auto px-4 py-6">
@@ -13,13 +12,13 @@
 	<!-- Affichage des articles -->
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 		{#each data.articles as article}
-			<Card class="hover:shadow-lg transition-shadow">
+			<Card class="cardEffect hover:shadow-lg transition-shadow">
 				<CardHeader>
 					<CardTitle class="text-xl font-semibold">{article.title}</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<p class="text-gray-600 line-clamp-3">{article.content}</p>
-					<div class="flex items-center justify-between text-sm text-gray-500 mt-4">
+					<p class=" line-clamp-3">{article.content}</p>
+					<div class="flex items-center justify-between text-sm mt-4">
 						<div>
 							<span class="font-medium">Auteur :</span>
 							{article.author.name}
