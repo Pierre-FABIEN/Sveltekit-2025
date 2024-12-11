@@ -57,9 +57,6 @@
 		@apply bg-background text-foreground;
 	}
 }
-<<<<<<< Updated upstream
-=======
-
 
 .scrollbar-thumb {
 	background: #fd4000 !important;
@@ -68,4 +65,3 @@
 .scrollbar-track {
 	background: transparent !important;
 }
->>>>>>> Stashed changes
