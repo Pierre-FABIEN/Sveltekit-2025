@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
 export const createPostSchema = z.object({
-	title: z.string().min(5, 'Le titre doit contenir au moins 5 caractères'),
-	content: z.string().min(20, 'Le contenu doit contenir au moins 20 caractères'),
-	authorName: z.string().min(1, "Un nom d'auteur est requis"),
-	categories: z.array(z.string()).min(1, 'Au moins une catégorie doit être sélectionnée'),
-	tags: z.array(z.string()).optional(),
-	published: z.boolean()
+	authorName: z.string().nonempty("Le nom de l'auteur est obligatoire."), // Chaîne non vide
+	categories: z.array(z.string()).default([]), // Tableau de chaînes, par défaut vide
+	content: z.string().nonempty('Le contenu est obligatoire.'), // Chaîne non vide
+	published: z.boolean().default(false), // Booléen, par défaut false
+	tags: z.array(z.string()).default([]), // Tableau de chaînes, par défaut vide
+	title: z.string().nonempty('Le titre est obligatoire.') // Chaîne non vide
 });
 
 export type Article = z.infer<typeof createPostSchema>;

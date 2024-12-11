@@ -15,43 +15,76 @@ export const load = async () => {
 export const actions = {
 	create: async ({ request }) => {
 		const formData = await request.formData();
-		console.log(formData, 'formData');
+		console.log('FormData reçu :', formData);
+
 		const form = await superValidate(formData, zod(createPostSchema));
-		console.log(form, 'form');
+		console.log('Validation du formulaire :', form);
 
 		if (!form.valid) {
 			return fail(400, { form, error: 'Données invalides' });
 		}
 
+		const { title, content, authorName, categories, tags, published } = form.data;
+
 		try {
-			// Créer un nouvel auteur
-			const author = await prisma.author.create({
-				data: {
-					name: form.data.authorName
-				}
+			// Vérifier ou créer l'auteur
+			const author = await prisma.author.upsert({
+				where: { name: authorName },
+				create: { name: authorName },
+				update: {}
 			});
 
-			// Créer un nouvel article avec plusieurs catégories et tags
-			await prisma.post.create({
+			// Gestion des catégories
+			const parsedCategories = JSON.parse(categories).filter((category) => category.checked);
+			const categoryConnect = await Promise.all(
+				parsedCategories.map(async (category) => {
+					if (!category.id) {
+						const newCategory = await prisma.category.create({ data: { name: category.name } });
+						return { id: newCategory.id };
+					}
+					return { id: category.id };
+				})
+			);
+
+			// Gestion des tags
+			const parsedTags = JSON.parse(tags).filter((tag) => tag.checked);
+			const tagConnectOrCreate = parsedTags.map((tag) => ({
+				where: { name: tag.name },
+				create: { name: tag.name }
+			}));
+
+			// Créer le post avec les relations
+			const post = await prisma.post.create({
 				data: {
-					title: form.data.title,
-					content: form.data.content,
-					slug: form.data.title.toLowerCase().replace(/ /g, '-'),
-					published: form.data.published,
-					authorId: author.id,
-					categories: {
-						connect: form.data.categories.map((id) => ({ id }))
+					title,
+					content,
+					slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+					published,
+					author: {
+						connect: { id: author.id }
+					},
+					category: {
+						connect: categoryConnect[0] // Associer une seule catégorie
 					},
 					tags: {
-						connect: form.data.tags?.map((id) => ({ id }))
+						create: tagConnectOrCreate.map((tag) => ({
+							tag: {
+								connectOrCreate: tag
+							}
+						}))
 					}
 				}
 			});
 
-			return message(form, 'Article et auteur créés avec succès');
+			console.log('Article créé avec succès :', post);
+
+			return {
+				status: 200,
+				body: { success: true, post }
+			};
 		} catch (error) {
-			console.error("Erreur lors de la création de l'article:", error);
-			return fail(500, { form, error: "Échec de la création de l'article et de l'auteur" });
+			console.error('Erreur lors de la création de l’article :', error);
+			return fail(500, { error: 'Une erreur s’est produite lors de la création de l’article.' });
 		}
 	}
 };

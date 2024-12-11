@@ -123,7 +123,7 @@ model Post {
 // Modèle pour les auteurs
 model Author {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
+  name      String   @unique
   posts     Post[]
   createdAt DateTime @default(now())
 }

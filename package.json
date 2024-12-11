@@ -79,7 +79,7 @@
 		"@oslojs/encoding": "^1.1.0",
 		"@oslojs/otp": "^1.0.0",
 		"@pilcrowjs/object-parser": "^0.0.4",
-		"@prisma/client": "^5.22.0",
+		"@prisma/client": "^6.0.1",
 		"@stripe/stripe-js": "latest",
 		"@sveltejs/adapter-node": "^5.2.9",
 		"@theatre/core": "^0.7.2",

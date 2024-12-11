@@ -24,20 +24,25 @@
 	let newEntry = $state('');
 	let isSheetOpen = $state({ category: false, tag: false });
 
-	// FormData dérivé combinant toutes les valeurs
-	let formData = $derived.by(() => ({
+	// Utilisation d'un derived pour synchroniser les données dans createPostData
+	let derivedPostData = $derived.by(() => ({
 		...$createPostData,
-		categories: categoriesArray.filter((cat) => cat.checked),
-		tags: tagsArray.filter((tag) => tag.checked)
+		categories: categoriesArray.map((cat) => ({
+			id: cat.id,
+			name: cat.name,
+			checked: cat.checked
+		})),
+		tags: tagsArray.map((tag) => ({
+			id: tag.id,
+			name: tag.name,
+			checked: tag.checked
+		}))
 	}));
-
-	$effect(() => console.log('FormData:', formData));
 
 	// Fonction générique pour ajouter une nouvelle catégorie ou tag
 	const saveEntry = (type: 'category' | 'tag') => {
-		// Sélectionne le bon tableau (categoriesArray ou tagsArray)
 		const array = type === 'category' ? categoriesArray : tagsArray;
-		const newValue = newEntry.trim(); // Pas besoin de $ ici
+		const newValue = newEntry.trim();
 
 		if (newValue) {
 			// Vérifie si l'entrée existe déjà
@@ -45,17 +50,13 @@
 			if (!exists) {
 				// Ajoute une nouvelle entrée
 				array.push({ id: null, name: newValue, checked: true });
-
-				console.log(`Nouvelle ${type} ajoutée :`, newValue, array);
-
-				// Réinitialise les champs
-				newEntry = ''; // Réinitialise le champ d'entrée
-				isSheetOpen[type] = false; // Ferme la modal correspondante
+				newEntry = ''; // Réinitialise le champ
+				isSheetOpen[type] = false; // Ferme la modal
 			} else {
-				console.warn(`La ${type} "${newValue}" existe déjà.`);
+				alert(`La ${type} "${newValue}" existe déjà.`);
 			}
 		} else {
-			console.warn(`Le champ ${type} est vide.`);
+			alert(`Le champ ${type} est vide.`);
 		}
 	};
 </script>
@@ -97,10 +98,10 @@
 		<!-- Colonne droite -->
 		<div class="space-y-6">
 			<!-- Auteur -->
-			<Form.Field name="author" form={createPostForm}>
+			<Form.Field name="authorName" form={createPostForm}>
 				<Form.Control>
 					<Form.Label class="text-lg font-semibold">Auteur</Form.Label>
-					<Input type="text" name="author" bind:value={$createPostData.author} required />
+					<Input type="text" name="authorName" bind:value={$createPostData.authorName} required />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -149,6 +150,14 @@
 					</Accordion.Item>
 				{/each}
 			</Accordion.Root>
+
+			<input
+				type="text"
+				name="categories"
+				value={JSON.stringify(derivedPostData.categories)}
+				hidden
+			/>
+			<input type="text" name="tags" value={JSON.stringify(derivedPostData.tags)} hidden />
 
 			<!-- Boutons d'action -->
 			<div class="flex justify-between">
