@@ -1,6 +1,7 @@
 <script lang="ts">
-	import Button from '$shadcn/button/button.svelte';
 	import { toast } from 'svelte-sonner';
+
+	let clone: HTMLElement | null;
 
 	// Function to copy text content to clipboard
 	const copyToClipboard = () => {
@@ -18,9 +19,7 @@
 	};
 </script>
 
-<div
-	class="overlay flex h-screen w-screen flex-col absolute items-center justify-center overflow-hidden"
->
+<section class="overlay flex h-screen w-screen items-center justify-center">
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -54,7 +53,7 @@
 			</p>
 
 			<div class="flex justify-center items-center mt-5">
-				<pre id="copy-text" class="preStyle">
+				<pre id="copy-text" bind:this={clone} class="preStyle">
 				<span>clone the repo with npm</span>
 
 				<button class="copyButton" type="button" onclick={copyToClipboard} aria-label="Copy to clipboard">
@@ -108,25 +107,132 @@
 			</div>
 		</div>
 	</div>
-</div>
-
-<section
-	class="flex-col min-h-screen items-center justify-center place-content-center place-items-center"
->
-	<h1 class="text-5xl font-extrabold leading-tight sm:text-6xl">Qu'est-ce que ce boilerplate ?</h1>
-
-	<p class="mt-8 text-lg sm:text-xl w-[60%] mx-auto text-justify">
-		Travailler avec ce boilerplate, c’est bénéficier d’une structure complète et optimisée qui vous
-		permet de vous concentrer sur l’essentiel : construire votre application. Grâce à l’intégration
-		de technologies modernes comme SvelteKit, Prisma, et Tailwind CSS, et à des scripts prêts à
-		l’emploi pour le développement, les tests, et la mise en production, vous avancez rapidement
-		sans avoir à réfléchir aux configurations de base. Tout est pensé pour accélérer votre workflow
-		: des environnements configurés avec des variables clés, des outils de formatage et de linting
-		pour garantir un code propre, des pipelines de tests automatisés pour assurer la qualité, et des
-		fonctionnalités prêtes pour le SEO, les paiements, et l'authentification. Ce boilerplate est
-		votre allié pour gagner en productivité et en sérénité, en éliminant les frictions liées aux
-		décisions architecturales générales.
-	</p>
-
-	<Button href="/home/presentation" variant="default" size="lg" class="mt-8">En savoir plus</Button>
 </section>
+
+<style lang="scss">
+	.container {
+		box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25); /* Ombre douce pour donner de la profondeur */
+		border: 1px solid rgba(255, 255, 255, 0.2); /* Bordure subtile et légère */
+		background: linear-gradient(
+			145deg,
+			rgba(255, 255, 255, 0.2),
+			rgba(255, 255, 255, 0.1) 30%,
+			rgba(240, 240, 240, 0.05) 70%,
+			rgba(220, 220, 220, 0.02)
+		); /* Dégradé multi-nuances avec des arrêts */
+		backdrop-filter: blur(15px) saturate(150%); /* Flou avec saturation pour intensifier les couleurs de fond */
+		-webkit-backdrop-filter: blur(15px) saturate(150%); /* Compatibilité Safari */
+		border-radius: 16px; /* Coins arrondis pour un look moderne */
+		padding: 20px; /* Espacement interne */
+		transition:
+			transform 0.5s ease,
+			box-shadow 0.5s ease;
+
+		&:hover {
+			transform: translateY(-5px); /* Soulève légèrement la carte */
+			box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.3); /* Ombre plus intense au survol */
+			background: linear-gradient(
+				145deg,
+				rgba(255, 255, 255, 0.3),
+				rgba(255, 255, 255, 0.15) 30%,
+				rgba(240, 240, 240, 0.1) 70%,
+				rgba(220, 220, 220, 0.007)
+			); /* Accentuation du gradient au survol */
+		}
+
+		width: 800px;
+		max-width: 80vw;
+		padding: 40px 20px;
+	}
+
+	.presentationButton {
+		padding: 5px 20px;
+		border-radius: 5px;
+		border: 1px solid #fd4000;
+		box-shadow: 0px 0px 5px 2px #82828260;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		font-weight: lighter;
+		cursor: pointer;
+		transition: all 0.15s ease-in-out;
+
+		&:hover {
+			background-color: #fd4000;
+		}
+	}
+
+	.description {
+		line-height: 175%;
+		padding: 5px 20px;
+		font-size: 18px;
+		line-height: 150%;
+		font-weight: 200;
+		strong {
+			color: #fd4000;
+		}
+	}
+
+	.preStyle {
+		background-color: rgba(0, 0, 0, 0.1);
+		border: 1px solid #fd4000;
+		//filter: drop-shadow(5px 5px 5px #000000);
+		box-shadow: 0px 0px 5px 2px #82828260;
+		width: min-content;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 10px;
+		border-radius: 5px;
+
+		.copyButton {
+			width: 30px;
+			height: 30px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			border: 1px solid #fd4000;
+			margin-left: 10px;
+			padding: 5px;
+			border-radius: 5px;
+		}
+
+		.svgStyle {
+			stroke: white;
+			transition: all 0.15s ease-in-out;
+			&:hover {
+				stroke: #fd4000;
+			}
+		}
+	}
+
+	.logoSvelte {
+		position: absolute;
+		top: -10vh;
+		left: -10vw;
+		height: 100vh;
+		z-index: 0;
+		.st0 {
+			fill: #0f0e2e88;
+		}
+		.st1 {
+			fill: #04031d;
+		}
+	}
+
+	:global(html.light) .logoSvelte .st1 {
+		fill: rgba(255, 255, 255, 0.533);
+	}
+	:global(html.light) .logoSvelte .st0 {
+		fill: rgb(223, 223, 223);
+	}
+
+	:global(html.dark) .logoSvelte .st1 {
+		fill: #0f0e2e88;
+	}
+	:global(html.dark) .logoSvelte .st0 {
+		fill: #04031d;
+	}
+</style>

@@ -114,7 +114,6 @@
 			</div>
 
 			<Accordion.Root type="multiple">
-				<!-- Catégories -->
 				<Accordion.Item>
 					<Accordion.Trigger>
 						<span class="text-lg font-semibold">Catégories</span>
@@ -145,7 +144,6 @@
 					</Accordion.Content>
 				</Accordion.Item>
 
-				<!-- Tags -->
 				<Accordion.Item>
 					<Accordion.Trigger>
 						<span class="text-lg font-semibold">Tags</span>
