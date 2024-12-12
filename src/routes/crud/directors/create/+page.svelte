@@ -14,11 +14,7 @@
 
 	const createDirectorForm = superForm(data.form, {
 		validators: zodClient(createDirectorSchema),
-		id: 'createDirectorForm',
-		onSubmit: ({ formData, formElement }) => {
-			// Affiche chaque paire clé-valeur de formData
-			console.log(formData);
-		}
+		id: 'createDirectorForm'
 	});
 
 	const {
@@ -28,12 +24,11 @@
 	} = createDirectorForm;
 
 	$effect(() => {
+		console.log(data);
 		if ($createDirectorMessage === 'Director created successfully') {
 			toast.success($createDirectorMessage);
 			setTimeout(() => goto('/crud/directors'), 0);
 		}
-
-		console.log($createDirectorData);
 	});
 </script>
 

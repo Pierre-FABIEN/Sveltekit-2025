@@ -6,25 +6,34 @@ import { zod } from 'sveltekit-superforms/adapters';
 export const load = async () => {
 	const form = await superValidate(zod(createPostSchema));
 
-	const categories = await prisma.category.findMany({ select: { id: true, name: true } });
+	const category = await prisma.category.findMany({ select: { id: true, name: true } });
 	const tags = await prisma.tag.findMany({ select: { id: true, name: true } });
 
-	return { form, categories, tags };
+	return { form, category, tags };
 };
-
 export const actions = {
 	create: async ({ request }) => {
 		const formData = await request.formData();
 		console.log('FormData reçu :', formData);
 
+		// Validation du formulaire
 		const form = await superValidate(formData, zod(createPostSchema));
-		console.log('Validation du formulaire :', form);
+		console.log('Résultat de la validation :', form);
 
 		if (!form.valid) {
+			console.error('Données invalides :', form.errors);
 			return fail(400, { form, error: 'Données invalides' });
 		}
 
-		const { title, content, authorName, categories, tags, published } = form.data;
+		const { title, content, authorName, category, tags, published } = form.data;
+		console.log('Données extraites du formulaire :', {
+			title,
+			content,
+			authorName,
+			category,
+			tags,
+			published
+		});
 
 		try {
 			// Vérifier ou créer l'auteur
@@ -33,9 +42,15 @@ export const actions = {
 				create: { name: authorName },
 				update: {}
 			});
+			console.log('Auteur après upsert :', author);
 
 			// Gestion des catégories
-			const parsedCategories = JSON.parse(categories).filter((category) => category.checked);
+			// Corriger le parsing du champ `category`
+			console.log('Catégories :', category);
+
+			const parsedCategories = JSON.parse(category).filter((category) => category.checked);
+			console.log(parsedCategories, 'parsedCategories');
+
 			const categoryConnect = await Promise.all(
 				parsedCategories.map(async (category) => {
 					if (!category.id) {
@@ -46,12 +61,18 @@ export const actions = {
 				})
 			);
 
+			console.log('Catégories à connecter :', categoryConnect);
+
 			// Gestion des tags
-			const parsedTags = JSON.parse(tags).filter((tag) => tag.checked);
+			// Corriger le parsing du champ `tags`
+			const parsedTags = JSON.parse(tags[0]).filter((tag) => tag.checked);
+			console.log('Tags parsés :', parsedTags);
+
 			const tagConnectOrCreate = parsedTags.map((tag) => ({
 				where: { name: tag.name },
 				create: { name: tag.name }
 			}));
+			console.log('Tags connectOrCreate :', tagConnectOrCreate);
 
 			// Créer le post avec les relations
 			const post = await prisma.post.create({
@@ -75,13 +96,9 @@ export const actions = {
 					}
 				}
 			});
+			console.log('Post créé :', post);
 
-			console.log('Article créé avec succès :', post);
-
-			return {
-				status: 200,
-				body: { success: true, post }
-			};
+			return message(form, 'Article créé avec succès !');
 		} catch (error) {
 			console.error('Erreur lors de la création de l’article :', error);
 			return fail(500, { error: 'Une erreur s’est produite lors de la création de l’article.' });
